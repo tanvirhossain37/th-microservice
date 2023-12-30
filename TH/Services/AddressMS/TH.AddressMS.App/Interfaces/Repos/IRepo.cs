@@ -9,8 +9,8 @@ namespace TH.AddressMS.App
     public interface IRepo<TEntity> where TEntity : class
     {
         TEntity Save(TEntity entity);
-        void SaveRange(IEnumerable<TEntity> entities);
+        IEnumerable<TEntity> SaveRange(IEnumerable<TEntity> entities);
 
-        TEntity FindById(long id, DataFilter dataFilter = new DataFilter());
+        TEntity FindById(object id, DataFilter dataFilter = new DataFilter());
     }
 }

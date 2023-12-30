@@ -30,13 +30,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.UserSvc.Infra", "Service
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AddressMS", "AddressMS", "{6B651FEF-BC7D-443E-A343-D762BF3BF92C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.AddressMS.API", "Services\AddressMS\TH.AddressMS.API\TH.AddressMS.API.csproj", "{004BF324-AE32-46B6-9770-9106893D41A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.AddressMS.API", "Services\AddressMS\TH.AddressMS.API\TH.AddressMS.API.csproj", "{004BF324-AE32-46B6-9770-9106893D41A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.AddressMS.Core", "Services\AddressMS\TH.AddressMS.Core\TH.AddressMS.Core.csproj", "{A4826227-333E-4848-A99B-92D482289D12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.AddressMS.Core", "Services\AddressMS\TH.AddressMS.Core\TH.AddressMS.Core.csproj", "{A4826227-333E-4848-A99B-92D482289D12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.AddressMS.App", "Services\AddressMS\TH.AddressMS.App\TH.AddressMS.App.csproj", "{18D860C5-E276-4DE7-8F3A-7FE3E155B64B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.AddressMS.App", "Services\AddressMS\TH.AddressMS.App\TH.AddressMS.App.csproj", "{18D860C5-E276-4DE7-8F3A-7FE3E155B64B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.AddressMS.Infra", "Services\AddressMS\TH.AddressMS.Infra\TH.AddressMS.Infra.csproj", "{9AA7D379-3457-4BDC-BEA9-E6E16C573DFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.AddressMS.Infra", "Services\AddressMS\TH.AddressMS.Infra\TH.AddressMS.Infra.csproj", "{9AA7D379-3457-4BDC-BEA9-E6E16C573DFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.AddressMS.Mongo", "Services\AddressMS\TH.AddressMS.Mongo\TH.AddressMS.Mongo.csproj", "{FE6743E3-50D3-4E8C-91D6-522823979AF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +90,10 @@ Global
 		{9AA7D379-3457-4BDC-BEA9-E6E16C573DFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AA7D379-3457-4BDC-BEA9-E6E16C573DFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AA7D379-3457-4BDC-BEA9-E6E16C573DFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE6743E3-50D3-4E8C-91D6-522823979AF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE6743E3-50D3-4E8C-91D6-522823979AF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE6743E3-50D3-4E8C-91D6-522823979AF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE6743E3-50D3-4E8C-91D6-522823979AF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,6 +113,7 @@ Global
 		{A4826227-333E-4848-A99B-92D482289D12} = {6B651FEF-BC7D-443E-A343-D762BF3BF92C}
 		{18D860C5-E276-4DE7-8F3A-7FE3E155B64B} = {6B651FEF-BC7D-443E-A343-D762BF3BF92C}
 		{9AA7D379-3457-4BDC-BEA9-E6E16C573DFA} = {6B651FEF-BC7D-443E-A343-D762BF3BF92C}
+		{FE6743E3-50D3-4E8C-91D6-522823979AF9} = {6B651FEF-BC7D-443E-A343-D762BF3BF92C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {402CE6D6-7D33-423C-9052-FFCF8DE282D8}

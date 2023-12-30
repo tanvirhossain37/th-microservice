@@ -16,22 +16,17 @@ namespace TH.AddressMS.Infra
             _db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
+        public TEntity FindById(object id, DataFilter dataFilter = default)
+        {
+            throw new NotImplementedException();
+        }
+
         public TEntity Save(TEntity entity)
         {
-            if (entity is null)
-            {
-                throw new ArgumentNullException(nameof(entity));
-            }
-
             throw new NotImplementedException();
         }
 
-        public void SaveRange(IEnumerable<TEntity> entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TEntity FindById(long id, DataFilter dataFilter = default)
+        public IEnumerable<TEntity> SaveRange(IEnumerable<TEntity> entities)
         {
             throw new NotImplementedException();
         }
