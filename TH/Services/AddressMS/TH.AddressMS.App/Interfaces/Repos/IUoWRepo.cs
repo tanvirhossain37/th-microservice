@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TH.AddressMS.App.Interfaces
+{
+    public interface IUoWRepo : IDisposable
+    {
+        IAddressRepository AddressRepo { get; set; }
+        ICountryRepository CountryRepo { get; set; }
+
+        int SaveChanges();
+    }
+}

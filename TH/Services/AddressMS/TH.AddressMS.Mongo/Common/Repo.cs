@@ -19,32 +19,18 @@ namespace TH.AddressMS.Mongo
 
         public TEntity Save(TEntity entity)
         {
-            try
-            {
-                if (entity is null) throw new ArgumentNullException(nameof(entity));
+            if (entity is null) throw new ArgumentNullException(nameof(entity));
 
-                DbContext.DbSet<TEntity>().InsertOne(entity);
-                return entity;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            DbContext.DbSet<TEntity>().InsertOne(entity);
+            return entity;
         }
 
         public IEnumerable<TEntity> SaveRange(IEnumerable<TEntity> entities)
         {
-            try
-            {
-                if (entities is null) throw new ArgumentNullException(nameof(entities));
+            if (entities is null) throw new ArgumentNullException(nameof(entities));
 
-                DbContext.DbSet<TEntity>().InsertMany(entities);
-                return entities;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            DbContext.DbSet<TEntity>().InsertMany(entities);
+            return entities;
         }
 
         public TEntity FindById(object id, DataFilter dataFilter = default)
