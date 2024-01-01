@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TH.PhoneMS.App
 {
-    public interface IBaseService:IDisposable
+    public interface IBaseService : IDisposable
     {
     }
 }

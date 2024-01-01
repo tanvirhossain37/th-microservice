@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\Repos\" />
+    <Folder Include="Contracts\Repos\" />
+    <Folder Include="Contracts\Infras\" />
   </ItemGroup>
 
 </Project>
