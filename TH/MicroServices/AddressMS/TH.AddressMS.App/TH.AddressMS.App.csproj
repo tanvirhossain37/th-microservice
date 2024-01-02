@@ -18,4 +18,8 @@
     <ProjectReference Include="..\TH.AddressMS.Core\TH.AddressMS.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contracts\Infras\" />
+  </ItemGroup>
+
 </Project>

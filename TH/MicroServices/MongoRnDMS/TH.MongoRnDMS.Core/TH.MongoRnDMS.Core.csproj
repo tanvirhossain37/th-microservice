@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TH.PhoneMS.App\TH.PhoneMS.App.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Infras\" />
+    <PackageReference Include="MongoDB.Bson" Version="2.23.1" />
   </ItemGroup>
 
 </Project>

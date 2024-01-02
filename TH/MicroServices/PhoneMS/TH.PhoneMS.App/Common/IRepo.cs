@@ -19,8 +19,8 @@ namespace TH.PhoneMS.App
         T FindByIdAsync(string id);
         T FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy);
 
-        IEnumerable<T> GetQueryable(Expression<Func<T, bool>> predicate, 
-            Expression<Func<T, object>> includePredicate, 
+        IEnumerable<T> GetQueryable(Expression<Func<T, bool>> predicate,
+            Expression<Func<T, object>> includePredicate,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy, int pageIndex, int pageSize);
     }
 }

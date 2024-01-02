@@ -1,0 +1,6 @@
+@TH.MongoRnDMS.API_HostAddress = http://localhost:5080
+
+GET {{TH.MongoRnDMS.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

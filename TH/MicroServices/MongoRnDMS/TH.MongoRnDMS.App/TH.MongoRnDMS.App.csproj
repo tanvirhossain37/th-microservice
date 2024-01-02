@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TH.PhoneMS.App\TH.PhoneMS.App.csproj" />
+    <Folder Include="Contracts\Infras\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infras\" />
+    <ProjectReference Include="..\TH.MongoRnDMS.Core\TH.MongoRnDMS.Core.csproj" />
   </ItemGroup>
 
 </Project>

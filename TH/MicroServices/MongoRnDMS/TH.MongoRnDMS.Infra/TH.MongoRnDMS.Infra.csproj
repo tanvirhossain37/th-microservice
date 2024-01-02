@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TH.PhoneMS.App\TH.PhoneMS.App.csproj" />
+    <ProjectReference Include="..\TH.MongoRnDMS.App\TH.MongoRnDMS.App.csproj" />
   </ItemGroup>
 
   <ItemGroup>
