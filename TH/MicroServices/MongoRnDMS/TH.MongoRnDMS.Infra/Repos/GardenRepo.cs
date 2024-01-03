@@ -10,5 +10,8 @@ namespace TH.MongoRnDMS.Infra
 {
     public class GardenRepo : Repo<Garden>, IGardenRepo
     {
+        public GardenRepo(MongoRnDDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }

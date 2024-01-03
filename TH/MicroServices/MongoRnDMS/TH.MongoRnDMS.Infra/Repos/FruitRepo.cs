@@ -10,5 +10,8 @@ namespace TH.MongoRnDMS.Infra
 {
     public class FruitRepo : Repo<Fruit>, IFruitRepo
     {
+        public FruitRepo(MongoRnDDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }

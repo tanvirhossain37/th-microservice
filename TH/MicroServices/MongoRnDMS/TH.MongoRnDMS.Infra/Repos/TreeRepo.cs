@@ -10,5 +10,8 @@ namespace TH.MongoRnDMS.Infra
 {
     public class TreeRepo : Repo<Tree>, ITreeRepo
     {
+        public TreeRepo(MongoRnDDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }
