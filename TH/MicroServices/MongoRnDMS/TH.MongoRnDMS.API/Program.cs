@@ -1,3 +1,4 @@
+using MongoDB.Driver;
 using TH.MongoRnDMS.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,10 @@ builder.Services.AddSwaggerGen();
 
 ////////////////////// Tanvir /////////////////////////////
 
-builder.Services.AddScoped<MongoRnDDbContext>(x => new MongoRnDDbContext(
+//builder.Services.AddSingleton<IMongoClient>();
+
+//Singleton
+builder.Services.AddSingleton<MongoRnDDbContext>(new MongoRnDDbContext(
     builder.Configuration.GetConnectionString("MongoRnDConStr"),
     builder.Configuration.GetValue<string>("DatabaseName")));
 

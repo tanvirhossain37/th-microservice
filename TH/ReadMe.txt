@@ -9,3 +9,6 @@ Scaffold-DbContext "Data Source=.\SQLEXPRESS;Initial Catalog=GardenDb;User ID=sa
 
 #SEtting Up A Project
 - Update csproj file: <InvariantGlobalization>true</InvariantGlobalization> --> false
+
+#Mongo
+https://nexocode.com/blog/posts/getting-started-with-mongodb-in.net-core-applications/

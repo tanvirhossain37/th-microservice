@@ -29,7 +29,7 @@ namespace TH.MongoRnDMS.Infra
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            //_dbContext.dis
         }
     }
 }

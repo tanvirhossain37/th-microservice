@@ -20,5 +20,11 @@ namespace TH.MongoRnDMS.Infra
             _client = new MongoClient(connectionString);
             _database = _client.GetDatabase(databaseName);
         }
+
+        public IMongoCollection<T> DbSet<T>() where T : class
+        {
+            string name = typeof(T).Name;
+            return _database.GetCollection<T>(name);
+        }
     }
 }

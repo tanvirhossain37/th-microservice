@@ -9,18 +9,16 @@ namespace TH.MongoRnDMS.App
 {
     public interface IRepo<T> where T : class
     {
+        Task<bool> SaveAsync(T entity);
+        Task<bool> SaveRangeAsync(IEnumerable<T> entities);
 
-        Task<T> SaveAsync(T entity);
-        Task<IEnumerable<T>> SaveRangeAsync(IEnumerable<T> entities);
+        Task<T> UpdateAsync(object id, T entity);
 
-        Task<T> UpdateAsync(T entity);
-        Task<IEnumerable<T>> UpdateRangeAsync(IEnumerable<T> entities);
+        Task<bool> DeleteAsync(object id);
 
-        Task<T> FindByIdAsync(string id);
-        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy);
+        Task<T> FindByIdAsync(object id);
+        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> filter);
 
-        Task<IEnumerable<T>> GetQueryableAsync(Expression<Func<T, bool>> predicate,
-            Expression<Func<T, object>> includePredicate,
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy, int pageIndex, int pageSize);
+        Task<IEnumerable<T>> GetQueryableAsync(Expression<Func<T, bool>> filter, int pageIndex, int pageSize);
     }
 }
