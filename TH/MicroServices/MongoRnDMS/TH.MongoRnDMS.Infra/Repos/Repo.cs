@@ -18,40 +18,35 @@ namespace TH.MongoRnDMS.Infra
             DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<bool> SaveAsync(T entity)
+        public async Task SaveAsync(T entity)
         {
             if (entity is null) throw new ArgumentNullException(nameof(entity));
 
             await DbContext.DbSet<T>().InsertOneAsync(entity);
-            return true;
         }
 
-        public async Task<bool> SaveRangeAsync(IEnumerable<T> entities)
+        public async Task SaveRangeAsync(IEnumerable<T> entities)
         {
             if (entities is null) throw new ArgumentNullException(nameof(entities));
 
             await DbContext.DbSet<T>().InsertManyAsync(entities);
-            return true;
         }
 
-        public async Task<T> UpdateAsync(object id, T entity)
+        public async Task UpdateAsync(object id, T entity)
         {
             if (id is null) throw new ArgumentNullException(nameof(id));
             if (entity is null) throw new ArgumentNullException(nameof(entity));
 
             FilterDefinition<T> filter = Builders<T>.Filter.Eq("_id", id);
-            T val = await DbContext.DbSet<T>().FindOneAndReplaceAsync(filter, entity);
-            return entity;
+            await DbContext.DbSet<T>().FindOneAndReplaceAsync(filter, entity);
         }
 
-        public async Task<bool> DeleteAsync(object id)
+        public async Task DeleteAsync(object id)
         {
             if (id is null) throw new ArgumentNullException(nameof(id));
 
             FilterDefinition<T> filter = Builders<T>.Filter.Eq("_id", id);
-            T val = await DbContext.DbSet<T>().FindOneAndDeleteAsync(filter);
-
-            return val != null;
+            await DbContext.DbSet<T>().FindOneAndDeleteAsync(filter);
         }
 
         public async Task<T> FindByIdAsync(object id)

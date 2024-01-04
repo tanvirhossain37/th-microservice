@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TH.MongoRnDMS.App
 {
-    public interface IUoW : IDisposable
+    public interface IUoW
     {
         IGardenRepo GardenRepo { get; set; }
         ITreeRepo TreeRepo { get; set; }

@@ -9,12 +9,12 @@ namespace TH.MongoRnDMS.App
 {
     public interface IRepo<T> where T : class
     {
-        Task<bool> SaveAsync(T entity);
-        Task<bool> SaveRangeAsync(IEnumerable<T> entities);
+        Task SaveAsync(T entity);
+        Task SaveRangeAsync(IEnumerable<T> entities);
 
-        Task<T> UpdateAsync(object id, T entity);
+        Task UpdateAsync(object id, T entity);
 
-        Task<bool> DeleteAsync(object id);
+        Task DeleteAsync(object id);
 
         Task<T> FindByIdAsync(object id);
         Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> filter);

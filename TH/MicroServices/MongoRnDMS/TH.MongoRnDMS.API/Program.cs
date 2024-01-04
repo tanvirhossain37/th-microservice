@@ -1,4 +1,5 @@
 using MongoDB.Driver;
+using TH.MongoRnDMS.App;
 using TH.MongoRnDMS.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,10 +16,8 @@ builder.Services.AddSwaggerGen();
 
 //builder.Services.AddSingleton<IMongoClient>();
 
-//Singleton
-builder.Services.AddSingleton<MongoRnDDbContext>(new MongoRnDDbContext(
-    builder.Configuration.GetConnectionString("MongoRnDConStr"),
-    builder.Configuration.GetValue<string>("DatabaseName")));
+builder.Services.AddApplicationServices();
+builder.Services.AddInfraServices(builder.Configuration);
 
 ////////////////////// End /////////////////////////////
 

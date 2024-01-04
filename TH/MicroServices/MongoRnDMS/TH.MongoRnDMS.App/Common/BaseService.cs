@@ -8,6 +8,13 @@ namespace TH.MongoRnDMS.App
 {
     public abstract class BaseService : IBaseService
     {
+        protected readonly IUoW UoW;
+
+        protected BaseService(IUoW uoW)
+        {
+            UoW = uoW;
+        }
+
         public abstract void Dispose();
     }
 }

@@ -12,3 +12,12 @@ Scaffold-DbContext "Data Source=.\SQLEXPRESS;Initial Catalog=GardenDb;User ID=sa
 
 #Mongo
 https://nexocode.com/blog/posts/getting-started-with-mongodb-in.net-core-applications/
+
+#How to extend IServiceCollection
+- install package
+	Microsoft.Extensions.DependencyInjection
+	Microsoft.Extensions.Configuration
+	Microsoft.Extensions.Configuration.Binder
+
+# Exception Filter
+https://www.youtube.com/watch?v=Hh5ONzZo0Bo&t=367s
