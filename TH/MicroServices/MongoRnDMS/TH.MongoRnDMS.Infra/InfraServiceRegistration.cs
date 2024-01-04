@@ -22,6 +22,7 @@ namespace TH.MongoRnDMS.Infra
             services.AddScoped<IGardenRepo, GardenRepo>();
             services.AddScoped<ITreeRepo, TreeRepo>();
             services.AddScoped<IFruitRepo, FruitRepo>();
+            services.AddScoped<IUoW, UoW>();
 
             return services;
         }

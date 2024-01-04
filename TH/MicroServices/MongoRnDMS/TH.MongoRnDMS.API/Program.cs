@@ -1,4 +1,5 @@
 using MongoDB.Driver;
+using TH.MongoRnDMS.API;
 using TH.MongoRnDMS.App;
 using TH.MongoRnDMS.Infra;
 
@@ -6,7 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+////////////////////// Tanvir /////////////////////////////
+
+//builder.Services.AddControllers();
+builder.Services.AddControllers(c=>c.Filters.Add(new CustomExceptionFilter("")));
+
+////////////////////// End //////////////////////////////
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -19,7 +26,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfraServices(builder.Configuration);
 
-////////////////////// End /////////////////////////////
+////////////////////// End //////////////////////////////
 
 var app = builder.Build();
 

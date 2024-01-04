@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <InvariantGlobalization>false</InvariantGlobalization><!--tanvir-->
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +14,12 @@
   <ItemGroup>
     <ProjectReference Include="..\TH.MongoRnDMS.App\TH.MongoRnDMS.App.csproj" />
     <ProjectReference Include="..\TH.MongoRnDMS.Infra\TH.MongoRnDMS.Infra.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="TH.Common.Lang">
+      <HintPath>C:\Users\LENOVO\OneDrive\Desktop\Del\Debug\TH.Common.Lang.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

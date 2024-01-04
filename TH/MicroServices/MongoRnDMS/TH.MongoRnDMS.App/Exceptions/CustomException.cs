@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace TH.MongoRnDMS.App
 {
-    public class CustomException
+    public class CustomException : Exception
     {
+        public CustomException() : base()
+        {
+        }
+
+        public CustomException(string message) : base(message)
+        {
+        }
     }
 }
