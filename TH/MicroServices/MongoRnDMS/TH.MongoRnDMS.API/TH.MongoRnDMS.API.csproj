@@ -16,10 +16,4 @@
     <ProjectReference Include="..\TH.MongoRnDMS.Infra\TH.MongoRnDMS.Infra.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="TH.Common.Lang">
-      <HintPath>C:\Users\LENOVO\OneDrive\Desktop\Del\Debug\TH.Common.Lang.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

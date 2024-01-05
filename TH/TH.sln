@@ -62,9 +62,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.MongoRnDMS.Infra", "Micr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonServices", "CommonServices", "{A48EA14D-D17F-46E4-A1A3-283C2BC2509C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.Common.Lang", "CommonServices\TH.Common.Lang\TH.Common.Lang.csproj", "{3D894227-8E3E-46C2-B0F1-8640700ED7A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.Common.Lang", "CommonServices\TH.Common.Lang\TH.Common.Lang.csproj", "{3D894227-8E3E-46C2-B0F1-8640700ED7A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.Common.Lang.Test", "CommonServices\TH.Common.Lang.Test\TH.Common.Lang.Test.csproj", "{1AEC265C-BF39-488A-B2AC-63013A9B186C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.Common.Lang.Test", "CommonServices\TH.Common.Lang.Test\TH.Common.Lang.Test.csproj", "{1AEC265C-BF39-488A-B2AC-63013A9B186C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.MongoRnDMS.Common", "MicroServices\MongoRnDMS\TH.MongoRnDMS.Common\TH.MongoRnDMS.Common.csproj", "{E02FB4CB-56DD-4A9D-9E79-0074D90C8D46}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -160,6 +162,10 @@ Global
 		{1AEC265C-BF39-488A-B2AC-63013A9B186C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AEC265C-BF39-488A-B2AC-63013A9B186C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1AEC265C-BF39-488A-B2AC-63013A9B186C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E02FB4CB-56DD-4A9D-9E79-0074D90C8D46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E02FB4CB-56DD-4A9D-9E79-0074D90C8D46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E02FB4CB-56DD-4A9D-9E79-0074D90C8D46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E02FB4CB-56DD-4A9D-9E79-0074D90C8D46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,6 +198,7 @@ Global
 		{1961D428-60B3-4323-A835-190A9023A742} = {317CBE36-9D0B-400B-9FC3-DCED7CEADEC2}
 		{3D894227-8E3E-46C2-B0F1-8640700ED7A1} = {A48EA14D-D17F-46E4-A1A3-283C2BC2509C}
 		{1AEC265C-BF39-488A-B2AC-63013A9B186C} = {A48EA14D-D17F-46E4-A1A3-283C2BC2509C}
+		{E02FB4CB-56DD-4A9D-9E79-0074D90C8D46} = {317CBE36-9D0B-400B-9FC3-DCED7CEADEC2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {402CE6D6-7D33-423C-9052-FFCF8DE282D8}

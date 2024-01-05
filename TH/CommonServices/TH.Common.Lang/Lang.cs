@@ -22,13 +22,25 @@ namespace TH.Common.Lang
             //_rm = new ResourceManager(".Languages.StringResource", Assembly.GetExecutingAssembly());
 
             //Assembly asm = Assembly.GetExecutingAssembly();
-            Assembly asm = typeof(StringResource).Assembly;
             //string resName = asm.GetName().Name + ".Languages.StringResource";
-            string resName = "Languages.StringResource";
-
-            _resName = resName;
             //_rm  = new System.Resources.ResourceManager(resName, asm);
-            _rm = new System.Resources.ResourceManager(typeof(StringResource));
+
+            //var type=typeof(StringResource);
+            //var assemblyname = new AssemblyName(type.GetType().Assembly.FullName);
+            //_rm = new ResourceManager("Languages.StringResource", type.Assembly);
+
+            // get the assembly
+            var assembly = Assembly.GetExecutingAssembly();
+
+            //Find the location of the assembly
+            var assemblyLocation =
+                Path.GetDirectoryName(Uri.UnescapeDataString(new UriBuilder(assembly.CodeBase).Path));
+
+            //Find the file anme of the assembly
+            var resourceFilename = Path.GetFileNameWithoutExtension(assembly.Location) + ".Languages.StringResource.resources.dll";
+
+            _rm = new System.Resources.ResourceManager(resourceFilename, assembly);
+
         }
 
         public static string? GetString(string name)

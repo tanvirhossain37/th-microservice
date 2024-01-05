@@ -2,15 +2,12 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 using TH.MongoRnDMS.App;
+using TH.MongoRnDMS.Common;
 
 namespace TH.MongoRnDMS.API
 {
-    public class CustomExceptionFilter: ExceptionFilterAttribute
-    {
-        public CustomExceptionFilter(string test)
-        {
-            
-        }
+    public class CustomExceptionFilter : ExceptionFilterAttribute
+    {   
         public override void OnException(ExceptionContext context)
         {
             try
@@ -22,22 +19,22 @@ namespace TH.MongoRnDMS.API
 
                 var exception = context.Exception;
 
-                //switch (exception)
-                //{                    
-                //    case CustomException:
-                //        context.Result = new ObjectResult(new { Message = _lang.Find("error") })
-                //        { StatusCode = (int?)HttpStatusCode.NotAcceptable };
-                //        break;
-                //    default:
-                //        context.Result = new ObjectResult(new { Message = _lang.Find("error_general") })
-                //        { StatusCode = (int?)HttpStatusCode.NotAcceptable };
-                //        break;
-                //}
+                switch (exception)
+                {
+                    case CustomException:
+                        context.Result = new ObjectResult(new { Message = Lang.Find("error_validation") })
+                        { StatusCode = (int?)HttpStatusCode.NotAcceptable };
+                        break;
+                    default:
+                        context.Result = new ObjectResult(new { Message = Lang.Find("error_general") })
+                        { StatusCode = (int?)HttpStatusCode.NotAcceptable };
+                        break;
+                }
             }
             catch (Exception)
             {
-                //context.Result = new ObjectResult(new { Message = _lang.Find("error_general") })
-                //{ StatusCode = (int?)HttpStatusCode.BadRequest };
+                context.Result = new ObjectResult(new { Message = Lang.Find("error_general") })
+                { StatusCode = (int?)HttpStatusCode.BadRequest };
             }
         }
     }

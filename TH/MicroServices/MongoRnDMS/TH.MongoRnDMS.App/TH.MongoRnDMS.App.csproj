@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TH.MongoRnDMS.Common\TH.MongoRnDMS.Common.csproj" />
     <ProjectReference Include="..\TH.MongoRnDMS.Core\TH.MongoRnDMS.Core.csproj" />
   </ItemGroup>
 

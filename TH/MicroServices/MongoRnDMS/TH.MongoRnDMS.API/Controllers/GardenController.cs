@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System.Net;
-using TH.Common.Lang;
 using TH.MongoRnDMS.App;
+using TH.MongoRnDMS.Common;
 
 namespace TH.MongoRnDMS.API.Controllers
 {
@@ -14,18 +15,17 @@ namespace TH.MongoRnDMS.API.Controllers
         [ProducesResponseType(typeof(GardenViewModel), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAsync(GardenFilterModel filter)
         {
-            try
-            {
-                var result1 = Lang.GetString("title");
-                Lang.ChangeLanguage("bn-BD");
-                var result2 = Lang.GetString("title");
+            //var result1 = Lang.GetString("title");
+            //Lang.ChangeLanguage("bn-BD");
+            //var result2 = Lang.GetString("title");
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }            
+            var result1 = Lang.Find("title");
+            Lang.SetCultureCode("bn-BD");
+            var result2 = Lang.Find("title");
+
+            throw new CustomException();
+
+            return Ok();
         }
     }
 }
