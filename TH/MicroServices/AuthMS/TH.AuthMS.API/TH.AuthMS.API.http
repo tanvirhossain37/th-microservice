@@ -1,0 +1,6 @@
+@TH.AuthMS.API_HostAddress = http://localhost:5136
+
+GET {{TH.AuthMS.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

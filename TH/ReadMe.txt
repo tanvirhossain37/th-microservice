@@ -1,3 +1,32 @@
+DotNet Migration
+-------------------------------------
+Set 1. Install Packages to API project
+Microsoft.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.Design
+Microsoft.EntityFrameworkCore.Tools
+
+Step 2. Install Packages to Infra project
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.AspNetCore.Identity.EntityFrameworkCore [For Identity]
+
+Step 3. Add dependency in Program in API project or
+Extend the dependency to the Infra project and add
+services.AddDbContext<AuthDbContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("AuthDB"));
+            });
+            services.AddScoped<AuthDbContext>();
+Step 4. Make the API project Start-Up project as it's the mother project.
+Step 5. Open NuGet Power Manager and MUST select the Infra project.
+Step 6. Update in API project - make it FALSE
+    <InvariantGlobalization>false</InvariantGlobalization>
+Step 6. Run command:
+    add-migration Initial
+Step 7: Run command:
+    update-database
+
+
+
 #Scaffold-DcContext Issue:
 https://www.youtube.com/watch?v=9hQXhUq3dgw
 
