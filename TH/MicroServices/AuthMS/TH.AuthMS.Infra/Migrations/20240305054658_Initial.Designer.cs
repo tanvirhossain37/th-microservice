@@ -12,7 +12,7 @@ using TH.AuthMS.Infra;
 namespace TH.AuthMS.Infra.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20240304182958_Initial")]
+    [Migration("20240305054658_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

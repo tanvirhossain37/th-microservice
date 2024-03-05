@@ -1,60 +1,128 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
-using TH.Common.Lang.Languages;
 
 namespace TH.Common.Lang
 {
     public static class Lang
     {
-        private static ResourceManager _rm;
-        private static string _resName;
+        private static CultureInfo _cultureInfo { get; set; }
+        private static readonly Lazy<Dictionary<string, ReadOnlyDictionary<string, string>>> _container;
+        private static readonly ResourceManager _resourceManager;
 
-        //Static Constructor
         static Lang()
         {
-            //_rm = new ResourceManager("TH.Common.Lang.Languages.StringResource", Assembly.GetExecutingAssembly());
-            //_rm = new ResourceManager(".Languages.StringResource", Assembly.GetExecutingAssembly());
+            Assembly asm = Assembly.GetExecutingAssembly();
+            string resName = asm.GetName().Name + ".Languages.StringResource";
+            _resourceManager = new System.Resources.ResourceManager(resName, asm);
 
-            //Assembly asm = Assembly.GetExecutingAssembly();
-            //string resName = asm.GetName().Name + ".Languages.StringResource";
-            //_rm  = new System.Resources.ResourceManager(resName, asm);
 
-            //var type=typeof(StringResource);
-            //var assemblyname = new AssemblyName(type.GetType().Assembly.FullName);
-            //_rm = new ResourceManager("Languages.StringResource", type.Assembly);
-
-            // get the assembly
-            var assembly = Assembly.GetExecutingAssembly();
-
-            //Find the location of the assembly
-            var assemblyLocation =
-                Path.GetDirectoryName(Uri.UnescapeDataString(new UriBuilder(assembly.CodeBase).Path));
-
-            //Find the file anme of the assembly
-            var resourceFilename = Path.GetFileNameWithoutExtension(assembly.Location) + ".Languages.StringResource.resources.dll";
-
-            _rm = new System.Resources.ResourceManager(resourceFilename, assembly);
-
+            _cultureInfo = new CultureInfo("en-us");
+            _container = new Lazy<Dictionary<string, ReadOnlyDictionary<string, string>>>(GetAll);
         }
 
-        public static string? GetString(string name)
+        public static void SetCultureCode(string cultureCode)
         {
-            return $"{_resName}: {_rm.GetString(name)}";
+            try
+            {
+                cultureCode = string.IsNullOrWhiteSpace(cultureCode) ? "en-us" : cultureCode.Trim();
+
+                if (cultureCode.Equals("en-us", StringComparison.InvariantCultureIgnoreCase) ||
+                    cultureCode.Equals("bn-bd", StringComparison.InvariantCultureIgnoreCase))
+                    _cultureInfo = new CultureInfo(cultureCode);
+                else
+                    _cultureInfo = new CultureInfo("en-us");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public static void ChangeLanguage(string language)
+        public static string Find(string name)
         {
-            var cultureInfo = new CultureInfo(language);
+            try
+            {
+                if (string.IsNullOrWhiteSpace(name)) return string.Empty;
 
-            CultureInfo.CurrentCulture = cultureInfo;
-            CultureInfo.CurrentUICulture = cultureInfo;
+                name = name.Trim().ToLower();
 
+                var code = _cultureInfo;
+
+                foreach (var container in _container.Value)
+                {
+                    if (container.Key.Equals(code.Name))
+                    {
+                        foreach (var dictionary in container.Value)
+                        {
+                            if (dictionary.Key.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+                                return dictionary.Value;
+                        }
+                    }
+                }
+
+                return $"[{name}_{code.Name}]";
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private static Dictionary<string, ReadOnlyDictionary<string, string>> GetAll()
+        {
+            try
+            {
+                var resourceCollection = new Dictionary<string, ReadOnlyDictionary<string, string>>();
+
+                var cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
+
+                // get the assembly
+                var assembly = Assembly.GetExecutingAssembly();
+
+                //Find the location of the assembly
+                var assemblyLocation =
+                    Path.GetDirectoryName(Uri.UnescapeDataString(new UriBuilder(assembly.CodeBase).Path));
+
+                //Find the file anme of the assembly
+                var resourceFilename = Path.GetFileNameWithoutExtension(assembly.Location) + ".resources.dll";
+
+
+                var cultureCodes = cultures.Where(cultureInfo =>
+                    (assemblyLocation != null) &&
+                    (Directory.Exists(Path.Combine(assemblyLocation, cultureInfo.Name)) ||
+                     Directory.Exists(Path.Combine(assemblyLocation, cultureInfo.Name))) &&
+                    (File.Exists(Path.Combine(assemblyLocation, cultureInfo.Name, resourceFilename)) ||
+                     File.Exists(Path.Combine(assemblyLocation, resourceFilename)))
+                ).ToList();
+
+                lock (resourceCollection)
+                {
+                    foreach (var cultureCode in cultureCodes)
+                    {
+                        var dictionaryEntries = _resourceManager
+                            .GetResourceSet(cultureCode, true, true).OfType<DictionaryEntry>()
+                            .ToList();
+
+                        var dictionary = dictionaryEntries.ToDictionary(entry => entry.Key.ToString(),
+                            entry => entry.Value.ToString());
+                        resourceCollection.Add(cultureCode.Name, new ReadOnlyDictionary<string, string>(dictionary));
+                    }
+                }
+
+                return resourceCollection;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

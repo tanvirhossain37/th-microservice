@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TH.AuthMS.App;
 using TH.AuthMS.Core;
+using TH.Common.Lang;
 
 namespace TH.AuthMS.App
 {
@@ -33,11 +34,28 @@ namespace TH.AuthMS.App
             return await _authRepo.SaveAsync(user, entity.Password);
         }
 
+        public async Task<string> SignInAsync(SignUpInputModel entity)
+        {
+            var user = await _authRepo.FindByUserNameAsync(entity.UserName);
+            if (user is null) throw new CustomException(Lang.Find("error_invalidusername"));
+
+            var isCorrectPassword = await _authRepo.CheckPasswordAsync(user, entity.Password);
+            if (!isCorrectPassword) throw new CustomException(Lang.Find("error_wrongpassword"));
+
+            return await _authRepo.GenerateToken(entity);
+        }
+
         private void ApplyValidationBl(SignUpInputModel entity)
         {
-            entity.UserName = string.IsNullOrWhiteSpace(entity.UserName) ? string.Empty : entity.UserName.Trim();
-            entity.Password = string.IsNullOrWhiteSpace(entity.Password) ? string.Empty : entity.Password.Trim();
-            entity.Email = string.IsNullOrWhiteSpace(entity.Email) ? string.Empty : entity.Email.Trim();
+            entity.UserName = string.IsNullOrWhiteSpace(entity.UserName)
+                ? throw new CustomException($"{Lang.Find("error_validation")} : UserName")
+                : entity.UserName.Trim();
+            entity.Password = string.IsNullOrWhiteSpace(entity.Password)
+                ? throw new CustomException($"{Lang.Find("error_validation")} : Password")
+                : entity.Password.Trim();
+            entity.Email = string.IsNullOrWhiteSpace(entity.Email)
+                ? throw new CustomException($"{Lang.Find("error_validation")} : Email")
+                : entity.Email.Trim();
         }
 
         public void Dispose()

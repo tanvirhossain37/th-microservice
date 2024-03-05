@@ -25,5 +25,27 @@ namespace TH.Common.Util
 
             return valid;
         }
+
+        public static string TryClassPropertyNames(object obj)
+        {
+
+            try
+            {
+                if (obj is null) return string.Empty;
+
+                Type t = typeof(object);
+
+                foreach (var prop in t.GetProperties())
+                {
+                    var name=prop.Name;
+                }
+
+                return string.Empty;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
     }
 }

@@ -8,9 +8,17 @@ namespace TH.Common.Lang.Test
         {
             try
             {
-                var result1=Lang.GetString("title");
-                Lang.ChangeLanguage("bn-BD");
-                var result2 = Lang.GetString("title");
+                //var result1=LangObsolete.GetString("title");
+                //LangObsolete.ChangeLanguage("bn-BD");
+                //var result2 = LangObsolete.GetString("title");
+
+                //var result3 = LangObsolete.GetString("title3");
+
+                var result1 = Lang.Find("title");
+                Lang.SetCultureCode("bn-BD");
+                var result2 = Lang.Find("title");
+
+                var result3 = Lang.Find("title3");
             }
             catch (Exception ex)
             {

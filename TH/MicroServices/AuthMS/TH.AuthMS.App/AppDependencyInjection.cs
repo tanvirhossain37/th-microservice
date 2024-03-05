@@ -14,9 +14,9 @@ namespace TH.AuthMS.App
     {
         public static IServiceCollection AddAppDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<User>();
-            services.AddScoped<SignUpInputModel>();
-            services.AddScoped<SignUpViewModel>();
+            //services.AddScoped<User>();
+            //services.AddScoped<SignUpInputModel>();
+            //services.AddScoped<SignUpViewModel>();
             services.AddScoped<IAuthService, AuthService>();
 
             return services;

@@ -117,7 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="error_duplicateusername" xml:space="preserve">
+    <value>ব্যবহারকারী আগে থেকেই আছে।</value>
+  </data>
+  <data name="error_general" xml:space="preserve">
+    <value>দুঃখিত, কিছু ভুল হয়েছে!</value>
+  </data>
+  <data name="error_validation" xml:space="preserve">
+    <value>বৈধতা ব্যর্থ।</value>
+  </data>
   <data name="title" xml:space="preserve">
-    <value>মাইক্রো</value>
+    <value>ওপেন স্পেস</value>
   </data>
 </root>
