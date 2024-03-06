@@ -12,7 +12,7 @@ using TH.AuthMS.Infra;
 namespace TH.AuthMS.Infra.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20240305054658_Initial")]
+    [Migration("20240306154658_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -158,7 +158,7 @@ namespace TH.AuthMS.Infra.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TH.AuthMS.App.UserImpl", b =>
+            modelBuilder.Entity("TH.AuthMS.App.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -243,7 +243,7 @@ namespace TH.AuthMS.Infra.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("TH.AuthMS.App.UserImpl", null)
+                    b.HasOne("TH.AuthMS.App.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -252,7 +252,7 @@ namespace TH.AuthMS.Infra.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("TH.AuthMS.App.UserImpl", null)
+                    b.HasOne("TH.AuthMS.App.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -267,7 +267,7 @@ namespace TH.AuthMS.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TH.AuthMS.App.UserImpl", null)
+                    b.HasOne("TH.AuthMS.App.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -276,7 +276,7 @@ namespace TH.AuthMS.Infra.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("TH.AuthMS.App.UserImpl", null)
+                    b.HasOne("TH.AuthMS.App.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -55,7 +55,8 @@ namespace TH.AuthMS.Infra
                         RequireExpirationTime = true,
                         ValidIssuer = configuration.GetSection("Jwt:Issuer").Value,
                         ValidAudience = configuration.GetSection("Jwt:Audience").Value,
-                    };
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Jwt:Key").Value))
+                };
                 });
 
             services.AddScoped<AuthDbContext>();

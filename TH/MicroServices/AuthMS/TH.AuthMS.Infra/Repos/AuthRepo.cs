@@ -47,27 +47,31 @@ namespace TH.AuthMS.Infra
             return _userManager.CheckPasswordAsync(user, password);
         }
 
-        public async Task<string> GenerateToken(SignUpInputModel entity)
+        public async Task<SignInViewModel> GenerateToken(SignInInputModel entity)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, entity.UserName),
-                new Claim(ClaimTypes.Email, entity.Email),
+                //new Claim(ClaimTypes.Email, entity.Email),
                 new Claim(ClaimTypes.Role, "Owner")
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
 
+            var expires = DateTime.Now.AddMinutes(30);
+
             var securityToken = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: expires,
                 issuer: _config.GetSection("Jwt:Issuer").Value,
                 audience: _config.GetSection("Jwt:Audience").Value,
                 signingCredentials: signingCredentials
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(securityToken);
+            var token = new JwtSecurityTokenHandler().WriteToken(securityToken);
+
+            return new SignInViewModel { Token = token, TokenExpireAt = expires };
         }
 
         public void Dispose()

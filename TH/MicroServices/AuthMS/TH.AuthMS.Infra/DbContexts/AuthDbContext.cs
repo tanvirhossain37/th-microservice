@@ -13,7 +13,10 @@ namespace TH.AuthMS.Infra
     {
         public AuthDbContext(DbContextOptions options) : base(options)
         {
-
         }
+
+        //Tanvir - If abstract class is used, then you have to add the derived class here. But there will be
+        //a Discriminator column
+        //public DbSet<UserImpl> Users { get; set; }
     }
 }

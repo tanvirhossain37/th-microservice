@@ -31,13 +31,13 @@ namespace TH.AuthMS.API
 
         [HttpPost("SignInAsync")]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> SignInAsync([FromBody] SignUpInputModel model)
+        public async Task<IActionResult> SignInAsync([FromBody] SignInInputModel model)
         {
-            var token = await _authService.SignInAsync(model);
-            if (string.IsNullOrWhiteSpace(token))
-                return CustomResult(Lang.Find("error_not_found"), string.Empty, HttpStatusCode.NotFound);
+            var result = await _authService.SignInAsync(model);
+            if (result is null)
+                return CustomResult(Lang.Find("error_not_found"), null, HttpStatusCode.NotFound);
 
-            return CustomResult(Lang.Find("success"), token);
+            return CustomResult(Lang.Find("success"), result);
         }
 
         public override void Dispose()

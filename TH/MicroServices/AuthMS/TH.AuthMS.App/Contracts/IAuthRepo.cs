@@ -11,6 +11,6 @@ namespace TH.AuthMS.App
         Task<bool> SaveAsync(User entity, string password);
         Task<User> FindByUserNameAsync(string userName);
         Task<bool> CheckPasswordAsync(User user, string password);
-        Task<string> GenerateToken(SignUpInputModel entity);
+        Task<SignInViewModel> GenerateToken(SignInInputModel entity);
     }
 }

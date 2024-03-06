@@ -34,7 +34,7 @@ namespace TH.AuthMS.App
             return await _authRepo.SaveAsync(user, entity.Password);
         }
 
-        public async Task<string> SignInAsync(SignUpInputModel entity)
+        public async Task<SignInViewModel> SignInAsync(SignInInputModel entity)
         {
             var user = await _authRepo.FindByUserNameAsync(entity.UserName);
             if (user is null) throw new CustomException(Lang.Find("error_invalidusername"));
