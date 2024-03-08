@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -24,9 +25,9 @@ namespace TH.AuthMS.Infra
             _config = config;
         }
 
-        public async Task<bool> SaveAsync(User entity, string password)
+        public async Task<bool> SaveAsync(User identityUser, string password)
         {
-            var result = await _userManager.CreateAsync(entity, password);
+            var result = await _userManager.CreateAsync(identityUser, password);
 
             if (!result.Succeeded)
             {
@@ -35,6 +36,11 @@ namespace TH.AuthMS.Infra
             }
 
             return result.Succeeded;
+        }
+
+        public async Task<IdentityResult> UpdateAsync(User identityUser)
+        {
+            return await _userManager.UpdateAsync(identityUser);
         }
 
         public async Task<User> FindByUserNameAsync(string userName)
@@ -47,19 +53,20 @@ namespace TH.AuthMS.Infra
             return _userManager.CheckPasswordAsync(user, password);
         }
 
-        public async Task<SignInViewModel> GenerateToken(SignInInputModel entity)
+        public SignInViewModel GenerateToken(string userName)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, entity.UserName),
-                //new Claim(ClaimTypes.Email, entity.Email),
+                new Claim(ClaimTypes.Name, userName),
+                //new Claim(ClaimTypes.Email, identityUser.Email),
                 new Claim(ClaimTypes.Role, "Owner")
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
 
-            var expires = DateTime.Now.AddMinutes(30);
+            //var expires = DateTime.Now.AddMinutes(Convert.ToDouble(_config.GetSection("Jwt:TokenExpiryTime").Value));
+            var expires = DateTime.Now.AddSeconds(10);
 
             var securityToken = new JwtSecurityToken(
                 claims: claims,
@@ -69,10 +76,40 @@ namespace TH.AuthMS.Infra
                 signingCredentials: signingCredentials
             );
 
-            var token = new JwtSecurityTokenHandler().WriteToken(securityToken);
+            var token= new JwtSecurityTokenHandler().WriteToken(securityToken);
 
-            return new SignInViewModel { Token = token, TokenExpireAt = expires };
+            return new SignInViewModel { Token = token, TokenExpiryTime = expires};
         }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+            }
+
+            return Convert.ToBase64String(randomNumber);
+        }
+
+        public ClaimsPrincipal GetTokenPrincipal(string token)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
+
+            var validation = new TokenValidationParameters
+            {
+                IssuerSigningKey = securityKey,
+                ValidateLifetime = false,
+                ValidateActor = false,
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+
+            return new JwtSecurityTokenHandler().ValidateToken(token, validation, out _);
+        }
+
+        
 
         public void Dispose()
         {

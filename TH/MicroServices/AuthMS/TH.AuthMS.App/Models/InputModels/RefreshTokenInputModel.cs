@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace TH.AuthMS.App
 {
-    public class SignInViewModel
+    public class RefreshTokenInputModel
     {
         public string Token { get; set; }
-        public DateTime TokenExpiryTime { get; set; }
         public string RefreshToken { get; set; }
     }
 }

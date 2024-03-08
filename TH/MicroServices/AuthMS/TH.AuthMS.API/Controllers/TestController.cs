@@ -13,7 +13,7 @@ namespace TH.AuthMS.API.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SignInAsync()
         {
-            return CustomResult("You got me!");
+            return CustomResult("You got me!", "");
         }
 
         public override void Dispose()

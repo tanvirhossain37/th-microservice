@@ -23,17 +23,28 @@ namespace TH.AuthMS.API
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SignUpAsync([FromBody] SignUpInputModel model)
         {
-            var result = await _authService.SignUpAsync(model);
-            if (!result) return CustomResult(Lang.Find("error_not_found"), result, HttpStatusCode.NotFound);
+            var viewModel = await _authService.SignUpAsync(model);
+            if (!viewModel) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
 
-            return CustomResult(Lang.Find("success"), result, HttpStatusCode.OK);
+            return CustomResult(Lang.Find("success"), viewModel);
         }
 
         [HttpPost("SignInAsync")]
-        [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(SignInViewModel), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SignInAsync([FromBody] SignInInputModel model)
         {
-            var result = await _authService.SignInAsync(model);
+            var viewModel = await _authService.SignInAsync(model);
+            if (viewModel is null)
+                return CustomResult(Lang.Find("error_not_found"), null, HttpStatusCode.NotFound);
+
+            return CustomResult(Lang.Find("success"), viewModel);
+        }
+
+        [HttpPost("RefreshTokenAsync")]
+        [ProducesResponseType(typeof(SignInViewModel), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenInputModel model)
+        {
+            var result = await _authService.RefreshToken(model);
             if (result is null)
                 return CustomResult(Lang.Find("error_not_found"), null, HttpStatusCode.NotFound);
 

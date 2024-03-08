@@ -11,5 +11,7 @@ namespace TH.AuthMS.Core
         int UserTypeId { get; set; }
         DateTime CreatedDate { get; set; }
         DateTime? ModifiedDate { get; set; }
+        string? RefreshToken { get; set; }
+        DateTime? RefreshTokenExpiryTime { get; set; }
     }
 }

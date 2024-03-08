@@ -6,10 +6,5 @@ using System.Threading.Tasks;
 
 namespace TH.AuthMS.App
 {
-    public class CustomException : Exception
-    {
-        public CustomException(string message) : base(message)
-        {
-        }
-    }
+    public class CustomException(string message) : Exception(message);
 }
