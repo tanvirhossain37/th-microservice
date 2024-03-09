@@ -76,9 +76,9 @@ namespace TH.AuthMS.Infra
                 signingCredentials: signingCredentials
             );
 
-            var token= new JwtSecurityTokenHandler().WriteToken(securityToken);
+            var token = new JwtSecurityTokenHandler().WriteToken(securityToken);
 
-            return new SignInViewModel { Token = token, TokenExpiryTime = expires};
+            return new SignInViewModel { Token = token, TokenExpiryTime = expires };
         }
 
         public string GenerateRefreshToken()
@@ -108,8 +108,6 @@ namespace TH.AuthMS.Infra
 
             return new JwtSecurityTokenHandler().ValidateToken(token, validation, out _);
         }
-
-        
 
         public void Dispose()
         {

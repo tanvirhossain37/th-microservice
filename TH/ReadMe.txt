@@ -1,5 +1,5 @@
 DotNet Migration
--------------------------------------
+-------------------------------------------------------
 Set 1. Install Packages to API project
 Microsoft.EntityFrameworkCore
 Microsoft.EntityFrameworkCore.Design
@@ -50,3 +50,9 @@ https://nexocode.com/blog/posts/getting-started-with-mongodb-in.net-core-applica
 
 # Exception Filter
 https://www.youtube.com/watch?v=Hh5ONzZo0Bo&t=367s
+
+New Project Setup
+------------------------------------------------
+- Make it false --> <InvariantGlobalization>false</InvariantGlobalization>
+- Install "CoreApiResponse" in API project
+- Inherit Controller from "BaseController" of CoreApiResponse. Then u can use CustomResult

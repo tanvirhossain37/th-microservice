@@ -50,7 +50,7 @@ namespace TH.AuthMS.App
 
             //update db
             identityUser.RefreshToken = signInViewModel.RefreshToken;
-            identityUser.RefreshTokenExpiryTime = setRefreshTokenExpiryTime();
+            identityUser.RefreshTokenExpiryTime = SetRefreshTokenExpiryTime();
             identityUser.ModifiedDate = DateTime.Now;
 
             var result = await _authRepo.UpdateAsync(identityUser);
@@ -63,15 +63,9 @@ namespace TH.AuthMS.App
             return signInViewModel;
         }
 
-        private DateTime setRefreshTokenExpiryTime()
-        {
-            //return DateTime.Now.AddDays(Convert.ToDouble(_config.GetSection("Jwt:RefreshTokenExpiryTime").Value));
-            return DateTime.Now.AddMinutes(1);
-        }
-
         public async Task<SignInViewModel> RefreshToken(RefreshTokenInputModel model)
         {
-            var principal= _authRepo.GetTokenPrincipal(model.Token);
+            var principal = _authRepo.GetTokenPrincipal(model.Token);
             if (principal?.Identity?.Name is null)
                 throw new UnauthorizedAccessException(Lang.Find("error_unauthorized_access"));
 
@@ -85,7 +79,7 @@ namespace TH.AuthMS.App
 
             //update db
             identityUser.RefreshToken = signInViewModel.RefreshToken;
-            identityUser.RefreshTokenExpiryTime = setRefreshTokenExpiryTime();
+            identityUser.RefreshTokenExpiryTime = SetRefreshTokenExpiryTime();
             identityUser.ModifiedDate = DateTime.Now;
 
             var result = await _authRepo.UpdateAsync(identityUser);
@@ -97,6 +91,13 @@ namespace TH.AuthMS.App
 
             return signInViewModel;
         }
+
+        public void Dispose()
+        {
+            _authRepo?.Dispose();
+        }
+
+        #region Business Logic
 
         private void ApplyValidationBl(SignUpInputModel entity)
         {
@@ -111,9 +112,12 @@ namespace TH.AuthMS.App
                 : entity.Email.Trim();
         }
 
-        public void Dispose()
+        private DateTime SetRefreshTokenExpiryTime()
         {
-            _authRepo?.Dispose();
+            return DateTime.Now.AddDays(Convert.ToDouble(_config.GetSection("Jwt:RefreshTokenExpiryTime").Value));
+            //return DateTime.Now.AddMinutes(1);
         }
+
+        #endregion
     }
 }

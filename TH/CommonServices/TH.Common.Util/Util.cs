@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace TH.Common.Util
 {
@@ -26,6 +28,19 @@ namespace TH.Common.Util
             return valid;
         }
 
+        public static bool TryIsValidEmail(string email)
+        {
+            try
+            {
+                email = string.IsNullOrWhiteSpace(email) ? throw new Exception() : email.Trim();
+                return string.Equals(new MailAddress(email).Address, email, StringComparison.InvariantCultureIgnoreCase);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public static string TryClassPropertyNames(object obj)
         {
 
@@ -37,7 +52,7 @@ namespace TH.Common.Util
 
                 foreach (var prop in t.GetProperties())
                 {
-                    var name=prop.Name;
+                    var name = prop.Name;
                 }
 
                 return string.Empty;
