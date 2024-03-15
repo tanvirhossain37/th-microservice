@@ -9,6 +9,7 @@
     <Title>Common Lang</Title>
     <Version>1.0.4</Version>
     <Authors>Tanvir Hossain</Authors>
+    <Copyright>Tanvir Hossain</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

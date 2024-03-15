@@ -56,3 +56,9 @@ New Project Setup
 - Make it false --> <InvariantGlobalization>false</InvariantGlobalization>
 - Install "CoreApiResponse" in API project
 - Inherit Controller from "BaseController" of CoreApiResponse. Then u can use CustomResult
+
+#################################### RabbitMQ ####################################
+Install:
+MassTransit
+MassTransit.RabbitMQ
+MassTransit.AspNetCore

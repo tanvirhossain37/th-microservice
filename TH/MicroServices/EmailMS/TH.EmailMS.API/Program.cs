@@ -1,6 +1,9 @@
 using System.Net.Mail;
+using System.Reflection;
+using MassTransit;
 using TH.EmailMS.API;
 using TH.EmailMS.API.Infra;
+using TH.EventBus.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,24 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IEmailRepo, EmailRepo>();
 builder.Services.AddTransient<SmtpClient>();
+
+//RabbitMQ Config
+builder.Services.AddMassTransit(config =>
+{
+    config.AddConsumer<SignInConsumer>();
+    config.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host(builder.Configuration.GetSection("EventBus:Host").Value);
+        cfg.ReceiveEndpoint(EventBus.SignInQueue, c =>
+        {
+            c.ConfigureConsumer<SignInConsumer>(ctx);
+        });
+    });
+});
+
+//AutoMapper
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
 
 var app = builder.Build();
 

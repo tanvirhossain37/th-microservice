@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MassTransit;
 using TH.AuthMS.App;
 using TH.AuthMS.Core;
 using TH.Common.Lang;
+using TH.EventBus.Messages;
 
 namespace TH.AuthMS.App
 {
@@ -15,11 +17,13 @@ namespace TH.AuthMS.App
     {
         private readonly IAuthRepo _authRepo;
         private readonly IConfiguration _config;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public AuthService(IAuthRepo authRepo, IConfiguration config)
+        public AuthService(IAuthRepo authRepo, IConfiguration config, IPublishEndpoint publishEndpoint)
         {
-            _authRepo = authRepo;
-            _config = config;
+            _authRepo = authRepo ?? throw new ArgumentNullException(nameof(authRepo));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
         }
 
         public async Task<bool> SignUpAsync(SignUpInputModel entity)
@@ -59,6 +63,14 @@ namespace TH.AuthMS.App
                 var code = result?.Errors?.FirstOrDefault()?.Code;
                 throw new CustomException(Lang.Find($"error_{code}"));
             }
+
+            //publish to eventbus
+            var signInEvent = new SignInEvent();
+            signInEvent.To.Add(identityUser.Email);
+            signInEvent.Subject = "Security Alter";
+            signInEvent.Content = $"{identityUser.UserName}, you got signed in at {DateTime.Now}";
+
+            await _publishEndpoint.Publish(signInEvent);
 
             return signInViewModel;
         }
@@ -114,6 +126,7 @@ namespace TH.AuthMS.App
 
         private DateTime SetRefreshTokenExpiryTime()
         {
+            //update here to test
             return DateTime.Now.AddDays(Convert.ToDouble(_config.GetSection("Jwt:RefreshTokenExpiryTime").Value));
             //return DateTime.Now.AddMinutes(1);
         }

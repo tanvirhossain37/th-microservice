@@ -65,8 +65,9 @@ namespace TH.AuthMS.Infra
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
 
-            //var expires = DateTime.Now.AddMinutes(Convert.ToDouble(_config.GetSection("Jwt:TokenExpiryTime").Value));
-            var expires = DateTime.Now.AddSeconds(10);
+            //update here to test
+            var expires = DateTime.Now.AddMinutes(Convert.ToDouble(_config.GetSection("Jwt:TokenExpiryTime").Value));
+            //var expires = DateTime.Now.AddSeconds(10);
 
             var securityToken = new JwtSecurityToken(
                 claims: claims,
