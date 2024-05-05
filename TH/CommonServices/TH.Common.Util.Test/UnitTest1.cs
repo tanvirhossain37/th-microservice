@@ -48,6 +48,22 @@ namespace TH.Common.Util.Test
                 ;
             }
         }
+
+        [TestMethod]
+        public void TestMethod3()
+        {
+            try
+            {
+                var email1 = Util.TryIsValidDate(DateTime.Now);
+                var email2 = Util.TryIsValidDate(new DateTime());
+                //var email3 = Util.TryIsValidDate(null);
+
+            }
+            catch (Exception e)
+            {
+                ;
+            }
+        }
     }
 
     public class Employee

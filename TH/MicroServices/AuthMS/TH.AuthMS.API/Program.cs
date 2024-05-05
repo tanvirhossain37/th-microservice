@@ -16,6 +16,8 @@ builder.Services.AddSwaggerGen();
 //Tanvir
 builder.Services.AddAppDependencyInjection(builder.Configuration);
 builder.Services.AddInfraDependencyInjection(builder.Configuration);
+builder.Services.AddJwtTokenBasedAuthentication(builder.Configuration);
+//builder.Services.AddCookieBasedAuthentication(builder.Configuration);
 
 
 var app = builder.Build();

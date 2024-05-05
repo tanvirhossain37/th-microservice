@@ -13,6 +13,7 @@ namespace TH.AuthMS.API.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SignInAsync()
         {
+            var userIdentity = User.Identity;
             return CustomResult("You got me!", "");
         }
 

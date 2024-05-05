@@ -1,12 +1,42 @@
-﻿using System.Globalization;
+﻿using Microsoft.VisualBasic;
+using System.Globalization;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TH.Common.Util
 {
     public static class Util
     {
-        public static bool TryIsDate(string date)
+        public static bool TryIsValidDate(DateTime dateTime)
+        {
+            try
+            {
+                return dateTime.Year > 1900;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public static bool TryIsDate(string dt)
+        {
+            // Define the expected date format
+            string dateFormat = "yyyy-MM-dd";
+
+            // Try to parse the input string into a DateTime
+            if (DateTime.TryParseExact(dt, dateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool TryIsDateOri(string date)
         {
             bool valid = true;
             //check in 99/99/9999 format

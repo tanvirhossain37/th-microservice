@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using TH.AuthMS.App;
@@ -18,10 +19,7 @@ namespace TH.AuthMS.Infra
         public static IServiceCollection AddInfraDependencyInjection(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddDbContext<AuthDbContext>(options =>
-            {
-                options.UseSqlServer(configuration.GetConnectionString("AuthDB"));
-            });
+            services.AddDbContext<AuthDbContext>(options => { options.UseSqlServer(configuration.GetConnectionString("AuthDB")); });
             services.AddIdentity<User, IdentityRole>(options =>
                 {
                     //options.Password.RequireNonAlphanumeric = true;
@@ -39,6 +37,15 @@ namespace TH.AuthMS.Infra
                 .AddEntityFrameworkStores<AuthDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddScoped<AuthDbContext>();
+            services.AddScoped<IAuthRepo, AuthRepo>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddJwtTokenBasedAuthentication(this IServiceCollection services,
+            IConfiguration configuration)
+        {
             //Authentication
             services.AddAuthentication(options =>
                 {
@@ -57,11 +64,8 @@ namespace TH.AuthMS.Infra
                         ValidAudience = configuration.GetSection("Jwt:Audience").Value,
                         ClockSkew = TimeSpan.Zero,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Jwt:Key").Value))
-                };
+                    };
                 });
-
-            services.AddScoped<AuthDbContext>();
-            services.AddScoped<IAuthRepo, AuthRepo>();
 
             return services;
         }

@@ -64,13 +64,13 @@ namespace TH.AuthMS.App
                 throw new CustomException(Lang.Find($"error_{code}"));
             }
 
-            //publish to eventbus
-            var signInEvent = new SignInEvent();
-            signInEvent.To.Add(identityUser.Email);
-            signInEvent.Subject = "Security Alter";
-            signInEvent.Content = $"{identityUser.UserName}, you got signed in at {DateTime.Now}";
+            ////publish to eventbus
+            //var signInEvent = new SignInEvent();
+            //signInEvent.To.Add(identityUser.Email);
+            //signInEvent.Subject = "Security Alter";
+            //signInEvent.Content = $"{identityUser.UserName}, you got signed in at {DateTime.Now}";
 
-            await _publishEndpoint.Publish(signInEvent);
+            //await _publishEndpoint.Publish(signInEvent);
 
             return signInViewModel;
         }

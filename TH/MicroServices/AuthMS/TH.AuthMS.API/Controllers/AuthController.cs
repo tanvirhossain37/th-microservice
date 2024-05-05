@@ -54,6 +54,17 @@ namespace TH.AuthMS.API
             return CustomResult(Lang.Find("success"), result);
         }
 
+        [Authorize]
+        [HttpPost("TestAsync")]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> TestAsync()
+        {
+            var claimsIdentities = User.Identities;
+            var userIdentity = User.Identity;
+
+            return CustomResult(Lang.Find("success"));
+        }
+
         public override void Dispose()
         {
             _authService?.Dispose();
