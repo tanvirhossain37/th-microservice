@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TH.AuthMS.App;
@@ -7,6 +8,7 @@ using TH.Common.Lang;
 namespace TH.AuthMS.API.Controllers
 {
     //public class TestController : ControllerBase
+    [Authorize]
     public class TestController : CustomBaseController
     {
         [HttpGet("GetAsync")]

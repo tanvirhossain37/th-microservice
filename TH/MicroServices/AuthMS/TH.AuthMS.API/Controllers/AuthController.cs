@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using MassTransit;
+using Microsoft.Extensions.Options;
 using TH.AuthMS.App;
+using TH.AuthMS.Core;
 using TH.Common.Lang;
 
 namespace TH.AuthMS.API
@@ -15,11 +17,13 @@ namespace TH.AuthMS.API
     {
         private readonly IAuthService _authService;
         private readonly IPublishEndpoint _publishEndpoint;
+        private readonly JwtConfiguration _configuration;
 
-        public AuthController(IAuthService authService, IPublishEndpoint publishEndpoint)
+        public AuthController(IAuthService authService, IPublishEndpoint publishEndpoint, IOptions<JwtConfiguration> options)
         {
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
             _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
+            _configuration = options.Value;
         }
 
         [HttpPost("SignUpAsync")]

@@ -17,11 +17,13 @@ namespace TH.AuthMS.Infra
     public class AuthRepo : IAuthRepo
     {
         private readonly UserManager<User> _userManager;
+        //private readonly RoleManager<User>  _roleManager;
         private readonly IConfiguration _config;
 
         public AuthRepo(UserManager<User> userManager, IConfiguration config)
         {
             _userManager = userManager;
+            
             _config = config;
         }
 

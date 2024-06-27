@@ -19,6 +19,19 @@ builder.Services.AddInfraDependencyInjection(builder.Configuration);
 builder.Services.AddJwtTokenBasedAuthentication(builder.Configuration);
 //builder.Services.AddCookieBasedAuthentication(builder.Configuration);
 
+const string CorsPolicy = "_corsPolicy";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: CorsPolicy,
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
+
 
 var app = builder.Build();
 
@@ -33,7 +46,7 @@ app.UseHttpsRedirection();
 
 //Tanvir
 app.UseAuthentication();// MUST be before app.UseAuthorization();
-
+app.UseCors(CorsPolicy);//tanvir
 app.UseAuthorization();
 
 app.MapControllers();

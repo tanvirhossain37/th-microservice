@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using TH.AuthMS.App;
+using TH.AuthMS.Core;
 
 namespace TH.AuthMS.Infra
 {
@@ -34,11 +35,16 @@ namespace TH.AuthMS.Infra
                     options.Password.RequireUppercase = false;
                     options.Password.RequiredLength = 1;
                 })
+                //.AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AuthDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddScoped<AuthDbContext>();
             services.AddScoped<IAuthRepo, AuthRepo>();
+            //services.AddScoped<UserManager<User>>();
+            //services.AddScoped<RoleManager<User>>();
+
+            services.AddIdentityCore<User>();
 
             return services;
         }
@@ -66,6 +72,10 @@ namespace TH.AuthMS.Infra
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Jwt:Key").Value))
                     };
                 });
+
+            services.AddScoped<JwtConfiguration>();
+
+            services.Configure<JwtConfiguration>(configuration.GetSection("Jwt"));
 
             return services;
         }
