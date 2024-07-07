@@ -6,10 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MassTransit;
+using MongoDB.Driver.Core.Operations;
+using TH.AddressMS.App;
 using TH.AuthMS.App;
 using TH.AuthMS.Core;
 using TH.Common.Lang;
 using TH.EventBus.Messages;
+using TH.UserSvc.App;
 
 namespace TH.AuthMS.App
 {
@@ -32,13 +35,30 @@ namespace TH.AuthMS.App
 
             var user = new User
             {
+                Name = entity.Name,
                 UserName = entity.UserName,
                 Email = entity.Email,
                 UserTypeId = (int)UserTypeEnum.Owner,
                 CreatedDate = DateTime.Now,
+                ActivationCode = Guid.NewGuid().ToString(),
+                CodeExpiryTime = DateTime.Now.AddDays(Convert.ToDouble(_config.GetSection("ActivationCodeExpiryTime").Value))//1 day
             };
 
-            return await _authRepo.SaveAsync(user, entity.Password);
+            var result= await _authRepo.SaveAsync(user, entity.Password);
+
+            //send email
+            //publish to eventbus
+            var encodedCode = System.Web.HttpUtility.UrlEncode(user.ActivationCode);
+            var verifyUrl = $"{_config.GetSection("GlobalConfigs:BaseUrl").Value}/verify?code={encodedCode}";
+
+            var emailEvent = new EmailEvent();
+            emailEvent.To.Add(user.Email);
+            emailEvent.Subject = "Activate account please!";
+            emailEvent.Content = string.Format(Lang.Find("email_new_user"), user.Name, verifyUrl);
+
+            await _publishEndpoint.Publish(emailEvent);
+
+            return result;
         }
 
         public async Task<SignInViewModel> SignInAsync(SignInInputModel entity)
@@ -49,8 +69,18 @@ namespace TH.AuthMS.App
             var isCorrectPassword = await _authRepo.CheckPasswordAsync(identityUser, entity.Password);
             if (!isCorrectPassword) throw new UnauthorizedAccessException(Lang.Find("error_wrongpassword"));
 
+            //email confirmed?
+            if(!identityUser.EmailConfirmed) throw new UnauthorizedAccessException(Lang.Find("error_emailnotconfirmed"));
+
             var signInViewModel = _authRepo.GenerateToken(entity.UserName);
             signInViewModel.RefreshToken = _authRepo.GenerateRefreshToken();
+            signInViewModel.userName = identityUser.UserName;
+            signInViewModel.Name = identityUser.Name;
+            signInViewModel.Email = identityUser.Email;
+            signInViewModel.EmailConfirmed = identityUser.EmailConfirmed;
+            signInViewModel.UserTypeId = identityUser.UserTypeId;
+            signInViewModel.CreatedDate = identityUser.CreatedDate;
+            signInViewModel.ModifiedDate = identityUser.ModifiedDate;
 
             //update db
             identityUser.RefreshToken = signInViewModel.RefreshToken;
@@ -65,12 +95,12 @@ namespace TH.AuthMS.App
             }
 
             //publish to eventbus
-            var signInEvent = new SignInEvent();
-            signInEvent.To.Add(identityUser.Email);
-            signInEvent.Subject = "Security Alter";
-            signInEvent.Content = $"{identityUser.UserName}, you got signed in at {DateTime.Now}";
+            var emailEvent = new EmailEvent();
+            emailEvent.To.Add(identityUser.Email);
+            emailEvent.Subject = "Security Alter";
+            emailEvent.Content = $"{identityUser.UserName}, you got signed in at {DateTime.Now}";
 
-            await _publishEndpoint.Publish(signInEvent);
+            await _publishEndpoint.Publish(emailEvent);
 
             return signInViewModel;
         }
@@ -102,6 +132,26 @@ namespace TH.AuthMS.App
             }
 
             return signInViewModel;
+        }
+
+        public async Task<bool> ActivateAccountAsync(ActgivationCodeInputModel model)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+
+            var identityUser = await _authRepo.ActivateAccountAsync(model);
+            if (identityUser is null) throw new CustomException(Lang.Find("error_not_found"));
+
+            if (identityUser.EmailConfirmed)
+            {
+                var emailEvent = new EmailEvent();
+                emailEvent.To.Add(identityUser.Email);
+                emailEvent.Subject = "Account activation confirmed!";
+                emailEvent.Content = $"Welcome {identityUser.Name} on the space!";
+
+                await _publishEndpoint.Publish(emailEvent);
+            }
+
+            return identityUser.EmailConfirmed;
         }
 
         public void Dispose()

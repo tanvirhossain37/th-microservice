@@ -22,13 +22,13 @@ builder.Services.AddTransient<SmtpClient>();
 //RabbitMQ Config
 builder.Services.AddMassTransit(config =>
 {
-    config.AddConsumer<SignInConsumer>();
+    config.AddConsumer<EmailEventConsumer>();
     config.UsingRabbitMq((ctx, cfg) =>
     {
         cfg.Host(builder.Configuration.GetSection("EventBus:Host").Value);
-        cfg.ReceiveEndpoint(EventBus.SignInQueue, c =>
+        cfg.ReceiveEndpoint(EventBus.EmailQueue, c =>
         {
-            c.ConfigureConsumer<SignInConsumer>(ctx);
+            c.ConfigureConsumer<EmailEventConsumer>(ctx);
         });
     });
 });

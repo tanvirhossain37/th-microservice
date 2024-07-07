@@ -7,6 +7,6 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<SignInEvent, EmailInputModel>().ReverseMap();
+        CreateMap<EmailEvent, EmailInputModel>().ReverseMap();
     }
 }

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CommonServices\TH.Common.Model\TH.Common.Model.csproj" />
+    <ProjectReference Include="..\..\MongoRnDMS\TH.MongoRnDMS.App\TH.MongoRnDMS.App.csproj" />
+    <ProjectReference Include="..\TH.Company.Core\TH.Company.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\" />
+  </ItemGroup>
+
+</Project>

@@ -3,5 +3,5 @@
 public static class EventBus
 {
     //add all queues here
-    public const string SignInQueue = "signin-queue";
+    public const string EmailQueue = "email-queue";
 }

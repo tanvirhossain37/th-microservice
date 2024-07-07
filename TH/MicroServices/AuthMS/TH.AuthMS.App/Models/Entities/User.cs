@@ -10,10 +10,13 @@ namespace TH.AuthMS.App
 {
     public class User : IdentityUser, IEntity
     {
+        public string Name { get; set; }
         public int UserTypeId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
+        public string ActivationCode { get; set; }
+        public DateTime CodeExpiryTime { get; set; }
     }
 }

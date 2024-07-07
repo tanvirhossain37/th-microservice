@@ -9,8 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using TH.AddressMS.App;
 using TH.AuthMS.App;
 using TH.Common.Lang;
+using TH.Common.Util;
 
 namespace TH.AuthMS.Infra
 {
@@ -57,11 +59,16 @@ namespace TH.AuthMS.Infra
 
         public SignInViewModel GenerateToken(string userName)
         {
+            //call permissions
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, userName),
                 //new Claim(ClaimTypes.Email, identityUser.Email),
-                new Claim(ClaimTypes.Role, "Owner")
+                new Claim(ClaimTypes.Role, "Owner"),
+                new Claim("Test", 1.ToString()),
+                //new Claim("Test", 2),
+                new Claim("Test", 3.ToString()),
+                new Claim("Test",4.ToString()),
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
@@ -110,6 +117,26 @@ namespace TH.AuthMS.Infra
             };
 
             return new JwtSecurityTokenHandler().ValidateToken(token, validation, out _);
+        }
+
+        public async Task<User> ActivateAccountAsync(ActgivationCodeInputModel model)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+
+            var identityUser = await _userManager.FindByNameAsync(model.UserName);
+            if (identityUser is null) throw new CustomException(Lang.Find("error_not_found"));
+
+            if (identityUser.ActivationCode.Equals(model.Code, StringComparison.InvariantCulture))
+            {
+                //time? util?
+                if (identityUser.CodeExpiryTime >= DateTime.Now)
+                {
+                    identityUser.EmailConfirmed = true;
+                    await _userManager.UpdateAsync(identityUser);
+                }
+            }
+
+            return identityUser;
         }
 
         public void Dispose()

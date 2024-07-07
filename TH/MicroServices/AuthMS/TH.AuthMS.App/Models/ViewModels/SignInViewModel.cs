@@ -8,8 +8,15 @@ namespace TH.AuthMS.App
 {
     public class SignInViewModel
     {
+        public string userName { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public int UserTypeId { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
         public string Token { get; set; }
         public DateTime TokenExpiryTime { get; set; }
         public string RefreshToken { get; set; }
+        public bool EmailConfirmed { get; set; }
     }
 }

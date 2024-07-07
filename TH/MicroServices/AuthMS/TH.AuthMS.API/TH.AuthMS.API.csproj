@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Lang\TH.Common.Lang.csproj" />
+    <ProjectReference Include="..\..\UserSvc\TH.UserSvc.App\TH.UserSvc.App.csproj" />
     <ProjectReference Include="..\TH.AuthMS.App\TH.AuthMS.App.csproj" />
     <ProjectReference Include="..\TH.AuthMS.Core\TH.AuthMS.Core.csproj" />
     <ProjectReference Include="..\TH.AuthMS.Infra\TH.AuthMS.Infra.csproj" />

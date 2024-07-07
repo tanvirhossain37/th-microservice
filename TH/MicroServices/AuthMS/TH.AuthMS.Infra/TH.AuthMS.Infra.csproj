@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20240308101838_Initial.cs" />
+    <Compile Remove="Migrations\20240308101838_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20240702084357_Update_User_2_Jul_2024.cs" />
+    <Compile Remove="Migrations\20240702084357_Update_User_2_Jul_2024.Designer.cs" />
+    <Compile Remove="Migrations\20240702114552_SignUp_2_jul_2024.cs" />
+    <Compile Remove="Migrations\20240702114552_SignUp_2_jul_2024.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />

@@ -15,10 +15,13 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="CoreApiResponse" Version="1.0.1" />
-    <PackageReference Include="TH.EventBus.Messages" Version="1.0.1" />
+    <PackageReference Include="MassTransit" Version="8.1.3" />
+    <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.1.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\TH.EventBus.Messages\TH.EventBus.Messages.csproj" />
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Lang\TH.Common.Lang.csproj" />
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Util\TH.Common.Util.csproj" />
   </ItemGroup>

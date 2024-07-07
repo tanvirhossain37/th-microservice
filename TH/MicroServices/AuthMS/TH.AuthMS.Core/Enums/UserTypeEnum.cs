@@ -10,6 +10,6 @@ namespace TH.AuthMS.Core
     {
         We = 1,
         Owner = 2,
-        User = 3,
+        TenantUser = 3,
     }
 }

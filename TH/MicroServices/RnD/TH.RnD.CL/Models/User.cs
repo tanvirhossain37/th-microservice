@@ -7,17 +7,21 @@ public partial class User
 {
     public string Id { get; set; } = null!;
 
-    public string FirstName { get; set; } = null!;
-
-    public string? Surname { get; set; }
-
     public DateTime CreatedDate { get; set; }
 
     public DateTime? ModifiedDate { get; set; }
 
     public bool Active { get; set; }
 
-    public virtual ICollection<UserEmail> UserEmails { get; set; } = new List<UserEmail>();
+    public string SpaceId { get; set; } = null!;
 
-    public virtual ICollection<UserPhone> UserPhones { get; set; } = new List<UserPhone>();
+    public string CompanyId { get; set; } = null!;
+
+    public int UserTypeId { get; set; }
+
+    public virtual ICollection<BranchUser> BranchUsers { get; set; } = new List<BranchUser>();
+
+    public virtual Company Company { get; set; } = null!;
+
+    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

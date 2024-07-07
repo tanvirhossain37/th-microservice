@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\AddressMS\TH.AddressMS.App\TH.AddressMS.App.csproj" />
     <ProjectReference Include="..\TH.UserSvc.Core\TH.UserSvc.Core.csproj" />
   </ItemGroup>
 

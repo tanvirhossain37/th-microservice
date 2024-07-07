@@ -9,9 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using TH.AuthMS.App;
 using TH.AuthMS.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace TH.AuthMS.Infra
 {
@@ -51,7 +53,46 @@ namespace TH.AuthMS.Infra
 
         public static IServiceCollection AddJwtTokenBasedAuthentication(this IServiceCollection services,
             IConfiguration configuration)
+
         {
+            //Authorization
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ClaimBasedPolicy", policy =>
+                {
+                    policy.Requirements.Add(new ConventionBasedRequirement());
+                    //policy.RequireClaim("Test");
+                });
+
+                options.AddPolicy("TestPolicy", policy =>
+                {
+                    policy.RequireClaim("Test", "1");
+                });
+
+                options.AddPolicy("ReadPolicy", policy =>
+                {
+                    policy.RequireClaim("Test", "1");
+                });
+                options.AddPolicy("WritePolicy", policy =>
+                {
+                    policy.RequireClaim("Test", "2");
+                });
+                options.AddPolicy("UpdatePolicy", policy =>
+                {
+                    policy.RequireClaim("Test", "3");
+                });
+                options.AddPolicy("DeletePolicy", policy =>
+                {
+                    policy.RequireClaim("Test", "4");
+                });
+            });
+
+
+            //services.AddSingleton<TestRequirement>();
+            //services.AddSingleton<ConventionBasedRequirement>();
+            services.AddSingleton<HttpContextAccessor>();
+            services.AddSingleton<IAuthorizationHandler, ConventionBasedRequirementHandler>();
+
             //Authentication
             services.AddAuthentication(options =>
                 {

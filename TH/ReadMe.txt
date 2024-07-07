@@ -1,3 +1,8 @@
+#scafold
+Scaffold-DbContext "Data Source=localhost;Initial Catalog=DoNotDeleteSpace;User ID=sa;Password=admin123##;Trust Server Certificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+
+
+
 DotNet Migration
 -------------------------------------------------------
 Set 1. Install Packages to API project

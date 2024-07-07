@@ -58,6 +58,18 @@ namespace TH.AuthMS.API
             return CustomResult(Lang.Find("success"), result);
         }
 
+        [HttpPost("ActivateAccountAsync")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ActivateAccountAsync([FromBody] ActgivationCodeInputModel model)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+            
+            var viewModel = await _authService.ActivateAccountAsync(model);
+            if (!viewModel) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
+
+            return CustomResult(Lang.Find("success"), viewModel);
+        }
+
         [Authorize]
         [HttpPost("TestAsync")]
         [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
