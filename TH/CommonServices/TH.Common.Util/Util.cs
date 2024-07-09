@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
+using Pluralize.NET.Core;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TH.Common.Util
@@ -90,6 +91,88 @@ namespace TH.Common.Util
             catch (Exception)
             {
                 return string.Empty;
+            }
+        }
+
+        public static string TryGenerateGuid()
+        {
+            try
+            {
+                return Guid.NewGuid().ToString().Trim();
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        public static string TryGenerateCode()
+        {
+            try
+            {
+                var str = Guid.NewGuid().ToString();
+                var array = str.Split("-");
+                return array.LastOrDefault().Trim();
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        public static string TrySingularize(string word)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(word)) return string.Empty;
+
+                return new Pluralizer().Singularize(word.Trim());
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        public static string TryPluralize(string word)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(word)) return string.Empty;
+
+                return new Pluralizer().Pluralize(word.Trim());
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        public static DateTime? TryCeilTime(DateTime dateTime)
+        {
+            try
+            {
+                var date = dateTime.Date;
+                var newDate = date.AddDays(1);
+                newDate = newDate.AddSeconds(-1);
+
+                return newDate;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static DateTime? TryFloorTime(DateTime dateTime)
+        {
+            try
+            {
+                return dateTime.Date;
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
     }

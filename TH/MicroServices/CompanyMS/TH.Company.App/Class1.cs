@@ -1,4 +1,4 @@
-﻿namespace TH.Company.App
+﻿namespace TH.CompanyMS.App
 {
     public class Class1
     {

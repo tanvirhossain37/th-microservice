@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using TH.Common.Model;
-using TH.MongoRnDMS.App;
-namespace TH.Company.App;
+
+namespace TH.CompanyMS.App;
 
 public partial class RoleFilterModel
 {   

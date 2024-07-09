@@ -1,0 +1,26 @@
+﻿using Microsoft.EntityFrameworkCore;
+using TH.CompanyMS.App;
+
+namespace $namespace$;
+
+public class Uow : IUow
+{
+    private readonly DbContext _dbContext;
+    //we todo repo
+
+    public Uow(DbContext dbContext//we todo constructor inject)
+    {
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        //we todo constructor
+    }
+
+    public int SaveChanges()
+    {
+        return _dbContext.SaveChanges();
+    }
+
+    public void Dispose()
+    {
+        _dbContext?.Dispose();
+    }
+}

@@ -1,0 +1,194 @@
+using System.Linq.Expressions;
+using TH.Common.Lang;
+using TH.Common.Model;
+using TH.Common.Util;
+using TH.CompanyMS.Core;
+
+namespace $namespace$;
+
+public partial class $WE$Service : BaseService, I$WE$Service
+{
+    protected readonly IUow Repo;
+    //we todo dependency
+        
+    public $WE$Service(IUow repo//we todo constructor inject) : base()
+    {
+        Repo = repo ?? throw new ArgumentNullException(nameof(repo));
+        //we todo constructor
+    }
+
+    public async Task<$WE$> SaveAsync($WE$ entity, DataFilter dataFilter, bool commit = true)
+    {
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+        entity.CreatedDate = DateTime.Now;
+
+        ApplyValidationBl(entity);
+
+        //Add your business logic here
+        ApplyOnSavingBl(entity, dataFilter);
+
+        //Chain effect
+        //todo chain effect save methods
+                
+        await Repo.$WE$Repo.SaveAsync(entity);
+
+        if (commit)
+        {
+            if (Repo.SaveChanges() <= 0) throw new CustomException(Lang.Find("error_save"));
+
+            //Add your business logic here
+            ApplyOnSavedBl(entity, dataFilter);
+        }
+
+        return entity;
+    }
+
+    public async Task<$WE$> UpdateAsync($WE$ entity, DataFilter dataFilter, bool commit = true)
+    {
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+        var existingEntity = await Repo.$WE$Repo.SingleOrDefaultQueryableAsync(//todo updateQuery);
+        if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
+
+        existingEntity.ModifiedDate = DateTime.Now;
+        //we todo update
+
+        ApplyValidationBl(existingEntity);
+
+        //Add your business logic here
+        ApplyOnUpdatingBl(existingEntity, dataFilter);
+
+        //Chain effect
+        //todo chain effect update methods
+                
+        if (commit)
+        {
+            if (Repo.SaveChanges() <= 0) throw new CustomException(Lang.Find("update_error"));
+
+            //Add your business logic here
+            ApplyOnUpdatedBl(existingEntity, dataFilter);
+        }
+
+        return existingEntity;
+    }
+
+    public async Task DeleteAsync($WE$ entity, DataFilter dataFilter, bool commit = true)
+    {
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+        var existingEntity = await Repo.$WE$Repo.SingleOrDefaultQueryableAsync(//todo deleteQuery);
+        if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
+
+        existingEntity.ModifiedDate = DateTime.Now;
+        existingEntity.Active = false;
+
+        //Add your business logic here
+        ApplyOnDeletingBl(existingEntity, dataFilter);
+
+        //Chain effect
+        //todo chain effect delete methods
+                
+        if (commit)
+        {
+            if (Repo.SaveChanges() <= 0) throw new CustomException(Lang.Find("delete_error"));
+
+            //Add your business logic here
+            ApplyOnDeletedBl(existingEntity, dataFilter);
+        }
+    }
+
+    public async Task<$WE$> FindByIdAsync($WE$FilterModel filter, DataFilter dataFilter)
+    {
+        try
+        {
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
+
+            var entity = await Repo.$WE$Repo.SingleOrDefaultQueryableAsync(//todo findQuery);
+            if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
+
+            //Add your business logic here
+            ApplyOnFindByIdBl(entity, dataFilter);
+
+            return entity;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<$WE$>> GetAsync($WE$FilterModel filter, DataFilter dataFilter)
+    {
+        try
+        {
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
+            if (filter.SortFilters == null) filter.SortFilters = new List<SortFilter>();
+            if (filter.SortFilters.Count <= 0) filter.SortFilters.Add(new SortFilter { PropertyName = "Id", Operation = OrderByEnum.Ascending });
+
+            var predicates = new List<Expression<Func<$WE$, bool>>>();
+            var includePredicates = new List<Expression<Func<$WE$, object>>>();
+
+            //Add your business logic here
+            ApplyOnGetBl(filter, dataFilter);
+
+            #region Filters
+            //Add your custom filter here
+            ApplyCustomGetFilterBl(filter, predicates);
+            //we todo filter
+
+            #endregion
+
+            #region Sort                
+
+            foreach (var sortFilter in filter.SortFilters)
+            {   //we todo sort
+            }
+
+            #endregion
+
+            var pagedList = await Repo.$WE$Repo.GetFilterableAsync(predicates, includePredicates, filter.SortFilters, filter.PageIndex, filter.PageSize, dataFilter);
+            if (!pagedList.Any()) throw new CustomException(Lang.Find("error_notfound"));
+
+            return pagedList;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public override void Dispose()
+    {
+        try
+        {
+            Repo?.Dispose();
+            //we todo dispose
+
+            //Dispose additional services if any
+            DisposeOthers();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    #region Business logic
+
+    private void ApplyValidationBl($WE$ entity, bool skip = false)
+    {
+        try
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+            //we todo validation
+            //we todo list validation
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    #endregion
+}

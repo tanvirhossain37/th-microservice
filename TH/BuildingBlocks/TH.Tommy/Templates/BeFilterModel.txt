@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using TH.Common.Model;
-using TH.MongoRnDMS.App;
 
 namespace $namespace$;
 

@@ -1,5 +1,5 @@
 
-namespace TH.Company.API
+namespace TH.CompanyMS.API
 {
     public class Program
     {

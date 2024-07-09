@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using TH.Common.Model;
-using TH.MongoRnDMS.App;
 
-namespace TH.Company.App;
+namespace TH.CompanyMS.App;
 
 public partial class UserFilterModel
 {   
@@ -13,4 +12,6 @@ public partial class UserFilterModel
 	public string SpaceId { get; set; } = null!;
 	public string CompanyId { get; set; } = null!;
 	public int UserTypeId { get; set; }
+	public string Name { get; set; } = null!;
+	public string UserName { get; set; } = null!;
 }

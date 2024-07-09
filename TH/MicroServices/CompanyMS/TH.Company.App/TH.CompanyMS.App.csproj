@@ -7,13 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\TH.Repo\TH.Repo.csproj" />
+    <ProjectReference Include="..\..\..\CommonServices\TH.Common.Lang\TH.Common.Lang.csproj" />
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Model\TH.Common.Model.csproj" />
+    <ProjectReference Include="..\..\..\CommonServices\TH.Common.Util\TH.Common.Util.csproj" />
     <ProjectReference Include="..\..\MongoRnDMS\TH.MongoRnDMS.App\TH.MongoRnDMS.App.csproj" />
-    <ProjectReference Include="..\TH.Company.Core\TH.Company.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\" />
+    <ProjectReference Include="..\TH.Company.Core\TH.CompanyMS.Core.csproj" />
   </ItemGroup>
 
 </Project>

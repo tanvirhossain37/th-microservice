@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TH.Company.App;
+namespace TH.CompanyMS.App;
 
 public partial class BranchUserInputModel
 {

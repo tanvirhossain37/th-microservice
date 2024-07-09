@@ -1,0 +1,9 @@
+﻿using System;
+
+namespace $namespace$;
+
+public interface IUow : IDisposable
+{   //we todo repo
+
+    int SaveChanges();
+}

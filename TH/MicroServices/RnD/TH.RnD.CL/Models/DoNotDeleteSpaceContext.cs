@@ -149,7 +149,9 @@ public partial class DoNotDeleteSpaceContext : DbContext
             entity.Property(e => e.CompanyId).HasMaxLength(450);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(450);
             entity.Property(e => e.SpaceId).HasMaxLength(450);
+            entity.Property(e => e.UserName).HasMaxLength(256);
 
             entity.HasOne(d => d.Company).WithMany(p => p.Users)
                 .HasForeignKey(d => d.CompanyId)

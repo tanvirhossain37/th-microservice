@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TH.Company.App;
+namespace TH.CompanyMS.App;
 
 public partial class UserViewModel
 {   
@@ -14,4 +14,6 @@ public partial class UserViewModel
 	public string SpaceId { get; set; } = null!;
 	public string CompanyId { get; set; } = null!;
 	public int UserTypeId { get; set; }
+	public string Name { get; set; } = null!;
+	public string UserName { get; set; } = null!;
 }

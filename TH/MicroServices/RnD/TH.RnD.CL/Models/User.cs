@@ -19,6 +19,10 @@ public partial class User
 
     public int UserTypeId { get; set; }
 
+    public string Name { get; set; } = null!;
+
+    public string UserName { get; set; } = null!;
+
     public virtual ICollection<BranchUser> BranchUsers { get; set; } = new List<BranchUser>();
 
     public virtual Company Company { get; set; } = null!;

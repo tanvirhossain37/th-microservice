@@ -10,7 +10,7 @@
         private static void Todo()
         {
             TommyService tommyService = new TommyService();
-            tommyService.CreateBE("TH.Company", "");
+            tommyService.CreateBE("TH.CompanyMS", "");
         }
     }
 }

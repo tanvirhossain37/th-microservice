@@ -1,4 +1,4 @@
-﻿namespace TH.Company.Infra
+﻿namespace TH.Repo
 {
     public class Class1
     {

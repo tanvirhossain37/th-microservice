@@ -1,4 +1,4 @@
-namespace TH.Company.Core;
+namespace TH.CompanyMS.Core;
 
 public class Company : BaseEntity
 {

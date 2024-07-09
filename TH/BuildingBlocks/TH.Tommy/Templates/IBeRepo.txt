@@ -1,0 +1,10 @@
+using TH.Common.Model;
+using TH.CompanyMS.Core;
+using TH.Repo;
+
+namespace $namespace$;
+
+public interface I$WE$Repo : IRepoSQL<$WE$>
+{   //todo repo name methods
+    //todo repo code methods
+}

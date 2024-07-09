@@ -1,0 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using TH.Common.Model;
+using TH.CompanyMS.Core;
+using TH.Repo;
+
+namespace $namespace$;
+
+public partial class $WE$Repo : RepoSQL<$WE$>, I$WE$Repo
+{
+    public $WE$Repo(DbContext dbContext, ICustomSort customSort) : base(dbContext, customSort)
+    {
+    }
+//todo repo name methods
+//todo repo code methods
+}

@@ -1,0 +1,5 @@
+        foreach (var child in entity.$WES$)
+        {
+            await $WE$.SaveAsync(child, dataFilter, false);
+        }
+                

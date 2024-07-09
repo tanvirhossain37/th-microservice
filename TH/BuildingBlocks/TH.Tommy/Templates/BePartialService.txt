@@ -1,0 +1,161 @@
+using System.Linq.Expressions;
+using TH.Common.Model;
+using TH.Common.Util;
+using TH.CompanyMS.Core;
+
+namespace $namespace$;
+
+public partial class $WE$Service
+{
+    //Add additional services if any
+
+    //private $WE$Service(IUow repo//we todo constructor inject) : this()
+    //{
+    //}
+
+    private void ApplyOnSavingBl($WE$ entity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            //todo
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void ApplyOnSavedBl($WE$ entity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            //todo
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void ApplyOnUpdatingBl($WE$ existingEntity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+
+            //todo
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void ApplyOnUpdatedBl($WE$ existingEntity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+
+            //todo
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void ApplyOnDeletingBl($WE$ existingEntity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+
+            //todo
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void ApplyOnDeletedBl($WE$ existingEntity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+
+            //todo
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void ApplyOnFindByIdBl($WE$ entity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            //todo
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void ApplyOnGetBl($WE$FilterModel filter, DataFilter dataFilter)
+    {
+        try
+        {
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
+
+            //todo
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void ApplyCustomGetFilterBl($WE$FilterModel filter, List<Expression<Func<$WE$, bool>>> predicates)
+    {
+        try
+        {
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
+            if (predicates == null) throw new ArgumentNullException(nameof(predicates));
+
+            //todo
+            //additional
+            if (filter.StartDate.HasValue && filter.EndDate.HasValue)
+            {
+                filter.StartDate = Util.TryFloorTime((DateTime)filter.StartDate);
+                filter.EndDate = Util.TryCeilTime((DateTime)filter.EndDate);
+
+                predicates.Add(t => (t.CreatedDate >= filter.StartDate) && (t.CreatedDate <= filter.EndDate));
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void DisposeOthers()
+    {
+        try
+        {
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+}

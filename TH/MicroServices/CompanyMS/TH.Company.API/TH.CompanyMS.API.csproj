@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -15,9 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TH.Company.App\TH.Company.App.csproj" />
-    <ProjectReference Include="..\TH.Company.Core\TH.Company.Core.csproj" />
-    <ProjectReference Include="..\TH.Company.Infra\TH.Company.Infra.csproj" />
+    <ProjectReference Include="..\TH.Company.App\TH.CompanyMS.App.csproj" />
+    <ProjectReference Include="..\TH.Company.Core\TH.CompanyMS.Core.csproj" />
+    <ProjectReference Include="..\TH.Company.Infra\TH.CompanyMS.Infra.csproj" />
   </ItemGroup>
 
 </Project>
