@@ -21,6 +21,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
+        entity.Id = Util.TryGenerateGuid();
         entity.CreatedDate = DateTime.Now;
 
         ApplyValidationBl(entity);
@@ -35,7 +36,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
 
         if (commit)
         {
-            if (Repo.SaveChanges() <= 0) throw new CustomException(Lang.Find("error_save"));
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("error_save"));
 
             //Add your business logic here
             ApplyOnSavedBl(entity, dataFilter);
@@ -64,7 +65,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
                 
         if (commit)
         {
-            if (Repo.SaveChanges() <= 0) throw new CustomException(Lang.Find("update_error"));
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("update_error"));
 
             //Add your business logic here
             ApplyOnUpdatedBl(existingEntity, dataFilter);
@@ -73,7 +74,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
         return existingEntity;
     }
 
-    public async Task DeleteAsync($WE$ entity, DataFilter dataFilter, bool commit = true)
+    public async Task<bool> SoftDeleteAsync($WE$ entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -88,17 +89,45 @@ public partial class $WE$Service : BaseService, I$WE$Service
 
         //Chain effect
         //todo chain effect delete methods
-                
+
         if (commit)
         {
-            if (Repo.SaveChanges() <= 0) throw new CustomException(Lang.Find("delete_error"));
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
             ApplyOnDeletedBl(existingEntity, dataFilter);
         }
+
+        return true;
     }
 
-    public async Task<$WE$> FindByIdAsync($WE$FilterModel filter, DataFilter dataFilter)
+    public async Task<bool> DeleteAsync($WE$ entity, DataFilter dataFilter, bool commit = true)
+    {
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+        var existingEntity = await Repo.$WE$Repo.SingleOrDefaultQueryableAsync(//todo deleteQuery);
+        if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
+
+        //Add your business logic here
+        ApplyOnDeletingBl(existingEntity, dataFilter);
+
+        Repo.$WE$Repo.Delete(existingEntity);
+
+        //Chain effect
+        //todo chain effect delete methods
+                
+        if (commit)
+        {
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
+
+            //Add your business logic here
+            ApplyOnDeletedBl(existingEntity, dataFilter);
+        }
+
+        return true;
+    }
+
+    public async Task<$WE$> FindAsync($WE$FilterModel filter, DataFilter dataFilter)
     {
         try
         {

@@ -12,15 +12,15 @@ using TH.AuthMS.Infra;
 namespace TH.AuthMS.Infra.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20240702084357_Update_User_2_Jul_2024")]
-    partial class Update_User_2_Jul_2024
+    [Migration("20240709133122_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -165,6 +165,13 @@ namespace TH.AuthMS.Infra.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("ActivationCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CodeExpiryTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()

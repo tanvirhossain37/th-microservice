@@ -1,6 +1,9 @@
 #scafold
 Scaffold-DbContext "Data Source=localhost;Initial Catalog=DoNotDeleteSpace;User ID=sa;Password=admin123##;Trust Server Certificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
 
+add-migration Initial_Company -Context CompanyDbContext -o Migrations/Company
+update-database -Context CompanyDbContext
+
 
 
 DotNet Migration

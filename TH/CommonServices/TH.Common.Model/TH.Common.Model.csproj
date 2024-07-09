@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CoreApiResponse" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Structs\" />
   </ItemGroup>
 

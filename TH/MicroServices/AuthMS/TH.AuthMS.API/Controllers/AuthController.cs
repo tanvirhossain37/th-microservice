@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using TH.AuthMS.App;
 using TH.AuthMS.Core;
 using TH.Common.Lang;
+using TH.Common.Model;
 
 namespace TH.AuthMS.API
 {

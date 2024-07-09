@@ -1,13 +1,13 @@
-using Microsoft.EntityFrameworkCore;
 using TH.Common.Model;
 using TH.CompanyMS.Core;
+using TH.CompanyMS.Infra;
 using TH.Repo;
 
 namespace TH.CompanyMS.App;
 
 public partial class CompanyRepo : RepoSQL<Company>, ICompanyRepo
 {
-    public CompanyRepo(DbContext dbContext, ICustomSort customSort) : base(dbContext, customSort)
+    public CompanyRepo(CompanyDbContext dbContext, ICustomSort customSort) : base(dbContext, customSort)
     {
     }
     public async Task<Company> FindByNameAsync(string spaceId, string name, DataFilter dataFilter)

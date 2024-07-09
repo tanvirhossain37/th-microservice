@@ -1,13 +1,13 @@
-using Microsoft.EntityFrameworkCore;
 using TH.Common.Model;
 using TH.CompanyMS.Core;
+using TH.CompanyMS.Infra;
 using TH.Repo;
 
 namespace TH.CompanyMS.App;
 
 public partial class ModuleRepo : RepoSQL<Module>, IModuleRepo
 {
-    public ModuleRepo(DbContext dbContext, ICustomSort customSort) : base(dbContext, customSort)
+    public ModuleRepo(CompanyDbContext dbContext, ICustomSort customSort) : base(dbContext, customSort)
     {
     }
     public async Task<Module> FindByNameAsync(string name, DataFilter dataFilter)

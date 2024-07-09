@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using TH.AuthMS.App;
 using TH.AuthMS.App.Attributes;
 using TH.Common.Lang;
+using TH.Common.Model;
 
 namespace TH.AuthMS.API.Controllers
 {

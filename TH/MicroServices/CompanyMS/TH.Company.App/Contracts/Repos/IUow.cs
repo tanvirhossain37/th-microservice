@@ -13,5 +13,5 @@ public interface IUow : IDisposable
 	IUserRepo UserRepo { get; set; }
 	IUserRoleRepo UserRoleRepo { get; set; }
 
-    int SaveChanges();
+    Task<int> SaveChangesAsync();
 }

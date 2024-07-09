@@ -7,7 +7,8 @@ public interface IBranchService : IBaseService
 {
     Task<Branch> SaveAsync(Branch entity, DataFilter dataFilter, bool commit = true);
     Task<Branch> UpdateAsync(Branch entity, DataFilter dataFilter, bool commit = true);
-    Task DeleteAsync(Branch entity, DataFilter dataFilter, bool commit = true);
-    Task<Branch> FindByIdAsync(BranchFilterModel filter, DataFilter dataFilter);
+    Task<bool> SoftDeleteAsync(Branch entity, DataFilter dataFilter, bool commit = true);
+    Task<bool> DeleteAsync(Branch entity, DataFilter dataFilter, bool commit = true);
+    Task<Branch> FindAsync(BranchFilterModel filter, DataFilter dataFilter);
     Task<IEnumerable<Branch>> GetAsync(BranchFilterModel filter, DataFilter dataFilter);
 }

@@ -72,8 +72,9 @@ namespace TH.AuthMS.App
             //email confirmed?
             if(!identityUser.EmailConfirmed) throw new UnauthorizedAccessException(Lang.Find("error_emailnotconfirmed"));
 
-            var signInViewModel = _authRepo.GenerateToken(entity.UserName);
+            var signInViewModel = _authRepo.GenerateToken(identityUser);
             signInViewModel.RefreshToken = _authRepo.GenerateRefreshToken();
+            
             signInViewModel.userName = identityUser.UserName;
             signInViewModel.Name = identityUser.Name;
             signInViewModel.Email = identityUser.Email;
@@ -81,6 +82,11 @@ namespace TH.AuthMS.App
             signInViewModel.UserTypeId = identityUser.UserTypeId;
             signInViewModel.CreatedDate = identityUser.CreatedDate;
             signInViewModel.ModifiedDate = identityUser.ModifiedDate;
+
+            if (identityUser.UserTypeId == (int)UserTypeEnum.Owner)
+            {
+                signInViewModel.SpaceId = identityUser.Id;
+            }
 
             //update db
             identityUser.RefreshToken = signInViewModel.RefreshToken;
@@ -116,7 +122,7 @@ namespace TH.AuthMS.App
                 DateTime.Now > identityUser.RefreshTokenExpiryTime)
                 throw new UnauthorizedAccessException(Lang.Find("error_unauthorized"));
 
-            var signInViewModel = _authRepo.GenerateToken(identityUser.UserName);
+            var signInViewModel = _authRepo.GenerateToken(identityUser);
             signInViewModel.RefreshToken = _authRepo.GenerateRefreshToken();
 
             //update db

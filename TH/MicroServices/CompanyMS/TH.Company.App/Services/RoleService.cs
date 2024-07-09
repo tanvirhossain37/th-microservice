@@ -25,6 +25,7 @@ public partial class RoleService : BaseService, IRoleService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
+        entity.Id = Util.TryGenerateGuid();
         entity.CreatedDate = DateTime.Now;
 
         ApplyValidationBl(entity);
@@ -49,7 +50,7 @@ public partial class RoleService : BaseService, IRoleService
 
         if (commit)
         {
-            if (Repo.SaveChanges() <= 0) throw new CustomException(Lang.Find("error_save"));
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("error_save"));
 
             //Add your business logic here
             ApplyOnSavedBl(entity, dataFilter);
@@ -90,7 +91,7 @@ public partial class RoleService : BaseService, IRoleService
                 
         if (commit)
         {
-            if (Repo.SaveChanges() <= 0) throw new CustomException(Lang.Find("update_error"));
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("update_error"));
 
             //Add your business logic here
             ApplyOnUpdatedBl(existingEntity, dataFilter);
@@ -99,7 +100,7 @@ public partial class RoleService : BaseService, IRoleService
         return existingEntity;
     }
 
-    public async Task DeleteAsync(Role entity, DataFilter dataFilter, bool commit = true)
+    public async Task<bool> SoftDeleteAsync(Role entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -124,17 +125,55 @@ public partial class RoleService : BaseService, IRoleService
             await UserRoleService.DeleteAsync(child, dataFilter, false);
         }
                 
-                
+
         if (commit)
         {
-            if (Repo.SaveChanges() <= 0) throw new CustomException(Lang.Find("delete_error"));
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
             ApplyOnDeletedBl(existingEntity, dataFilter);
         }
+
+        return true;
     }
 
-    public async Task<Role> FindByIdAsync(RoleFilterModel filter, DataFilter dataFilter)
+    public async Task<bool> DeleteAsync(Role entity, DataFilter dataFilter, bool commit = true)
+    {
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+        var existingEntity = await Repo.RoleRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(entity.SpaceId)) && (x.CompanyId.Equals(entity.CompanyId)) && (x.Id.Equals(entity.Id)));
+        if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
+
+        //Add your business logic here
+        ApplyOnDeletingBl(existingEntity, dataFilter);
+
+        Repo.RoleRepo.Delete(existingEntity);
+
+        //Chain effect
+        
+        foreach (var child in existingEntity.Permissions)
+        {
+            await PermissionService.DeleteAsync(child, dataFilter, false);
+        }
+                
+        foreach (var child in existingEntity.UserRoles)
+        {
+            await UserRoleService.DeleteAsync(child, dataFilter, false);
+        }
+                
+                
+        if (commit)
+        {
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
+
+            //Add your business logic here
+            ApplyOnDeletedBl(existingEntity, dataFilter);
+        }
+
+        return true;
+    }
+
+    public async Task<Role> FindAsync(RoleFilterModel filter, DataFilter dataFilter)
     {
         try
         {

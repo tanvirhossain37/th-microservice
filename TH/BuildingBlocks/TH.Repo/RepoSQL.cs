@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TH.Common.Model;
 using TH.Repo;
 using X.PagedList;
@@ -31,7 +32,8 @@ public class RepoSQL<TEntity> : IRepoSQL<TEntity> where TEntity : class
         await DbContext.Set<TEntity>().AddRangeAsync(entities);
     }
 
-    public async Task<TEntity> FirstOrDefaultQueryableAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy, DataFilter dataFilter)
+    public async Task<TEntity> FirstOrDefaultQueryableAsync(Expression<Func<TEntity, bool>> predicate,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy, DataFilter dataFilter)
     {
         if (predicate == null) throw new ArgumentNullException(nameof(predicate));
         if (orderBy == null) throw new ArgumentNullException(nameof(orderBy));
@@ -60,6 +62,20 @@ public class RepoSQL<TEntity> : IRepoSQL<TEntity> where TEntity : class
         return await queryResult.SingleOrDefaultAsync();
     }
 
+    public void Delete(TEntity entity, DataFilter dataFilter = new DataFilter())
+    {
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+        DbContext.Set<TEntity>().Remove(entity);
+    }
+
+    public void DeleteRange(IEnumerable<TEntity> entities, DataFilter dataFilter = new DataFilter())
+    {
+        if (entities == null) throw new ArgumentNullException(nameof(entities));
+
+        DbContext.Set<TEntity>().RemoveRange(entities);
+    }
+
     //public async Task<TEntity?> FindById(string id, string companyId, DataFilter dataFilter = new DataFilter())
     //{
     //    if (companyId == null) throw new ArgumentNullException(nameof(companyId));
@@ -68,7 +84,9 @@ public class RepoSQL<TEntity> : IRepoSQL<TEntity> where TEntity : class
     //    return await DbContext.Set<TEntity>().FindAsync(id);
     //}
 
-    public async Task<IEnumerable<TEntity>> GetQueryableAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, object>> includePredicate, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy, int pageIndex = 1, int pageSize = 10,
+    public async Task<IEnumerable<TEntity>> GetQueryableAsync(Expression<Func<TEntity, bool>> predicate,
+        Expression<Func<TEntity, object>> includePredicate, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy, int pageIndex = 1,
+        int pageSize = 10,
         DataFilter dataFilter = new DataFilter())
     {
         if (predicate == null) throw new ArgumentNullException(nameof(predicate));
@@ -93,7 +111,8 @@ public class RepoSQL<TEntity> : IRepoSQL<TEntity> where TEntity : class
         return await queryResult.ToPagedListAsync(pageIndex, pageSize);
     }
 
-    public async Task<IEnumerable<TEntity>> GetFilterableAsync(IList<Expression<Func<TEntity, bool>>> predicates, IList<Expression<Func<TEntity, object>>> includePredicates, IList<SortFilter> sortFilters, int pageIndex = 1, int pageSize = 10,
+    public async Task<IEnumerable<TEntity>> GetFilterableAsync(IList<Expression<Func<TEntity, bool>>> predicates,
+        IList<Expression<Func<TEntity, object>>> includePredicates, IList<SortFilter> sortFilters, int pageIndex = 1, int pageSize = 10,
         DataFilter dataFilter = new DataFilter())
     {
         if (predicates == null) throw new ArgumentNullException(nameof(predicates));

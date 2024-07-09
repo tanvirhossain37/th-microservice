@@ -1,11 +1,11 @@
-using Microsoft.EntityFrameworkCore;
 using TH.CompanyMS.App;
+using TH.CompanyMS.Infra;
 
 namespace TH.CompanyMS.infra;
 
 public class Uow : IUow
 {
-    private readonly DbContext _dbContext;
+    private readonly CompanyDbContext _dbContext;
     
 	public IBranchRepo BranchRepo { get; set; }
 	public IBranchUserRepo BranchUserRepo { get; set; }
@@ -16,7 +16,7 @@ public class Uow : IUow
 	public IUserRepo UserRepo { get; set; }
 	public IUserRoleRepo UserRoleRepo { get; set; }
 
-    public Uow(DbContext dbContext, IBranchRepo branchRepo, IBranchUserRepo branchUserRepo, ICompanyRepo companyRepo, IModuleRepo moduleRepo, IPermissionRepo permissionRepo, IRoleRepo roleRepo, IUserRepo userRepo, IUserRoleRepo userRoleRepo)
+    public Uow(CompanyDbContext dbContext, IBranchRepo branchRepo, IBranchUserRepo branchUserRepo, ICompanyRepo companyRepo, IModuleRepo moduleRepo, IPermissionRepo permissionRepo, IRoleRepo roleRepo, IUserRepo userRepo, IUserRoleRepo userRoleRepo)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         
@@ -30,9 +30,9 @@ public class Uow : IUow
 			UserRoleRepo = userRoleRepo ?? throw new ArgumentNullException(nameof(userRoleRepo));
     }
 
-    public int SaveChanges()
+    public async Task<int> SaveChangesAsync()
     {
-        return _dbContext.SaveChanges();
+        return await _dbContext.SaveChangesAsync();
     }
 
     public void Dispose()

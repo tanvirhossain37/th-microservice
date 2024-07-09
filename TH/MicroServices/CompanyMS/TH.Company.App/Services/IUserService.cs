@@ -7,7 +7,8 @@ public interface IUserService : IBaseService
 {
     Task<User> SaveAsync(User entity, DataFilter dataFilter, bool commit = true);
     Task<User> UpdateAsync(User entity, DataFilter dataFilter, bool commit = true);
-    Task DeleteAsync(User entity, DataFilter dataFilter, bool commit = true);
-    Task<User> FindByIdAsync(UserFilterModel filter, DataFilter dataFilter);
+    Task<bool> SoftDeleteAsync(User entity, DataFilter dataFilter, bool commit = true);
+    Task<bool> DeleteAsync(User entity, DataFilter dataFilter, bool commit = true);
+    Task<User> FindAsync(UserFilterModel filter, DataFilter dataFilter);
     Task<IEnumerable<User>> GetAsync(UserFilterModel filter, DataFilter dataFilter);
 }

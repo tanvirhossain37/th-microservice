@@ -1,4 +1,8 @@
 
+using System.Reflection;
+using TH.CompanyMS.App;
+using TH.CompanyMS.Infra;
+
 namespace TH.CompanyMS.API
 {
     public class Program
@@ -9,10 +13,34 @@ namespace TH.CompanyMS.API
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            //builder.Services.AddControllers();
+            //Tanvir
+            builder.Services.AddControllers(c => c.Filters.Add(new CustomExceptionFilter()));
+
+            //Tanvir
+            builder.Services.AddAppDependencyInjection(builder.Configuration);
+            builder.Services.AddInfraDependencyInjection(builder.Configuration);
+            builder.Services.AddJwtTokenBasedAuthentication(builder.Configuration);
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            //AutoMapper
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            const string CorsPolicy = "_corsPolicy";
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: CorsPolicy,
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
 
             var app = builder.Build();
 
@@ -25,6 +53,9 @@ namespace TH.CompanyMS.API
 
             app.UseHttpsRedirection();
 
+            //Tanvir
+            app.UseAuthentication();// MUST be before app.UseAuthorization();
+            app.UseCors(CorsPolicy);//tanvir
             app.UseAuthorization();
 
 

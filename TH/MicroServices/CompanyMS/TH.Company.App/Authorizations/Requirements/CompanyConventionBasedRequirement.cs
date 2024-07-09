@@ -2,22 +2,22 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace TH.AuthMS.App;
+namespace TH.CompanyMS.App;
 
-public class ConventionBasedRequirement: IAuthorizationRequirement
+public class CompanyConventionBasedRequirement: IAuthorizationRequirement
 {
 }
 
-public class ConventionBasedRequirementHandler : AuthorizationHandler<ConventionBasedRequirement>
+public class CompanyConventionBasedRequirementHandler : AuthorizationHandler<CompanyConventionBasedRequirement>
 {
     private HttpContextAccessor _httpContextAccessor;
 
-    public ConventionBasedRequirementHandler(HttpContextAccessor httpContextAccessor)
+    public CompanyConventionBasedRequirementHandler(HttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
     }
 
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ConventionBasedRequirement requirement)
+    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, CompanyConventionBasedRequirement requirement)
     {
         var controllerName = _httpContextAccessor.HttpContext.GetRouteData().Values["controller"].ToString();
         var actionName = _httpContextAccessor.HttpContext.GetRouteData().Values["action"].ToString();
@@ -27,9 +27,9 @@ public class ConventionBasedRequirementHandler : AuthorizationHandler<Convention
         var claims = context.User.Claims;
 
         var userPermissions = AuthorizeHelper.GetPermissionsFromClaim(controllerName, claims);
-        
+
         if (userPermissions is not null &&
-            requiredPermission != 0 &&
+            !string.IsNullOrWhiteSpace(requiredPermission) &&
             userPermissions.Contains(requiredPermission))
         {
             context.Succeed(requirement);

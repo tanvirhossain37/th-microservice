@@ -1,22 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TH.CompanyMS.App;
+﻿using TH.CompanyMS.App;
+using TH.CompanyMS.Infra;
 
 namespace $namespace$;
 
 public class Uow : IUow
 {
-    private readonly DbContext _dbContext;
+    private readonly CompanyDbContext _dbContext;
     //we todo repo
 
-    public Uow(DbContext dbContext//we todo constructor inject)
+    public Uow(CompanyDbContext dbContext//we todo constructor inject)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         //we todo constructor
     }
 
-    public int SaveChanges()
+    public async Task<int> SaveChangesAsync()
     {
-        return _dbContext.SaveChanges();
+        return await _dbContext.SaveChangesAsync();
     }
 
     public void Dispose()

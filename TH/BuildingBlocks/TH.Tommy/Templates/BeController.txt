@@ -1,0 +1,107 @@
+﻿using System.Net;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using TH.AddressMS.Core;
+using TH.Common.Lang;
+using TH.Common.Model;
+using TH.CompanyMS.App;
+using TH.CompanyMS.Core;
+
+namespace $namespace$;
+
+[Authorize(Policy = "ClaimBasedPolicy")]
+public class $WE$Controller : CustomBaseController
+{
+    private readonly I$WE$Service _$we$Service;
+    private readonly IMapper _mapper;
+    private readonly IServiceScopeFactory _scopeFactory;
+
+    public $WE$Controller(I$WE$Service $we$Service, IMapper mapper, IServiceScopeFactory scopeFactory)
+    {
+        _$we$Service = $we$Service ?? throw new ArgumentNullException(nameof($we$Service));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+    }
+
+    [HttpPost("Save$WE$Async")]
+    [ProducesResponseType(typeof($WE$ViewModel), (int)HttpStatusCode.OK)]
+    [Authorize(Policy = "WritePolicy")]
+    public async Task<IActionResult> Save$WE$Async([FromBody] $WE$InputModel model)
+    {
+        var entity = await _$we$Service.SaveAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
+        if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
+
+        using (var scope = _scopeFactory.CreateScope())
+        {
+            var filter = _mapper.Map<$WE$, $WE$FilterModel>(entity);
+            var service = scope.ServiceProvider.GetRequiredService<I$WE$Service>();
+            var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await service.FindAsync(filter, DataFilter));
+            return CustomResult(Lang.Find("success"), viewModel);
+        }
+    }
+
+    [HttpPost("Update$WE$Async")]
+    [ProducesResponseType(typeof($WE$ViewModel), (int)HttpStatusCode.OK)]
+    [Authorize(Policy = "UpdatePolicy")]
+    public async Task<IActionResult> Update$WE$Async([FromBody] $WE$InputModel model)
+    {
+        var entity = await _$we$Service.UpdateAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
+        if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
+
+        using (var scope = _scopeFactory.CreateScope())
+        {
+            var filter = _mapper.Map<$WE$, $WE$FilterModel>(entity);
+            var service = scope.ServiceProvider.GetRequiredService<I$WE$Service>();
+            var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await service.FindAsync(filter, DataFilter));
+            return CustomResult(Lang.Find("success"), viewModel);
+        }
+    }
+
+    [HttpPost("SoftDelete$WE$Async")]
+    [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+    [Authorize(Policy = "SoftDeletePolicy")]
+    public async Task<IActionResult> SoftDelete$WE$Async([FromBody] $WE$InputModel model)
+    {
+        var hasDeleted = await _$we$Service.SoftDeleteAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
+
+        return CustomResult(Lang.Find("success"), hasDeleted);
+    }
+
+    [HttpPost("Delete$WE$Async")]
+    [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+    [Authorize(Policy = "DeletePolicy")]
+    public async Task<IActionResult> Delete$WE$Async([FromBody] $WE$InputModel model)
+    {
+        var hasDeleted = await _$we$Service.DeleteAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
+
+        return CustomResult(Lang.Find("success"), hasDeleted);
+    }
+
+    [HttpPost("Find$WE$Async")]
+    [ProducesResponseType(typeof($WE$ViewModel), (int)HttpStatusCode.OK)]
+    [Authorize(Policy = "ReadPolicy")]
+    public async Task<IActionResult> Find$WE$Async([FromBody] $WE$FilterModel filter)
+    {
+        var entity = await _$we$Service.FindAsync(filter, DataFilter);
+        if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
+
+        return CustomResult(Lang.Find("success"), _mapper.Map<$WE$, $WE$ViewModel>(entity));
+    }
+
+    [HttpPost("Get$WES$Async")]
+    [ProducesResponseType(typeof(List<$WE$ViewModel>), (int)HttpStatusCode.OK)]
+    [Authorize(Policy = "ReadPolicy")]
+    public async Task<IActionResult> Get$WES$Async([FromBody] $WE$FilterModel filter)
+    {
+        var entities = await _$we$Service.GetAsync(filter, DataFilter);
+        if (entities is null) return CustomResult(Lang.Find("error_not_found"), entities, HttpStatusCode.NotFound);
+
+        return CustomResult(Lang.Find("success"), _mapper.Map<List<$WE$>, List<$WE$ViewModel>>(entities.ToList()));
+    }
+
+    public override void Dispose()
+    {
+        _$we$Service?.Dispose();
+    }
+}

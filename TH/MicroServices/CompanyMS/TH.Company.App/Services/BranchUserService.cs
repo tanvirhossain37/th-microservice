@@ -21,6 +21,7 @@ public partial class BranchUserService : BaseService, IBranchUserService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
+        entity.Id = Util.TryGenerateGuid();
         entity.CreatedDate = DateTime.Now;
 
         ApplyValidationBl(entity);
@@ -35,7 +36,7 @@ public partial class BranchUserService : BaseService, IBranchUserService
 
         if (commit)
         {
-            if (Repo.SaveChanges() <= 0) throw new CustomException(Lang.Find("error_save"));
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("error_save"));
 
             //Add your business logic here
             ApplyOnSavedBl(entity, dataFilter);
@@ -67,7 +68,7 @@ public partial class BranchUserService : BaseService, IBranchUserService
                 
         if (commit)
         {
-            if (Repo.SaveChanges() <= 0) throw new CustomException(Lang.Find("update_error"));
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("update_error"));
 
             //Add your business logic here
             ApplyOnUpdatedBl(existingEntity, dataFilter);
@@ -76,7 +77,7 @@ public partial class BranchUserService : BaseService, IBranchUserService
         return existingEntity;
     }
 
-    public async Task DeleteAsync(BranchUser entity, DataFilter dataFilter, bool commit = true)
+    public async Task<bool> SoftDeleteAsync(BranchUser entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -91,17 +92,45 @@ public partial class BranchUserService : BaseService, IBranchUserService
 
         //Chain effect
         
-                
+
         if (commit)
         {
-            if (Repo.SaveChanges() <= 0) throw new CustomException(Lang.Find("delete_error"));
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
             ApplyOnDeletedBl(existingEntity, dataFilter);
         }
+
+        return true;
     }
 
-    public async Task<BranchUser> FindByIdAsync(BranchUserFilterModel filter, DataFilter dataFilter)
+    public async Task<bool> DeleteAsync(BranchUser entity, DataFilter dataFilter, bool commit = true)
+    {
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+        var existingEntity = await Repo.BranchUserRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(entity.SpaceId)) && (x.CompanyId.Equals(entity.CompanyId)) && (x.Id.Equals(entity.Id)));
+        if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
+
+        //Add your business logic here
+        ApplyOnDeletingBl(existingEntity, dataFilter);
+
+        Repo.BranchUserRepo.Delete(existingEntity);
+
+        //Chain effect
+        
+                
+        if (commit)
+        {
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
+
+            //Add your business logic here
+            ApplyOnDeletedBl(existingEntity, dataFilter);
+        }
+
+        return true;
+    }
+
+    public async Task<BranchUser> FindAsync(BranchUserFilterModel filter, DataFilter dataFilter)
     {
         try
         {

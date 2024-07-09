@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using TH.AddressMS.App;
 using TH.AuthMS.App;
+using TH.AuthMS.Core;
 using TH.Common.Lang;
 using TH.Common.Util;
 
@@ -57,19 +58,27 @@ namespace TH.AuthMS.Infra
             return _userManager.CheckPasswordAsync(user, password);
         }
 
-        public SignInViewModel GenerateToken(string userName)
+        public SignInViewModel GenerateToken(User user)
         {
-            //call permissions
-            var claims = new List<Claim>
+            var claims = new List<Claim>();
+            if (user.UserTypeId == (int)UserTypeEnum.Owner)
             {
-                new Claim(ClaimTypes.Name, userName),
-                //new Claim(ClaimTypes.Email, identityUser.Email),
-                new Claim(ClaimTypes.Role, "Owner"),
-                new Claim("Test", 1.ToString()),
-                //new Claim("Test", 2),
-                new Claim("Test", 3.ToString()),
-                new Claim("Test",4.ToString()),
-            };
+                //call permissions
+                claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim("Test", 1.ToString()),
+                    //new Claim("Test", 2),
+                    new Claim("Test", 3.ToString()),
+                    new Claim("Test", 4.ToString()),
+                    new Claim("Company", "Read"),
+                    new Claim("Company", "Write"),
+                    new Claim("Company", "update"),
+                    new Claim("Company", "softdelete"),
+                    new Claim("Company", "delete"),
+                };
+            }
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);

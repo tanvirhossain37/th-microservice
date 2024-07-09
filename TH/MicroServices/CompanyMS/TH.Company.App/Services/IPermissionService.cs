@@ -7,7 +7,8 @@ public interface IPermissionService : IBaseService
 {
     Task<Permission> SaveAsync(Permission entity, DataFilter dataFilter, bool commit = true);
     Task<Permission> UpdateAsync(Permission entity, DataFilter dataFilter, bool commit = true);
-    Task DeleteAsync(Permission entity, DataFilter dataFilter, bool commit = true);
-    Task<Permission> FindByIdAsync(PermissionFilterModel filter, DataFilter dataFilter);
+    Task<bool> SoftDeleteAsync(Permission entity, DataFilter dataFilter, bool commit = true);
+    Task<bool> DeleteAsync(Permission entity, DataFilter dataFilter, bool commit = true);
+    Task<Permission> FindAsync(PermissionFilterModel filter, DataFilter dataFilter);
     Task<IEnumerable<Permission>> GetAsync(PermissionFilterModel filter, DataFilter dataFilter);
 }

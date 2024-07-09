@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using TH.Common.Model;
 using TH.UserSvc.App;
 
 namespace TH.AuthMS.API.Controllers;
@@ -22,7 +23,7 @@ public class UserController : CustomBaseController
     {
         if (filter == null) throw new ArgumentNullException(nameof(filter));
 
-        _userService.FindByIdAsync(filter.Id, DataFilter);
+        //_userService.FindByIdAsync(filter.Id);
 
         var userIdentity = User.Identity;
         return CustomResult("You saved me!", "");

@@ -9,8 +9,8 @@ public class TommyService:BaseService
     public TommyService()
     {
         _template = $"{TommyRoot}\\Templates";
-        _factory = $"{TommyRoot}\\Factories";
-        _mapper = $"{TommyRoot}\\Mappers";
+        _factory = $"{ResultDestRoot}\\Factories";
+        _mapper = $"{ResultDestRoot}\\Mappers";
 
         Util.DeleteDirectory(ResultDestRoot, true);
 
@@ -40,10 +40,44 @@ public class TommyService:BaseService
             CreateBeFilterModels(file, projectName);
             CreateBeRepos(file, files, projectName);
             CreateBeServices(file, projectName);
+            CreateBeControllers(file, projectName);
         }
 
         CreateBeUoW(files, projectName);
 
+    }
+
+    private void CreateBeControllers(string file, string projectName)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultDestRoot}\\Controllers");
+
+            var lines = Util.ReadObjectLines(file);
+            if (lines != null)
+            {
+                //get content
+
+                //replace template
+                string template = FileManager.Read($"{_template}\\BeController.txt");
+                template = template.Replace("$namespace$", $"{projectName}");
+                template = template.Replace("$WE$", fileNameWithoutExtension);
+                template = template.Replace("$WES$", Util.TryPluralize(fileNameWithoutExtension));
+                template = template.Replace("$we$", FileManager.ToCamelCase(fileNameWithoutExtension));
+                template = template.Replace("$Access$", $"{projectName}RestrictAccess");
+
+                //save it
+                FileManager.Write($"{dest}\\{fileNameWithoutExtension}Controller.cs", template);
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     private void CreateBeUoW(string[] files, string projectName)
@@ -270,6 +304,9 @@ public class TommyService:BaseService
 
                 //factory
                 FileManager.Append(Path.Combine(_factory, @"FilterModels.txt"), $"services.AddScoped<{fileNameWithoutExtension}FilterModel>();");
+
+                //mapper
+                FileManager.Append(Path.Combine(_mapper, "FilterModels.txt"), $"CreateMap<{fileNameWithoutExtension}, {fileNameWithoutExtension}FilterModel>().ReverseMap();");
             }
         }
         catch (Exception)

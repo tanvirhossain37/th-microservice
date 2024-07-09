@@ -60,7 +60,7 @@ namespace TH.AuthMS.Infra
             {
                 options.AddPolicy("ClaimBasedPolicy", policy =>
                 {
-                    policy.Requirements.Add(new ConventionBasedRequirement());
+                    policy.Requirements.Add(new AuthConventionBasedRequirement());
                     //policy.RequireClaim("Test");
                 });
 
@@ -90,8 +90,9 @@ namespace TH.AuthMS.Infra
 
             //services.AddSingleton<TestRequirement>();
             //services.AddSingleton<ConventionBasedRequirement>();
+            services.AddHttpContextAccessor();
             services.AddSingleton<HttpContextAccessor>();
-            services.AddSingleton<IAuthorizationHandler, ConventionBasedRequirementHandler>();
+            services.AddSingleton<IAuthorizationHandler, AuthConventionBasedRequirementHandler>();
 
             //Authentication
             services.AddAuthentication(options =>
