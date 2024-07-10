@@ -27,6 +27,7 @@ public partial class BranchService : BaseService, IBranchService
         entity.CreatedDate = DateTime.Now;
 
         ApplyValidationBl(entity);
+        await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
         ApplyOnSavingBl(entity, dataFilter);
@@ -66,6 +67,7 @@ public partial class BranchService : BaseService, IBranchService
 		existingEntity.IsDefault = entity.IsDefault;
 
         ApplyValidationBl(existingEntity);
+        await ApplyDuplicateOnUpdateBl(existingEntity, dataFilter);
 
         //Add your business logic here
         ApplyOnUpdatingBl(existingEntity, dataFilter);
@@ -248,15 +250,51 @@ public partial class BranchService : BaseService, IBranchService
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             
-			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException(Lang.Find("validation_error")) : entity.Id.Trim();
-			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException(Lang.Find("validation_error"));
-			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException(Lang.Find("validation_error")); }
-			entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException(Lang.Find("validation_error")) : entity.SpaceId.Trim();
-			entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException(Lang.Find("validation_error")) : entity.CompanyId.Trim();
+			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
+			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException($"{Lang.Find("validation_error")}: CreatedDate");
+			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate"); }
+			entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
+			entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException($"{Lang.Find("validation_error")}: CompanyId") : entity.CompanyId.Trim();
 			entity.Code = string.IsNullOrWhiteSpace(entity.Code) ? Util.TryGenerateCode() : entity.Code.Trim();
-			entity.Name = string.IsNullOrWhiteSpace(entity.Name) ? throw new CustomException(Lang.Find("validation_error")) : entity.Name.Trim();
+			entity.Name = string.IsNullOrWhiteSpace(entity.Name) ? throw new CustomException($"{Lang.Find("validation_error")}: Name") : entity.Name.Trim();
             
 			if (entity.BranchUsers == null) entity.BranchUsers = new List<BranchUser>();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private async Task ApplyDuplicateOnSaveBl(Branch entity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            
+		var existingEntityByName = await Repo.BranchRepo.FindByNameAsync(entity.SpaceId, entity.CompanyId, entity.Name, dataFilter);
+		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
+		var existingEntityByCode = await Repo.BranchRepo.FindByCodeAsync(entity.SpaceId, entity.CompanyId, entity.Code, dataFilter);
+		if (existingEntityByCode is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Code");
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private async Task ApplyDuplicateOnUpdateBl(Branch entity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            
+		var existingEntityByName = await Repo.BranchRepo.FindByNameExceptMeAsync(entity.Id, entity.SpaceId, entity.CompanyId, entity.Name, dataFilter);
+		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
+		var existingEntityByCode = await Repo.BranchRepo.FindByCodeExceptMeAsync(entity.Id, entity.SpaceId, entity.CompanyId, entity.Code, dataFilter);
+		if (existingEntityByCode is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Code");
         }
         catch (Exception)
         {

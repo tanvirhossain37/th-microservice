@@ -5,9 +5,9 @@
         code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (e.Code.Equals(code, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.SpaceId.Equals(spaceId, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.CompanyId.Equals(companyId, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (e.Code.Equals(code)) &&
+            (e.SpaceId.Equals(spaceId)) &&
+            (e.CompanyId.Equals(companyId)), dataFilter);
     }
 
     public async Task<$WE$> FindByCodeExceptMeAsync(string id, string spaceId, string companyId, string code, DataFilter dataFilter)
@@ -18,8 +18,8 @@
         code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (!e.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.Code.Equals(code, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.SpaceId.Equals(spaceId, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.CompanyId.Equals(companyId, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (!e.Id.Equals(id)) &&
+            (e.Code.Equals(code)) &&
+            (e.SpaceId.Equals(spaceId)) &&
+            (e.CompanyId.Equals(companyId)), dataFilter);
     }

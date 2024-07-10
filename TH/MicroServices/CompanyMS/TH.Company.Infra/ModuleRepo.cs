@@ -15,7 +15,7 @@ public partial class ModuleRepo : RepoSQL<Module>, IModuleRepo
         name = string.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (e.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (e.Name.Equals(name)), dataFilter);
     }
 
     public async Task<Module> FindByNameExceptMeAsync(string id, string name, DataFilter dataFilter)
@@ -24,15 +24,15 @@ public partial class ModuleRepo : RepoSQL<Module>, IModuleRepo
         name = string.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (!e.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (!e.Id.Equals(id)) &&
+            (e.Name.Equals(name)), dataFilter);
     }
     public async Task<Module> FindByCodeAsync(string code, DataFilter dataFilter)
     {
         code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (e.Code.Equals(code, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (e.Code.Equals(code)), dataFilter);
     }
 
     public async Task<Module> FindByCodeExceptMeAsync(string id, string code, DataFilter dataFilter)
@@ -41,7 +41,7 @@ public partial class ModuleRepo : RepoSQL<Module>, IModuleRepo
         code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (!e.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.Code.Equals(code, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (!e.Id.Equals(id)) &&
+            (e.Code.Equals(code)), dataFilter);
     }
 }

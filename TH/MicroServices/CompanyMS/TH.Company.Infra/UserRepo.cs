@@ -17,9 +17,9 @@ public partial class UserRepo : RepoSQL<User>, IUserRepo
         name = string.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (e.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.SpaceId.Equals(spaceId, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.CompanyId.Equals(companyId, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (e.Name.Equals(name)) &&
+            (e.SpaceId.Equals(spaceId)) &&
+            (e.CompanyId.Equals(companyId)), dataFilter);
     }
 
     public async Task<User> FindByNameExceptMeAsync(string id, string spaceId, string companyId, string name, DataFilter dataFilter)
@@ -30,10 +30,10 @@ public partial class UserRepo : RepoSQL<User>, IUserRepo
         name = string.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (!e.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.SpaceId.Equals(spaceId, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.CompanyId.Equals(companyId, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (!e.Id.Equals(id)) &&
+            (e.Name.Equals(name)) &&
+            (e.SpaceId.Equals(spaceId)) &&
+            (e.CompanyId.Equals(companyId)), dataFilter);
     }
 
 }

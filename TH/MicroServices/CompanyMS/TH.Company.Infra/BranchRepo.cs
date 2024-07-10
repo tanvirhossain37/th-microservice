@@ -17,9 +17,9 @@ public partial class BranchRepo : RepoSQL<Branch>, IBranchRepo
         name = string.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (e.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.SpaceId.Equals(spaceId, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.CompanyId.Equals(companyId, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (e.Name.Equals(name)) &&
+            (e.SpaceId.Equals(spaceId)) &&
+            (e.CompanyId.Equals(companyId)), dataFilter);
     }
 
     public async Task<Branch> FindByNameExceptMeAsync(string id, string spaceId, string companyId, string name, DataFilter dataFilter)
@@ -30,10 +30,10 @@ public partial class BranchRepo : RepoSQL<Branch>, IBranchRepo
         name = string.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (!e.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.SpaceId.Equals(spaceId, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.CompanyId.Equals(companyId, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (!e.Id.Equals(id)) &&
+            (e.Name.Equals(name)) &&
+            (e.SpaceId.Equals(spaceId)) &&
+            (e.CompanyId.Equals(companyId)), dataFilter);
     }
     public async Task<Branch> FindByCodeAsync(string spaceId, string companyId, string code, DataFilter dataFilter)
     {
@@ -42,9 +42,9 @@ public partial class BranchRepo : RepoSQL<Branch>, IBranchRepo
         code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (e.Code.Equals(code, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.SpaceId.Equals(spaceId, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.CompanyId.Equals(companyId, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (e.Code.Equals(code)) &&
+            (e.SpaceId.Equals(spaceId)) &&
+            (e.CompanyId.Equals(companyId)), dataFilter);
     }
 
     public async Task<Branch> FindByCodeExceptMeAsync(string id, string spaceId, string companyId, string code, DataFilter dataFilter)
@@ -55,9 +55,9 @@ public partial class BranchRepo : RepoSQL<Branch>, IBranchRepo
         code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (!e.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.Code.Equals(code, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.SpaceId.Equals(spaceId, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.CompanyId.Equals(companyId, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (!e.Id.Equals(id)) &&
+            (e.Code.Equals(code)) &&
+            (e.SpaceId.Equals(spaceId)) &&
+            (e.CompanyId.Equals(companyId)), dataFilter);
     }
 }

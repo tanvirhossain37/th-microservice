@@ -16,8 +16,8 @@ public partial class CompanyRepo : RepoSQL<Company>, ICompanyRepo
         name = string.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (e.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.SpaceId.Equals(spaceId, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (e.Name.Equals(name)) &&
+            (e.SpaceId.Equals(spaceId)), dataFilter);
     }
 
     public async Task<Company> FindByNameExceptMeAsync(string id, string spaceId, string name, DataFilter dataFilter)
@@ -27,9 +27,9 @@ public partial class CompanyRepo : RepoSQL<Company>, ICompanyRepo
         name = string.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : name.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (!e.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.SpaceId.Equals(spaceId, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (!e.Id.Equals(id)) &&
+            (e.Name.Equals(name)) &&
+            (e.SpaceId.Equals(spaceId)), dataFilter);
     }
     public async Task<Company> FindByCodeAsync(string spaceId, string code, DataFilter dataFilter)
     {
@@ -37,8 +37,8 @@ public partial class CompanyRepo : RepoSQL<Company>, ICompanyRepo
         code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (e.Code.Equals(code, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.SpaceId.Equals(spaceId, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (e.Code.Equals(code)) &&
+            (e.SpaceId.Equals(spaceId)), dataFilter);
     }
 
     public async Task<Company> FindByCodeExceptMeAsync(string id, string spaceId, string code, DataFilter dataFilter)
@@ -48,8 +48,8 @@ public partial class CompanyRepo : RepoSQL<Company>, ICompanyRepo
         code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (!e.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.Code.Equals(code, StringComparison.InvariantCultureIgnoreCase)) &&
-            (e.SpaceId.Equals(spaceId, StringComparison.InvariantCultureIgnoreCase)), dataFilter);
+            (!e.Id.Equals(id)) &&
+            (e.Code.Equals(code)) &&
+            (e.SpaceId.Equals(spaceId)), dataFilter);
     }
 }

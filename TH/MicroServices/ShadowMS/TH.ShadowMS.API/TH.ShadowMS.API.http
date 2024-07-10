@@ -1,0 +1,6 @@
+@TH.ShadowMS.API_HostAddress = http://localhost:5253
+
+GET {{TH.ShadowMS.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

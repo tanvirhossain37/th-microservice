@@ -25,6 +25,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
         entity.CreatedDate = DateTime.Now;
 
         ApplyValidationBl(entity);
+        await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
         ApplyOnSavingBl(entity, dataFilter);
@@ -58,6 +59,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
 		existingEntity.RoleId = entity.RoleId;
 
         ApplyValidationBl(existingEntity);
+        await ApplyDuplicateOnUpdateBl(existingEntity, dataFilter);
 
         //Add your business logic here
         ApplyOnUpdatingBl(existingEntity, dataFilter);
@@ -225,13 +227,41 @@ public partial class UserRoleService : BaseService, IUserRoleService
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             
-			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException(Lang.Find("validation_error")) : entity.Id.Trim();
-			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException(Lang.Find("validation_error"));
-			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException(Lang.Find("validation_error")); }
-			entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException(Lang.Find("validation_error")) : entity.SpaceId.Trim();
-			entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException(Lang.Find("validation_error")) : entity.CompanyId.Trim();
-			entity.UserId = string.IsNullOrWhiteSpace(entity.UserId) ? throw new CustomException(Lang.Find("validation_error")) : entity.UserId.Trim();
-			entity.RoleId = string.IsNullOrWhiteSpace(entity.RoleId) ? throw new CustomException(Lang.Find("validation_error")) : entity.RoleId.Trim();
+			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
+			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException($"{Lang.Find("validation_error")}: CreatedDate");
+			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate"); }
+			entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
+			entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException($"{Lang.Find("validation_error")}: CompanyId") : entity.CompanyId.Trim();
+			entity.UserId = string.IsNullOrWhiteSpace(entity.UserId) ? throw new CustomException($"{Lang.Find("validation_error")}: UserId") : entity.UserId.Trim();
+			entity.RoleId = string.IsNullOrWhiteSpace(entity.RoleId) ? throw new CustomException($"{Lang.Find("validation_error")}: RoleId") : entity.RoleId.Trim();
+            
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private async Task ApplyDuplicateOnSaveBl(UserRole entity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private async Task ApplyDuplicateOnUpdateBl(UserRole entity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             
         }
         catch (Exception)

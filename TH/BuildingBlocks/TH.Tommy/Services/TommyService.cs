@@ -150,6 +150,8 @@ public class TommyService:BaseService
                 string updateQuery = GetUpdateOrDeleteQuery(lines, fileNameWithoutExtension);
                 string deleteQuery = GetUpdateOrDeleteQuery(lines, fileNameWithoutExtension);
                 string findQuery = GetFindQuery(lines, fileNameWithoutExtension);
+                string saveDuplicate = GetSaveDuplicate(lines, fileNameWithoutExtension);
+                string updateDuplicate = GetUpdateDuplicate(lines, fileNameWithoutExtension);
 
                 //get template
 
@@ -185,6 +187,8 @@ public class TommyService:BaseService
                 serviceTemplate = serviceTemplate.Replace("//todo updateQuery", updateQuery);
                 serviceTemplate = serviceTemplate.Replace("//todo deleteQuery", deleteQuery);
                 serviceTemplate = serviceTemplate.Replace("//todo findQuery", findQuery);
+                serviceTemplate = serviceTemplate.Replace("//todo duplicate save", saveDuplicate);
+                serviceTemplate = serviceTemplate.Replace("//todo duplicate update", updateDuplicate);
 
                 #endregion
 
@@ -213,8 +217,8 @@ public class TommyService:BaseService
             throw;
         }
     }
-
-  private void CreateBeRepos(string file, string[] files, string projectName)
+    
+    private void CreateBeRepos(string file, string[] files, string projectName)
     {
         try
         {
@@ -1146,7 +1150,7 @@ public class TommyService:BaseService
                     content = string.Concat(content,
                         line.Contains("?")
                             ? $"\n\t\t\tif ((!entity.{fieldName}.HasValue) || (entity.{fieldName} <= 0)) entity.{fieldName} = null;"
-                            : $"\n\t\t\tif (entity.{fieldName} <= 0) throw new CustomException(Lang.Find(\"validation_error\"));");
+                            : $"\n\t\t\tif (entity.{fieldName} <= 0) throw new CustomException($\"{{Lang.Find(\"validation_error\")}}: {fieldName}\");");
 
                 }
                 else if (typeName.Contains("decimal"))
@@ -1154,7 +1158,7 @@ public class TommyService:BaseService
                     content = string.Concat(content,
                         line.Contains("?")
                             ? $"\n\t\t\tif ((!entity.{fieldName}.HasValue) || (entity.{fieldName} < 0)) entity.{fieldName} = null;"
-                            : $"\n\t\t\tif (entity.{fieldName} < 0) throw new CustomException(Lang.Find(\"validation_error\"));");
+                            : $"\n\t\t\tif (entity.{fieldName} < 0) throw new CustomException($\"{{Lang.Find(\"validation_error\")}}: {fieldName}\");");
                 }
                 else if (typeName.Contains("string"))
                 {
@@ -1168,7 +1172,7 @@ public class TommyService:BaseService
                         content = string.Concat(content,
                             line.Contains("?")
                                 ? $"\n\t\t\tentity.{fieldName} = string.IsNullOrWhiteSpace(entity.{fieldName}) ? string.Empty : entity.{fieldName}.Trim();"
-                                : $"\n\t\t\tentity.{fieldName} = string.IsNullOrWhiteSpace(entity.{fieldName}) ? throw new CustomException(Lang.Find(\"validation_error\")) : entity.{fieldName}.Trim();");
+                                : $"\n\t\t\tentity.{fieldName} = string.IsNullOrWhiteSpace(entity.{fieldName}) ? throw new CustomException($\"{{Lang.Find(\"validation_error\")}}: {fieldName}\") : entity.{fieldName}.Trim();");
                     }
                 }
                 else if (typeName.Contains("bool"))
@@ -1183,11 +1187,11 @@ public class TommyService:BaseService
                     if (line.Contains("?"))
                     {
                         content = string.Concat(content,
-                            $"\n\t\t\tif (entity.{fieldName}.HasValue) {{ if (!Util.TryIsValidDate((DateTime)entity.{fieldName})) throw new CustomException(Lang.Find(\"validation_error\")); }}");
+                            $"\n\t\t\tif (entity.{fieldName}.HasValue) {{ if (!Util.TryIsValidDate((DateTime)entity.{fieldName})) throw new CustomException($\"{{Lang.Find(\"validation_error\")}}: {fieldName}\"); }}");
                     }
                     else
                     {
-                        content = string.Concat(content, $"\n\t\t\tif (!Util.TryIsValidDate(entity.{fieldName})) throw new CustomException(Lang.Find(\"validation_error\"));");
+                        content = string.Concat(content, $"\n\t\t\tif (!Util.TryIsValidDate(entity.{fieldName})) throw new CustomException($\"{{Lang.Find(\"validation_error\")}}: {fieldName}\");");
                     }
                 }
                 else if (typeName.Contains("TimeSpan"))
@@ -1195,11 +1199,11 @@ public class TommyService:BaseService
                     if (line.Contains("?"))
                     {
                         content = string.Concat(content,
-                            $"\n\t\t\tif (entity.{fieldName}.HasValue) {{ if (!Util.DateUtil.IsValidTime((TimeSpan)entity.{fieldName})) throw new CustomException(Lang.Find(\"validation_error\")); }}");
+                            $"\n\t\t\tif (entity.{fieldName}.HasValue) {{ if (!Util.DateUtil.IsValidTime((TimeSpan)entity.{fieldName})) throw new CustomException($\"{{Lang.Find(\"validation_error\")}}: {fieldName}\"); }}");
                     }
                     else
                     {
-                        content = string.Concat(content, $"\n\t\t\tif (!Util.DateUtil.IsValidTime(entity.{fieldName})) throw new CustomException(Lang.Find(\"validation_error\"));");
+                        content = string.Concat(content, $"\n\t\t\tif (!Util.DateUtil.IsValidTime(entity.{fieldName})) throw new CustomException($\"{{Lang.Find(\"validation_error\")}}: {fieldName}\");");
                     }
                 }
             }
@@ -1488,7 +1492,6 @@ public class TommyService:BaseService
         }
     }
 
-
     private bool DoesTheWordExist(string word, IEnumerable<string> lines)
     {
         try
@@ -1508,6 +1511,148 @@ public class TommyService:BaseService
             }
 
             return false;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private string GetSaveDuplicate(IEnumerable<string> lines, string fileNameWithoutExtension)
+    {
+        try
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+            fileNameWithoutExtension = string.IsNullOrWhiteSpace(fileNameWithoutExtension)
+                ? throw new ArgumentNullException(nameof(fileNameWithoutExtension))
+                : fileNameWithoutExtension.Trim();
+
+            var content = string.Empty;
+            var hasName = DoesTheWordExist("Name", lines);
+            var hasCode = DoesTheWordExist("Code", lines);
+            var hasSpace = DoesTheWordExist("SpaceId", lines);
+            var hasCompany = DoesTheWordExist("CompanyId", lines);
+
+            if (hasName)
+            {
+                if (hasSpace && hasCompany)
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByName = await Repo.{fileNameWithoutExtension}Repo.FindByNameAsync(entity.SpaceId, entity.CompanyId, entity.Name, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByName is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Name\");");
+                }
+                else if (hasSpace)
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByName = await Repo.{fileNameWithoutExtension}Repo.FindByNameAsync(entity.SpaceId, entity.Name, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByName is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Name\");");
+                }
+                else if (hasCompany)
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByName = await Repo.{fileNameWithoutExtension}Repo.FindByNameAsync(entity.CompanyId, entity.Name, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByName is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Name\");");
+                }
+                else
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByName = await Repo.{fileNameWithoutExtension}Repo.FindByNameAsync(entity.Name, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByName is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Name\");");
+                }
+            }
+
+            if(hasCode)
+            {
+                if (hasSpace && hasCompany)
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByCode = await Repo.{fileNameWithoutExtension}Repo.FindByCodeAsync(entity.SpaceId, entity.CompanyId, entity.Code, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByCode is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Code\");");
+                }
+                else if (hasSpace)
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByCode = await Repo.{fileNameWithoutExtension}Repo.FindByCodeAsync(entity.SpaceId, entity.Code, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByCode is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Code\");");
+                }
+                else if (hasCompany)
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByCode = await Repo.{fileNameWithoutExtension}Repo.FindByCodeAsync(entity.CompanyId, entity.Code, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByCode is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Code\");");
+                }
+                else
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByCode = await Repo.{fileNameWithoutExtension}Repo.FindByCodeAsync(entity.Code, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByCode is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Code\");");
+                }
+            }
+
+            return content;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private string GetUpdateDuplicate(IEnumerable<string> lines, string fileNameWithoutExtension)
+    {
+        try
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+            fileNameWithoutExtension = string.IsNullOrWhiteSpace(fileNameWithoutExtension)
+                ? throw new ArgumentNullException(nameof(fileNameWithoutExtension))
+                : fileNameWithoutExtension.Trim();
+
+            var content = string.Empty;
+            var hasName = DoesTheWordExist("Name", lines);
+            var hasCode = DoesTheWordExist("Code", lines);
+            var hasSpace = DoesTheWordExist("SpaceId", lines);
+            var hasCompany = DoesTheWordExist("CompanyId", lines);
+
+            if (hasName)
+            {
+                if (hasSpace && hasCompany)
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByName = await Repo.{fileNameWithoutExtension}Repo.FindByNameExceptMeAsync(entity.Id, entity.SpaceId, entity.CompanyId, entity.Name, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByName is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Name\");");
+                }
+                else if (hasSpace)
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByName = await Repo.{fileNameWithoutExtension}Repo.FindByNameExceptMeAsync(entity.Id, entity.SpaceId, entity.Name, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByName is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Name\");");
+                }
+                else if (hasCompany)
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByName = await Repo.{fileNameWithoutExtension}Repo.FindByNameExceptMeAsync(entity.Id, entity.CompanyId, entity.Name, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByName is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Name\");");
+                }
+                else
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByName = await Repo.{fileNameWithoutExtension}Repo.FindByNameExceptMeAsync(entity.Id, entity.Name, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByName is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Name\");");
+                }
+            }
+
+            if (hasCode)
+            {
+                if (hasSpace && hasCompany)
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByCode = await Repo.{fileNameWithoutExtension}Repo.FindByCodeExceptMeAsync(entity.Id, entity.SpaceId, entity.CompanyId, entity.Code, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByCode is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Code\");");
+                }
+                else if (hasSpace)
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByCode = await Repo.{fileNameWithoutExtension}Repo.FindByCodeExceptMeAsync(entity.Id, entity.SpaceId, entity.Code, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByCode is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Code\");");
+                }
+                else if (hasCompany)
+                {
+                    content = string.Concat(content, $"\n\t\tvar existingEntityByCode = await Repo.{fileNameWithoutExtension}Repo.FindByCodeExceptMeAsync(entity.Id, entity.CompanyId, entity.Code, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByCode is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Code\");");
+                }
+                else
+                {
+                    content = string.Concat(content, $"\n\t\t var existingEntityByCode = await Repo.{fileNameWithoutExtension}Repo.FindByCodeExceptMeAsync(entity.Id, entity.Code, dataFilter);");
+                    content = string.Concat(content, $"\n\t\tif (existingEntityByCode is not null) throw new CustomException($\"{{Lang.Find(\"error_duplicate\")}}: Code\");");
+                }
+            }
+
+            return content;
         }
         catch (Exception)
         {

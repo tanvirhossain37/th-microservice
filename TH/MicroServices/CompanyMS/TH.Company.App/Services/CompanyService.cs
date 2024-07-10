@@ -37,6 +37,7 @@ public partial class CompanyService : BaseService, ICompanyService
         entity.CreatedDate = DateTime.Now;
 
         ApplyValidationBl(entity);
+        await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
         ApplyOnSavingBl(entity, dataFilter);
@@ -103,6 +104,7 @@ public partial class CompanyService : BaseService, ICompanyService
 		existingEntity.Logo = entity.Logo;
 
         ApplyValidationBl(existingEntity);
+        await ApplyDuplicateOnUpdateBl(existingEntity, dataFilter);
 
         //Add your business logic here
         ApplyOnUpdatingBl(existingEntity, dataFilter);
@@ -365,11 +367,11 @@ public partial class CompanyService : BaseService, ICompanyService
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             
-			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException(Lang.Find("validation_error")) : entity.Id.Trim();
-			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException(Lang.Find("validation_error"));
-			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException(Lang.Find("validation_error")); }
-			entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException(Lang.Find("validation_error")) : entity.SpaceId.Trim();
-			entity.Name = string.IsNullOrWhiteSpace(entity.Name) ? throw new CustomException(Lang.Find("validation_error")) : entity.Name.Trim();
+			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
+			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException($"{Lang.Find("validation_error")}: CreatedDate");
+			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate"); }
+			entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
+			entity.Name = string.IsNullOrWhiteSpace(entity.Name) ? throw new CustomException($"{Lang.Find("validation_error")}: Name") : entity.Name.Trim();
 			entity.Code = string.IsNullOrWhiteSpace(entity.Code) ? Util.TryGenerateCode() : entity.Code.Trim();
 			entity.Website = string.IsNullOrWhiteSpace(entity.Website) ? string.Empty : entity.Website.Trim();
 			entity.Slogan = string.IsNullOrWhiteSpace(entity.Slogan) ? string.Empty : entity.Slogan.Trim();
@@ -381,6 +383,42 @@ public partial class CompanyService : BaseService, ICompanyService
 			if (entity.Roles == null) entity.Roles = new List<Role>();
 			if (entity.UserRoles == null) entity.UserRoles = new List<UserRole>();
 			if (entity.Users == null) entity.Users = new List<User>();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private async Task ApplyDuplicateOnSaveBl(Company entity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            
+		var existingEntityByName = await Repo.CompanyRepo.FindByNameAsync(entity.SpaceId, entity.Name, dataFilter);
+		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
+		var existingEntityByCode = await Repo.CompanyRepo.FindByCodeAsync(entity.SpaceId, entity.Code, dataFilter);
+		if (existingEntityByCode is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Code");
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private async Task ApplyDuplicateOnUpdateBl(Company entity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            
+		var existingEntityByName = await Repo.CompanyRepo.FindByNameExceptMeAsync(entity.Id, entity.SpaceId, entity.Name, dataFilter);
+		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
+		var existingEntityByCode = await Repo.CompanyRepo.FindByCodeExceptMeAsync(entity.Id, entity.SpaceId, entity.Code, dataFilter);
+		if (existingEntityByCode is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Code");
         }
         catch (Exception)
         {

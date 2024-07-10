@@ -25,6 +25,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
         entity.CreatedDate = DateTime.Now;
 
         ApplyValidationBl(entity);
+        await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
         ApplyOnSavingBl(entity, dataFilter);
@@ -56,6 +57,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
         //we todo update
 
         ApplyValidationBl(existingEntity);
+        await ApplyDuplicateOnUpdateBl(existingEntity, dataFilter);
 
         //Add your business logic here
         ApplyOnUpdatingBl(existingEntity, dataFilter);
@@ -212,6 +214,34 @@ public partial class $WE$Service : BaseService, I$WE$Service
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             //we todo validation
             //we todo list validation
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private async Task ApplyDuplicateOnSaveBl($WE$ entity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            //todo duplicate save
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private async Task ApplyDuplicateOnUpdateBl($WE$ entity, DataFilter dataFilter)
+    {
+        try
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            //todo duplicate update
         }
         catch (Exception)
         {
