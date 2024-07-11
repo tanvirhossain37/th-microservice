@@ -77,6 +77,8 @@ namespace TH.AuthMS.Infra
                     new Claim("Company", "update"),
                     new Claim("Company", "softdelete"),
                     new Claim("Company", "delete"),
+                    new Claim("Shadow", "Read"),
+                    new Claim("Shadow", "Write")
                 };
             }
 

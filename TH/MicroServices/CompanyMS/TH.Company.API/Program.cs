@@ -1,5 +1,6 @@
 
 using System.Reflection;
+using TH.Common.Model;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Infra;
 
@@ -15,7 +16,7 @@ namespace TH.CompanyMS.API
 
             //builder.Services.AddControllers();
             //Tanvir
-            builder.Services.AddControllers(c => c.Filters.Add(new CustomExceptionFilter()));
+            builder.Services.AddControllers(c => c.Filters.Add(new CommonCustomExceptionFilter()));
 
             //Tanvir
             builder.Services.AddAppDependencyInjection(builder.Configuration);
@@ -54,8 +55,8 @@ namespace TH.CompanyMS.API
             app.UseHttpsRedirection();
 
             //Tanvir
-            app.UseAuthentication();// MUST be before app.UseAuthorization();
-            app.UseCors(CorsPolicy);//tanvir
+            app.UseAuthentication(); // MUST be before app.UseAuthorization();
+            app.UseCors(CorsPolicy); //tanvir
             app.UseAuthorization();
 
 

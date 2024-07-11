@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TH.CompanyMS.App
+namespace TH.ShadowMS.App
 {
     public class CustomException(string message) : Exception(message);
 }

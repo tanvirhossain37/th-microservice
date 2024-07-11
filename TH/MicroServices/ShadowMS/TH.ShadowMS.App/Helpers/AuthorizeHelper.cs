@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TH.CompanyMS.App
+namespace TH.ShadowMS.App
 {
     public static class AuthorizeHelper
     {

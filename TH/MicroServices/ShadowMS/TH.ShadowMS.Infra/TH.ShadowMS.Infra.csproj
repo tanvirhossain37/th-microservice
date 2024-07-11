@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\TH.Repo\TH.Repo.csproj" />
     <ProjectReference Include="..\TH.ShadowMS.App\TH.ShadowMS.App.csproj" />
     <ProjectReference Include="..\TH.ShadowMS.Core\TH.ShadowMS.Core.csproj" />
   </ItemGroup>

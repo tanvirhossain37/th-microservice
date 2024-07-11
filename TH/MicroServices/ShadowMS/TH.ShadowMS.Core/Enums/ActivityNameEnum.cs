@@ -1,4 +1,4 @@
-﻿namespace TH.ShadowMS.Core.Enums;
+﻿namespace TH.ShadowMS.Core;
 
 public enum ActivityNameEnum : int
 {

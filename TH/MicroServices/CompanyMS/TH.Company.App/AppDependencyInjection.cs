@@ -55,6 +55,5 @@ public static class AppDependencyInjection
         services.AddScoped<IUserRoleService, UserRoleService>();
 
         return services;
-
     }
 }

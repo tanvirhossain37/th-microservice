@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
-namespace TH.CompanyMS.App;
+namespace TH.ShadowMS.App;
 
 public static class Extensions
 {

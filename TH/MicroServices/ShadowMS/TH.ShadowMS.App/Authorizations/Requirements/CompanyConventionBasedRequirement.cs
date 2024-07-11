@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace TH.CompanyMS.App;
+namespace TH.ShadowMS.App;
 
 public class CompanyConventionBasedRequirement: IAuthorizationRequirement
 {

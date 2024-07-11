@@ -85,8 +85,8 @@ public class RepoSQL<TEntity> : IRepoSQL<TEntity> where TEntity : class
     //}
 
     public async Task<IEnumerable<TEntity>> GetQueryableAsync(Expression<Func<TEntity, bool>> predicate,
-        Expression<Func<TEntity, object>> includePredicate, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy, int pageIndex = 1,
-        int pageSize = 10,
+        Expression<Func<TEntity, object>> includePredicate, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy,
+        int pageIndex = (int)PageEnum.PageIndex, int pageSize = (int)PageEnum.PageSize,
         DataFilter dataFilter = new DataFilter())
     {
         if (predicate == null) throw new ArgumentNullException(nameof(predicate));
@@ -112,7 +112,8 @@ public class RepoSQL<TEntity> : IRepoSQL<TEntity> where TEntity : class
     }
 
     public async Task<IEnumerable<TEntity>> GetFilterableAsync(IList<Expression<Func<TEntity, bool>>> predicates,
-        IList<Expression<Func<TEntity, object>>> includePredicates, IList<SortFilter> sortFilters, int pageIndex = 1, int pageSize = 10,
+        IList<Expression<Func<TEntity, object>>> includePredicates, IList<SortFilter> sortFilters, int pageIndex = (int)PageEnum.PageIndex,
+        int pageSize = (int)PageEnum.PageSize,
         DataFilter dataFilter = new DataFilter())
     {
         if (predicates == null) throw new ArgumentNullException(nameof(predicates));

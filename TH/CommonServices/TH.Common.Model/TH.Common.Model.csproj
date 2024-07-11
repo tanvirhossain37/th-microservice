@@ -8,10 +8,16 @@
 
   <ItemGroup>
     <PackageReference Include="CoreApiResponse" Version="1.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Structs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TH.Common.Lang\TH.Common.Lang.csproj" />
   </ItemGroup>
 
 </Project>
