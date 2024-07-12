@@ -28,9 +28,7 @@ public class ShadowService : IShadowService
 
         return entity;
     }
-
-
-
+    
     public async Task<Shadow> UpdateAsync(Shadow entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));

@@ -1,4 +1,6 @@
 using System.Linq.Expressions;
+using AutoMapper;
+using MassTransit;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
@@ -17,7 +19,7 @@ public partial class CompanyService : BaseService, ICompanyService
 	protected readonly IUserRoleService UserRoleService;
 	protected readonly IUserService UserService;
         
-    public CompanyService(IUow repo, IBranchUserService branchUserService, IBranchService branchService, IPermissionService permissionService, IRoleService roleService, IUserRoleService userRoleService, IUserService userService) : base()
+    public CompanyService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IBranchUserService branchUserService, IBranchService branchService, IPermissionService permissionService, IRoleService roleService, IUserRoleService userRoleService, IUserService userService) : base(mapper,publishEndpoint)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
         
@@ -299,6 +301,8 @@ public partial class CompanyService : BaseService, ICompanyService
 
             //Add your business logic here
             ApplyOnGetBl(filter, dataFilter);
+
+            
 
             #region Filters
             //Add your custom filter here

@@ -13,6 +13,7 @@ namespace TH.Common.Model
     {
         public DataFilter DataFilter { get; set; }
         public string BaseUrl { get; set; }
+        public UserResolver UserResolver { get; set; }
 
         public CustomBaseController()
         {
@@ -21,6 +22,7 @@ namespace TH.Common.Model
                 IncludeInactive = false
             };
             BaseUrl = "http://localhost:5000";
+            UserResolver.UserName = HttpContext.User.Identity.Name;
         }
 
         public abstract void Dispose();

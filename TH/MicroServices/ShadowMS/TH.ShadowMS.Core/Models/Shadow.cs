@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using TH.Common.Core;
 
 namespace TH.ShadowMS.Core;
 

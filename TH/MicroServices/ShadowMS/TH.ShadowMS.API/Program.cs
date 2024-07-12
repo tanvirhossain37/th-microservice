@@ -1,8 +1,9 @@
-
 using System.Reflection;
+using MassTransit;
 using TH.Common.Model;
 using TH.ShadowMS.App;
 using TH.ShadowMS.Infra;
+using TH.EventBus.Messages;
 
 namespace TH.ShadowMS.API
 {
@@ -29,6 +30,20 @@ namespace TH.ShadowMS.API
 
             //AutoMapper
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            //RabbitMQ Config
+            builder.Services.AddMassTransit(config =>
+            {
+                config.AddConsumer<ShadowEventConsumer>();
+                config.UsingRabbitMq((ctx, cfg) =>
+                {
+                    cfg.Host(builder.Configuration.GetSection("EventBus:Host").Value);
+                    cfg.ReceiveEndpoint(EventBus.Messages.EventBus.EmailQueue, c =>
+                    {
+                        c.ConfigureConsumer<ShadowEventConsumer>(ctx);
+                    });
+                });
+            });
 
             const string CorsPolicy = "_corsPolicy";
 

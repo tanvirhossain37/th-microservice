@@ -1,18 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
 using MassTransit;
-using MongoDB.Driver.Core.Operations;
-using TH.AddressMS.App;
-using TH.AuthMS.App;
 using TH.AuthMS.Core;
 using TH.Common.Lang;
 using TH.EventBus.Messages;
-using TH.UserSvc.App;
 
 namespace TH.AuthMS.App
 {

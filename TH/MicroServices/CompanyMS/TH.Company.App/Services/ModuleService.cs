@@ -1,4 +1,6 @@
 using System.Linq.Expressions;
+using AutoMapper;
+using MassTransit;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
@@ -13,7 +15,7 @@ public partial class ModuleService : BaseService, IModuleService
 	//protected readonly IModuleService ModuleService;
 	protected readonly IPermissionService PermissionService;
         
-    public ModuleService(IUow repo, IPermissionService permissionService) : base()
+    public ModuleService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IPermissionService permissionService) : base(mapper,publishEndpoint)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
         

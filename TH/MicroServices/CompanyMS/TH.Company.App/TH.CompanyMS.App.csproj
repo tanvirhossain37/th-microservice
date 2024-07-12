@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\TH.EventBus.Messages\TH.EventBus.Messages.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\TH.Repo\TH.Repo.csproj" />
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Lang\TH.Common.Lang.csproj" />
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Model\TH.Common.Model.csproj" />

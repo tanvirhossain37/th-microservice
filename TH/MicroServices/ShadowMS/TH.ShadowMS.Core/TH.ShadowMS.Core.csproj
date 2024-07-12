@@ -10,4 +10,12 @@
     <PackageReference Include="MongoDB.Bson" Version="2.27.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Enums\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CommonServices\TH.Common.Model\TH.Common.Model.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,6 @@
 using System.Linq.Expressions;
+using AutoMapper;
+using MassTransit;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
@@ -11,7 +13,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
     protected readonly IUow Repo;
     //we todo dependency
         
-    public $WE$Service(IUow repo//we todo constructor inject) : base()
+    public $WE$Service(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper//we todo constructor inject) : base(mapper,publishEndpoint)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
         //we todo constructor

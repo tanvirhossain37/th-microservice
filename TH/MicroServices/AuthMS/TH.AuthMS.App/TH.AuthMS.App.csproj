@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\TH.EventBus.Messages\TH.EventBus.Messages.csproj" />
+    <ProjectReference Include="..\..\..\CommonServices\TH.Common.Lang\TH.Common.Lang.csproj" />
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Util\TH.Common.Util.csproj" />
     <ProjectReference Include="..\..\UserSvc\TH.UserSvc.App\TH.UserSvc.App.csproj" />
     <ProjectReference Include="..\TH.AuthMS.Core\TH.AuthMS.Core.csproj" />

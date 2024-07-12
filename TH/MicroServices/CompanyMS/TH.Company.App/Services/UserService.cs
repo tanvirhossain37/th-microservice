@@ -1,4 +1,6 @@
 using System.Linq.Expressions;
+using AutoMapper;
+using MassTransit;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
@@ -13,7 +15,7 @@ public partial class UserService : BaseService, IUserService
 	protected readonly IBranchUserService BranchUserService;
 	protected readonly IUserRoleService UserRoleService;
         
-    public UserService(IUow repo, IBranchUserService branchUserService, IUserRoleService userRoleService) : base()
+    public UserService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IBranchUserService branchUserService, IUserRoleService userRoleService) : base(mapper,publishEndpoint)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
         

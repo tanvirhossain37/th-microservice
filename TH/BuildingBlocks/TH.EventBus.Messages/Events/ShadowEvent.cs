@@ -1,17 +1,15 @@
 ﻿using TH.Common.Core;
-using TH.ShadowMS.Core;
 
-namespace TH.ShadowMS.App;
+namespace TH.EventBus.Messages;
 
-public partial class ShadowViewModel
+public class ShadowEvent : BaseEvent
 {
-    public string Id { get; set; } = null!;
     public string SpaceId { get; set; } = null!;
     public string ClientId { get; set; } = null!;
-    public DateTime CreatedDate { get; set; }
     public DateTime? ModifiedDate { get; set; }
     public bool Active { get; set; }
     public string UserName { get; set; }
     public ActivityNameEnum ActivityName { get; set; }
+
     public string Message { get; set; }
 }

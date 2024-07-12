@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="MassTransit" Version="8.2.3" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.3" />
@@ -22,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EventBusConsumers\" />
+    <Folder Include="NewFolder\" />
   </ItemGroup>
 
 </Project>

@@ -24,6 +24,7 @@ public class CommonConventionBasedRequirementHandler : AuthorizationHandler<Comm
         var requiredPermission = AuthorizeHelper.GetActionPermission(actionName);
 
         var user = context.User;
+        
         var claims = context.User.Claims;
 
         var userPermissions = AuthorizeHelper.GetPermissionsFromClaim(controllerName, claims);

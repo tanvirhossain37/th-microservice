@@ -43,6 +43,7 @@ public static class AddJwtDependencyInjection
 
         //services.AddSingleton<TestRequirement>();
         //services.AddSingleton<ConventionBasedRequirement>();
+
         services.AddHttpContextAccessor();
         services.AddSingleton<HttpContextAccessor>();
         services.AddSingleton<IAuthorizationHandler, CommonConventionBasedRequirementHandler>();
