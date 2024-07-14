@@ -1,6 +1,7 @@
 ﻿using System.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TH.Common.Model;
 using TH.CompanyMS.Core;
 
 namespace TH.CompanyMS.App;
@@ -53,6 +54,8 @@ public static class AppDependencyInjection
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRoleService, UserRoleService>();
+
+        services.AddEventBus(configuration);
 
         return services;
     }

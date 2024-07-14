@@ -20,7 +20,7 @@ namespace TH.AuthMS.API
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly JwtConfiguration _configuration;
 
-        public AuthController(IAuthService authService, IPublishEndpoint publishEndpoint, IOptions<JwtConfiguration> options)
+        public AuthController(IAuthService authService, IPublishEndpoint publishEndpoint, IOptions<JwtConfiguration> options, HttpContextAccessor httpContextAccessor):base(httpContextAccessor)
         {
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
             _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));

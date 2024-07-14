@@ -1,4 +1,4 @@
-﻿namespace TH.Common.Core;
+﻿namespace TH.Common.Model;
 
 public enum ActivityNameEnum : int
 {

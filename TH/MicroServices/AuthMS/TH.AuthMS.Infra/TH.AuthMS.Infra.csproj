@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CompanyMS\TH.Company.App\TH.CompanyMS.App.csproj" />
     <ProjectReference Include="..\TH.AuthMS.App\TH.AuthMS.App.csproj" />
   </ItemGroup>
 

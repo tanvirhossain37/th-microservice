@@ -14,12 +14,12 @@ public class ShadowEventConsumer : IConsumer<ShadowEvent>, IDisposable
     private readonly IMapper _mapper;
     private readonly DataFilter _dataFilter;
 
-    public ShadowEventConsumer(IShadowService shadowService, ILogger<ShadowEventConsumer> logger, IMapper mapper, DataFilter dataFilter)
+    public ShadowEventConsumer(IShadowService shadowService, ILogger<ShadowEventConsumer> logger, IMapper mapper)
     {
         _shadowService = shadowService ?? throw new ArgumentNullException(nameof(shadowService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _dataFilter = dataFilter;
+        _dataFilter = new DataFilter();
     }
 
     public async Task Consume(ConsumeContext<ShadowEvent> context)

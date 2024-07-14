@@ -4,10 +4,6 @@ public abstract class BaseEvent
 {
     public Guid Id { get; private set; }
     public DateTime CreatedDate { get; private set; }
-
-    public BaseEvent()
-    {
-        Id = Guid.NewGuid();
-        CreatedDate = DateTime.Now;
-    }
+    public DateTime? ModifiedDate { get; set; }
+    public bool Active { get; set; } = true;
 }

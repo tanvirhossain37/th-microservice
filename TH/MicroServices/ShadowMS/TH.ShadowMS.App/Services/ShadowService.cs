@@ -28,7 +28,7 @@ public class ShadowService : IShadowService
 
         return entity;
     }
-    
+
     public async Task<Shadow> UpdateAsync(Shadow entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
@@ -114,6 +114,11 @@ public class ShadowService : IShadowService
 
         entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
         if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException($"{Lang.Find("validation_error")}: CreatedDate");
+        if (entity.ModifiedDate.HasValue)
+        {
+            if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate");
+        }
+
         if (entity.ModifiedDate.HasValue)
         {
             if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate");

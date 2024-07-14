@@ -16,7 +16,7 @@ public class ShadowController : CustomBaseController
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public ShadowController(IShadowService shadowService, IMapper mapper, IServiceScopeFactory scopeFactory)
+    public ShadowController(IShadowService shadowService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
     {
         _shadowService = shadowService ?? throw new ArgumentNullException(nameof(shadowService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

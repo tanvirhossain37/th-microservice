@@ -1,20 +1,22 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using TH.Common.App;
 
 namespace TH.Common.Model;
 
-public static class AddJwtDependencyInjection
+public static class AddDependencyInjection
 {
     public static IServiceCollection AddJwtAuthorizationPolicies(this IServiceCollection services,
         IConfiguration configuration)
     {
-        var configurationRoot = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", true, true).Build();
+        var configurationRoot = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", true, true)
+            .Build();
 
         //Authorization
         services.AddAuthorization(options =>
@@ -40,20 +42,23 @@ public static class AddJwtDependencyInjection
             options.AddPolicy("DeletePolicy", policy => { policy.RequireClaim("Shadow", "Delete"); });
         });
 
-
-        //services.AddSingleton<TestRequirement>();
-        //services.AddSingleton<ConventionBasedRequirement>();
+        //AutoMapper
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddScoped<IBaseService, BaseService>();
+        services.AddScoped<UserResolver>();
+        services.AddScoped<Print>();
+        services.AddScoped<SortFilter>();
 
         services.AddHttpContextAccessor();
-        services.AddSingleton<HttpContextAccessor>();
-        services.AddSingleton<IAuthorizationHandler, CommonConventionBasedRequirementHandler>();
+        services.AddScoped<HttpContextAccessor>();
+        services.AddScoped<IAuthorizationHandler, CommonConventionBasedRequirementHandler>();
 
         //Authentication
         services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -68,6 +73,15 @@ public static class AddJwtDependencyInjection
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configurationRoot.GetSection("Jwt:Key").Value))
                 };
             });
+
+        return services;
+    }
+
+    public static IServiceCollection AddEventBus(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        //RabbitMQ Config
+        services.AddMassTransit(config => { config.UsingRabbitMq((ctx, cfg) => { cfg.Host(configuration.GetSection("EventBus:Host").Value); }); });
 
         return services;
     }

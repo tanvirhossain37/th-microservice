@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using TH.AuthMS.App;
 using TH.AuthMS.Core;
 using Microsoft.AspNetCore.Http;
+using TH.Common.Model;
 
 namespace TH.AuthMS.Infra
 {
@@ -53,71 +54,71 @@ namespace TH.AuthMS.Infra
 
         public static IServiceCollection AddJwtTokenBasedAuthentication(this IServiceCollection services,
             IConfiguration configuration)
-
         {
-            //Authorization
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("ClaimBasedPolicy", policy =>
-                {
-                    policy.Requirements.Add(new AuthConventionBasedRequirement());
-                    //policy.RequireClaim("Test");
-                });
+            services.AddJwtAuthorizationPolicies(configuration);
+            ////Authorization
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("ClaimBasedPolicy", policy =>
+            //    {
+            //        policy.Requirements.Add(new AuthConventionBasedRequirement());
+            //        //policy.RequireClaim("Test");
+            //    });
 
-                options.AddPolicy("TestPolicy", policy =>
-                {
-                    policy.RequireClaim("Test", "1");
-                });
+            //    options.AddPolicy("TestPolicy", policy =>
+            //    {
+            //        policy.RequireClaim("Test", "1");
+            //    });
 
-                options.AddPolicy("ReadPolicy", policy =>
-                {
-                    policy.RequireClaim("Test", "1");
-                });
-                options.AddPolicy("WritePolicy", policy =>
-                {
-                    policy.RequireClaim("Test", "2");
-                });
-                options.AddPolicy("UpdatePolicy", policy =>
-                {
-                    policy.RequireClaim("Test", "3");
-                });
-                options.AddPolicy("DeletePolicy", policy =>
-                {
-                    policy.RequireClaim("Test", "4");
-                });
-            });
+            //    options.AddPolicy("ReadPolicy", policy =>
+            //    {
+            //        policy.RequireClaim("Test", "1");
+            //    });
+            //    options.AddPolicy("WritePolicy", policy =>
+            //    {
+            //        policy.RequireClaim("Test", "2");
+            //    });
+            //    options.AddPolicy("UpdatePolicy", policy =>
+            //    {
+            //        policy.RequireClaim("Test", "3");
+            //    });
+            //    options.AddPolicy("DeletePolicy", policy =>
+            //    {
+            //        policy.RequireClaim("Test", "4");
+            //    });
+            //});
 
 
-            //services.AddSingleton<TestRequirement>();
-            //services.AddSingleton<ConventionBasedRequirement>();
-            services.AddHttpContextAccessor();
-            services.AddSingleton<HttpContextAccessor>();
-            services.AddSingleton<IAuthorizationHandler, AuthConventionBasedRequirementHandler>();
+            ////services.AddSingleton<TestRequirement>();
+            ////services.AddSingleton<ConventionBasedRequirement>();
+            //services.AddHttpContextAccessor();
+            //services.AddSingleton<HttpContextAccessor>();
+            //services.AddSingleton<IAuthorizationHandler, AuthConventionBasedRequirementHandler>();
 
-            //Authentication
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateActor = true,
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        RequireExpirationTime = true,
-                        ValidIssuer = configuration.GetSection("Jwt:Issuer").Value,
-                        ValidAudience = configuration.GetSection("Jwt:Audience").Value,
-                        ClockSkew = TimeSpan.Zero,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Jwt:Key").Value))
-                    };
-                });
+            ////Authentication
+            //services.AddAuthentication(options =>
+            //    {
+            //        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    })
+            //    .AddJwtBearer(options =>
+            //    {
+            //        options.TokenValidationParameters = new TokenValidationParameters
+            //        {
+            //            ValidateActor = true,
+            //            ValidateIssuer = true,
+            //            ValidateAudience = true,
+            //            RequireExpirationTime = true,
+            //            ValidIssuer = configuration.GetSection("Jwt:Issuer").Value,
+            //            ValidAudience = configuration.GetSection("Jwt:Audience").Value,
+            //            ClockSkew = TimeSpan.Zero,
+            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Jwt:Key").Value))
+            //        };
+            //    });
 
-            services.AddScoped<JwtConfiguration>();
+            //services.AddScoped<JwtConfiguration>();
 
-            services.Configure<JwtConfiguration>(configuration.GetSection("Jwt"));
+            //services.Configure<JwtConfiguration>(configuration.GetSection("Jwt"));
 
             return services;
         }

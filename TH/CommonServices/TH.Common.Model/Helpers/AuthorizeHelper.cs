@@ -5,18 +5,33 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TH.Common.App
+namespace TH.Common.Model
 {
     public static class AuthorizeHelper
     {
         public static IEnumerable<string> GetPermissionsFromClaim(string controllerName, IEnumerable<Claim> claims)
         {
-            if (!claims.Any(t => t.Type.Equals(controllerName)))
+            if (claims is not null)
             {
-                return null;
+                if (!claims.Any(t => t.Type.Equals(controllerName)))
+                {
+                    return null;
+                }
+
+                return claims.Where(t => t.Type.Equals(controllerName)).Select(t => t.Value.To<string>());
             }
 
-            return claims.Where(t => t.Type.Equals(controllerName)).Select(t => t.Value.To<string>());
+            return null;
+        }
+
+        public static string GetClaimValueByName(string name, IEnumerable<Claim> claims)
+        {
+            if (claims is not null)
+            {
+                return claims?.FirstOrDefault(x => x.Type.Equals(name, StringComparison.OrdinalIgnoreCase))?.Value;
+            }
+
+            return string.Empty;
         }
 
         public static string GetActionPermission(string actionName)

@@ -2,7 +2,6 @@ using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TH.AddressMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.CompanyMS.App;
@@ -17,7 +16,7 @@ public class UserRoleController : CustomBaseController
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public UserRoleController(IUserRoleService userRoleService, IMapper mapper, IServiceScopeFactory scopeFactory)
+    public UserRoleController(IUserRoleService userRoleService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
     {
         _userRoleService = userRoleService ?? throw new ArgumentNullException(nameof(userRoleService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

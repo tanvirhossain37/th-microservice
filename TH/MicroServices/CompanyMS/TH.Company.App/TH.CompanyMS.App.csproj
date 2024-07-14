@@ -20,4 +20,8 @@
     <ProjectReference Include="..\TH.Company.Core\TH.CompanyMS.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\" />
+  </ItemGroup>
+
 </Project>

@@ -14,6 +14,11 @@ namespace TH.AuthMS.API
     //public class CookieBasedAuthController : ControllerBase
     public class CookieBasedAuthController : CustomBaseController
     {
+        public CookieBasedAuthController(HttpContextAccessor httpContextAccessor):base(httpContextAccessor)
+        {
+            
+        }
+
         [HttpPost("GetAsync")]
         [AllowAnonymous]
         public async Task<IActionResult> GetAsync()

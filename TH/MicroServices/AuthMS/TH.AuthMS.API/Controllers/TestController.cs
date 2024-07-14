@@ -14,6 +14,11 @@ namespace TH.AuthMS.API.Controllers
     //[CustomAuthorize]
     public class TestController : CustomBaseController
     {
+        public TestController(HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        {
+            
+        }
+
         [HttpPost("Save")]
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
          [Authorize(Policy = "WritePolicy")]

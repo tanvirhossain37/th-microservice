@@ -1,5 +1,4 @@
-﻿using TH.Common.Core;
-using TH.ShadowMS.Core;
+﻿using TH.Common.Model;
 
 namespace TH.ShadowMS.App;
 

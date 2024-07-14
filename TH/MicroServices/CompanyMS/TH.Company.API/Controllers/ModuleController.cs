@@ -2,7 +2,6 @@ using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TH.AddressMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.CompanyMS.App;
@@ -17,7 +16,7 @@ public class ModuleController : CustomBaseController
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public ModuleController(IModuleService moduleService, IMapper mapper, IServiceScopeFactory scopeFactory)
+    public ModuleController(IModuleService moduleService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
     {
         _moduleService = moduleService ?? throw new ArgumentNullException(nameof(moduleService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

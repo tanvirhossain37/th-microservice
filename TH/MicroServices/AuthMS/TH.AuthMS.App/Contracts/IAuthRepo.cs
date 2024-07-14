@@ -15,7 +15,7 @@ namespace TH.AuthMS.App
         Task<IdentityResult> UpdateAsync(User identityUser);
         Task<User> FindByUserNameAsync(string userName);
         Task<bool> CheckPasswordAsync(User user, string password);
-        SignInViewModel GenerateToken(User user);
+        SignInViewModel GenerateToken(User identityUser);
         string GenerateRefreshToken();
         ClaimsPrincipal GetTokenPrincipal(string token);
         Task<User> ActivateAccountAsync(ActgivationCodeInputModel model);

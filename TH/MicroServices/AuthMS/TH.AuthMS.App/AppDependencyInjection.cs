@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MassTransit;
 using TH.AuthMS.Core;
+using TH.Common.Model;
 
 namespace TH.AuthMS.App
 {
@@ -20,14 +21,16 @@ namespace TH.AuthMS.App
             //services.AddScoped<SignUpViewModel>();
             services.AddScoped<IAuthService, AuthService>();
 
-            //RabbitMQ Config
-            services.AddMassTransit(config =>
-            {
-                config.UsingRabbitMq((ctx, cfg) =>
-                {
-                    cfg.Host(configuration.GetSection("EventBus:Host").Value);
-                });
-            });
+            ////RabbitMQ Config
+            //services.AddMassTransit(config =>
+            //{
+            //    config.UsingRabbitMq((ctx, cfg) =>
+            //    {
+            //        cfg.Host(configuration.GetSection("EventBus:Host").Value);
+            //    });
+            //});
+
+            services.AddEventBus(configuration);
 
             return services;
         }

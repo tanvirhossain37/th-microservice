@@ -11,7 +11,7 @@ public class UserController : CustomBaseController
 {
     private readonly IUserService _userService;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, HttpContextAccessor httpContextAccessor):base(httpContextAccessor)
     {
         _userService = userService ?? throw new ArgumentNullException(nameof(userService));
     }

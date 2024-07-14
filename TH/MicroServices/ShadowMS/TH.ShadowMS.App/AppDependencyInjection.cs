@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TH.Common.Model;
+using TH.EventBus.Messages;
 using TH.ShadowMS.App.Services;
 using TH.ShadowMS.Core;
 
@@ -13,6 +15,8 @@ public static class AppDependencyInjection
         services.AddScoped<ShadowViewModel>();
         services.AddScoped<ShadowFilterModel>();
         services.AddScoped<IShadowService, ShadowService>();
+        services.AddScoped<ShadowEventConsumer>();
+        services.AddScoped<ShadowEvent>();
 
         return services;
     }

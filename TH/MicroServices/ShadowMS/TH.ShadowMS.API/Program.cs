@@ -38,7 +38,7 @@ namespace TH.ShadowMS.API
                 config.UsingRabbitMq((ctx, cfg) =>
                 {
                     cfg.Host(builder.Configuration.GetSection("EventBus:Host").Value);
-                    cfg.ReceiveEndpoint(EventBus.Messages.EventBus.EmailQueue, c =>
+                    cfg.ReceiveEndpoint(EventBus.Messages.EventBus.ShadowQueue, c =>
                     {
                         c.ConfigureConsumer<ShadowEventConsumer>(ctx);
                     });

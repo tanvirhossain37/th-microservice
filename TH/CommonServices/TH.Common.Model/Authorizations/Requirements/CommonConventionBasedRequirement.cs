@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using TH.Common.Model;
 
-namespace TH.Common.App;
+namespace TH.Common.Model;
 
 public class CommonConventionBasedRequirement: IAuthorizationRequirement
 {
@@ -11,10 +12,12 @@ public class CommonConventionBasedRequirement: IAuthorizationRequirement
 public class CommonConventionBasedRequirementHandler : AuthorizationHandler<CommonConventionBasedRequirement>
 {
     private HttpContextAccessor _httpContextAccessor;
+    private readonly IBaseService BaseService;
 
-    public CommonConventionBasedRequirementHandler(HttpContextAccessor httpContextAccessor)
+    public CommonConventionBasedRequirementHandler(HttpContextAccessor httpContextAccessor, IBaseService baseService)
     {
         _httpContextAccessor = httpContextAccessor;
+        BaseService = baseService ?? throw new ArgumentNullException(nameof(baseService));
     }
 
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, CommonConventionBasedRequirement requirement)
@@ -24,6 +27,12 @@ public class CommonConventionBasedRequirementHandler : AuthorizationHandler<Comm
         var requiredPermission = AuthorizeHelper.GetActionPermission(actionName);
 
         var user = context.User;
+
+        var userResolver = new UserResolver();
+        userResolver.UserName = user.Identity.Name;
+        userResolver.CompanyId = "tingting";
+
+        BaseService.SetUserResolver(userResolver);
         
         var claims = context.User.Claims;
 

@@ -14,6 +14,7 @@ using TH.AuthMS.App;
 using TH.AuthMS.Core;
 using TH.Common.Lang;
 using TH.Common.Util;
+using TH.CompanyMS.App;
 
 namespace TH.AuthMS.Infra
 {
@@ -58,16 +59,17 @@ namespace TH.AuthMS.Infra
             return _userManager.CheckPasswordAsync(user, password);
         }
 
-        public SignInViewModel GenerateToken(User user)
+        public SignInViewModel GenerateToken(User identityUser)
         {
             var claims = new List<Claim>();
-            if (user.UserTypeId == (int)UserTypeEnum.Owner)
+            if (identityUser.UserTypeId == (int)UserTypeEnum.Owner)
             {
                 //call permissions
                 claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Name, identityUser.UserName),
+                    new Claim(ClaimTypes.Email, identityUser.Email),
+                    new Claim("SpaceId", identityUser.Id),
                     new Claim("Test", 1.ToString()),
                     //new Claim("Test", 2),
                     new Claim("Test", 3.ToString()),
@@ -154,5 +156,9 @@ namespace TH.AuthMS.Infra
         {
             _userManager?.Dispose();
         }
+
+        #region Business Logic
+
+        #endregion
     }
 }
