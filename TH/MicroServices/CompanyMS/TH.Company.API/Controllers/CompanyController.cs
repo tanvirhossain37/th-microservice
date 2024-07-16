@@ -2,8 +2,10 @@ using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using TH.Common.Lang;
 using TH.Common.Model;
+using TH.CompanyMS.API.Hubs;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Core;
 
@@ -15,12 +17,14 @@ public class CompanyController : CustomBaseController
     private readonly ICompanyService _companyService;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IHubContext<CompanyHub, ICompanyHub> _hubContext;
 
-    public CompanyController(ICompanyService companyService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+    public CompanyController(ICompanyService companyService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<CompanyHub, ICompanyHub> hubContext) : base(httpContextAccessor)
     {
         _companyService = companyService ?? throw new ArgumentNullException(nameof(companyService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+        _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
 
         _companyService.SetUserResolver(UserResolver);
     }
@@ -38,6 +42,9 @@ public class CompanyController : CustomBaseController
             var filter = _mapper.Map<Company, CompanyFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<ICompanyService>();
             var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindAsync(filter, DataFilter));
+
+            _hubContext.Clients.All.BroadcastOnSaveCompanyAsync( viewModel);
+
             return CustomResult(Lang.Find("success"), viewModel);
         }
     }
@@ -55,6 +62,8 @@ public class CompanyController : CustomBaseController
             var filter = _mapper.Map<Company, CompanyFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<ICompanyService>();
             var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindAsync(filter, DataFilter));
+
+            _hubContext.Clients.All.BroadcastOnUpdateCompanyAsync(viewModel);
             return CustomResult(Lang.Find("success"), viewModel);
         }
     }

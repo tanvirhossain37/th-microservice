@@ -1,0 +1,16 @@
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { BaseService } from './base.service';
+import { BaseEntity } from '../models/common/baseEntity';
+import { BaseFilter } from '../models/common/baseFilter';
+
+const subUrl = "api/$WE$/"
+
+@Injectable({
+  providedIn: 'root'
+})
+export class $WE$Service extends BaseService implements I$WE$Service {//todo method content
+}
+
+export interface I$WE$Service {//todo method interface content
+}

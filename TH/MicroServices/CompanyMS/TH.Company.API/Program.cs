@@ -1,6 +1,7 @@
 
 using System.Reflection;
 using TH.Common.Model;
+using TH.CompanyMS.API.Hubs;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Infra;
 
@@ -22,6 +23,8 @@ namespace TH.CompanyMS.API
             builder.Services.AddAppDependencyInjection(builder.Configuration);
             builder.Services.AddInfraDependencyInjection(builder.Configuration);
             builder.Services.AddJwtTokenBasedAuthentication(builder.Configuration);
+
+            builder.Services.AddSignalR();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -58,6 +61,8 @@ namespace TH.CompanyMS.API
             app.UseAuthentication(); // MUST be before app.UseAuthorization();
             app.UseCors(CorsPolicy); //tanvir
             app.UseAuthorization();
+
+            app.MapHub<CompanyHub>("/Company");
 
 
             app.MapControllers();

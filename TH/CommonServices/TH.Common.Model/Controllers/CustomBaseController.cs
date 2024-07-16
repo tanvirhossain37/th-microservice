@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace TH.Common.Model
 {
@@ -18,7 +19,6 @@ namespace TH.Common.Model
 
         public CustomBaseController(HttpContextAccessor httpContextAccessor)
         {
-
             DataFilter = new DataFilter
             {
                 IncludeInactive = false

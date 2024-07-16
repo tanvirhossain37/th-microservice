@@ -7,7 +7,7 @@ public class SortFilter
 
     public SortFilter()
     {
-        PropertyName = null;
+        PropertyName = string.Empty;
         Operation = OrderByEnum.Ascending;
     }
 }

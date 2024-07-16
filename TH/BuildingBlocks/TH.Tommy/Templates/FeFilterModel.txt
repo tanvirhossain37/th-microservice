@@ -1,0 +1,9 @@
+import { BaseFilter } from "../common/baseFilter";
+import { SortFilter } from "../common/sortFilter";
+//todo dependency
+//todo partial dependency
+
+export class $WE$ extends BaseFilter {
+    //todo model content
+    //todo partial model content
+}

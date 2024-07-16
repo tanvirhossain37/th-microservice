@@ -1,0 +1,8 @@
+import { BaseEntity } from "../common/baseEntity";
+//todo dependency
+//todo partial dependency
+
+export class $WE$ extends BaseEntity {
+    //todo input model content
+    //todo partial input model content
+}

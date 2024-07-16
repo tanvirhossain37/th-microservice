@@ -1,0 +1,12 @@
+      {
+        "DownstreamPathTemplate": "/api/$WE$/$MethodName$",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": $port$
+          }
+        ],
+        "UpstreamPathTemplate": "/api/$WE$/$MethodName$",
+        "UpstreamHttpMethod": [ "POST" ]
+      }

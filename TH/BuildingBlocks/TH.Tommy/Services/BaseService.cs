@@ -4,7 +4,8 @@ public class BaseService
 {
     public string SourceRoot { get; set; }
     public string TommyRoot { get; set; }
-    public string ResultDestRoot { get; set; }
+    public string ResultBeDestRoot { get; set; }
+    public string ResultFeDestRoot { get; set; }
     private string _desktopPath { get; set; }
     private readonly string _title = "Tommy -  V-1";
     protected readonly string Dash = "========================================================================================================================";
@@ -16,7 +17,8 @@ public class BaseService
         //desktop
         _desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         SourceRoot = $"{_desktopPath}\\Tommy\\Source";
-        ResultDestRoot = $"{_desktopPath}\\Tommy\\Result";
+        ResultBeDestRoot = $"{_desktopPath}\\Tommy\\Result\\BE";
+        ResultFeDestRoot = $"{_desktopPath}\\Tommy\\Result\\FE";
 
         //C:\Users\Tanvir Hossain\Desktop\work\th-microservice\th-microservice\TH\BuildingBlocks\TH.Tommy\bin\Debug\net8.0
         TommyRoot = info.FullName.Replace("\\bin\\Debug\\net8.0", "");
@@ -30,12 +32,12 @@ public class BaseService
         Console.WriteLine(Dash);
         Console.WriteLine();
 
-        Console.WriteLine($"Dest Root: {ResultDestRoot}");
+        Console.WriteLine($"Dest Root: {ResultBeDestRoot}");
         Console.WriteLine();
         Console.WriteLine(Dash);
         Console.WriteLine();
 
-        Util.DeleteDirectory(ResultDestRoot, true);
-        Util.CreateDirectory(ResultDestRoot);
+        Util.DeleteDirectory(ResultBeDestRoot, true);
+        Util.CreateDirectory(ResultBeDestRoot);
     }
 }

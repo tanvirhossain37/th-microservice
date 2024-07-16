@@ -1,32 +1,34 @@
-﻿namespace TH.Tommy;
+﻿using System.Reflection;
 
-public class TommyService:BaseService
+namespace TH.Tommy;
+
+public class TommyService : BaseService
 {
     private readonly string _template;
     private readonly string _factory;
     private readonly string _mapper;
-
+    private readonly string _modelRoot;
     public TommyService()
     {
         _template = $"{TommyRoot}\\Templates";
-        _factory = $"{ResultDestRoot}\\Factories";
-        _mapper = $"{ResultDestRoot}\\Mappers";
+        _factory = $"{ResultBeDestRoot}\\Factories";
+        _mapper = $"{ResultBeDestRoot}\\Mappers";
 
-        Util.DeleteDirectory(ResultDestRoot, true);
+        Util.DeleteDirectory(ResultBeDestRoot, true);
+        Util.DeleteDirectory(ResultFeDestRoot, true);
 
         Util.CreateDirectory(_factory);
         Util.CreateDirectory(_mapper);
     }
 
 
-    public void CreateBE(string projectName, string feRoot)
+    public void CreateBE(string projectName)
     {
-        Console.WriteLine();
-        Console.WriteLine($"Creating BE...");
-        Console.WriteLine();
+        projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
 
-        
-
+        Console.WriteLine();
+        Console.WriteLine($"Creating BackEnd...");
+        Console.WriteLine();
 
         var files = Directory.GetFiles(SourceRoot);
 
@@ -47,6 +49,141 @@ public class TommyService:BaseService
 
     }
 
+    public void CreateGateway(string port, string controllerRoot)
+    {
+        port = string.IsNullOrWhiteSpace(port) ? throw new ArgumentNullException(nameof(port)) : port.Trim();
+        controllerRoot = string.IsNullOrWhiteSpace(controllerRoot) ? throw new ArgumentNullException(nameof(controllerRoot)) : controllerRoot.Trim();
+
+        Console.WriteLine();
+        Console.WriteLine($"Creating Gateway...");
+        Console.WriteLine();
+
+        //controllers
+        var controllerFiles = Directory.GetFiles($"{controllerRoot}");
+
+        foreach (var file in controllerFiles)
+        {
+            CreateBeGateway(file, port);
+        }
+    }
+
+    public void CreateFE(string projectName, string modelRoot, string controllerRoot)
+    {
+        projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+        modelRoot = string.IsNullOrWhiteSpace(modelRoot) ? throw new ArgumentNullException(nameof(modelRoot)) : modelRoot.Trim();
+        controllerRoot = string.IsNullOrWhiteSpace(controllerRoot) ? throw new ArgumentNullException(nameof(controllerRoot)) : controllerRoot.Trim();
+
+        Console.WriteLine();
+        Console.WriteLine($"Creating FrontEnd...");
+        Console.WriteLine();
+
+        //InputModels
+        var inputFiles = Directory.GetFiles($"{modelRoot}\\InputModels");
+
+        foreach (var file in inputFiles)
+        {
+            Console.WriteLine($"Model: {Path.GetFileNameWithoutExtension(file)}");
+
+            //MakeFeEntities(file, projectName);
+            CreateFeInputModels(file, projectName, modelRoot);
+            //CreateBeFilterModels(file, projectName);
+            //CreateBeRepos(file, files, projectName);
+            //CreateBeServices(file, projectName);
+            //CreateBeControllers(file, projectName);
+        }
+
+        //ViewModels
+        var viewFiles = Directory.GetFiles($"{modelRoot}\\ViewModels");
+
+        foreach (var file in viewFiles)
+        {
+            CreateFeViewModels(file, projectName, modelRoot);
+        }
+
+        //FilterModels
+        var filterFiles = Directory.GetFiles($"{modelRoot}\\FilterModels");
+
+        foreach (var file in filterFiles)
+        {
+            CreateFeFilterModels(file, projectName, modelRoot);
+        }
+
+        //controllers
+        var controllerFiles = Directory.GetFiles($"{controllerRoot}");
+
+        foreach (var file in controllerFiles)
+        {
+            CreateFeServices(file, projectName, modelRoot);
+        }
+
+    }
+
+    //private void MakeFeEntities(string moduleName)
+    //{
+    //    try
+    //    {
+    //        moduleName = string.IsNullOrWhiteSpace(moduleName) ? string.Empty : moduleName.Trim();
+
+    //        //vmmodels
+    //        var vmDir = new DirectoryInfo($"{_beModelSource}\\viewmodels");
+    //        var vmDirs = vmDir.GetDirectories();
+
+    //        foreach (var vmDi in vmDirs) //acc//fa//
+    //        {
+    //            Console.WriteLine($"ViewModel Folder: {vmDi.Name}"); //accounts
+
+    //            var vmFiles = Directory.GetFiles(vmDi.FullName);
+
+    //            foreach (var vmFile in vmFiles)
+    //            {
+    //                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(vmFile).Trim();
+    //                var entityViewModel = fileNameWithoutExtension.Replace("ViewModel", "");
+
+    //                var allLines = new List<string>();
+    //                var allVmLines = new List<string>();
+    //                var allImLines = new List<string>();
+
+    //                //vm + im
+    //                allVmLines = GetViewModelLines(vmFile);
+
+
+    //                //Input
+    //                var imDir = new DirectoryInfo($"{_beModelSource}\\inputmodels");
+    //                var imDirs = imDir.GetDirectories(vmDi.Name);
+
+    //                foreach (var imDi in imDirs)
+    //                {
+    //                    var imFiles = Directory.GetFiles(imDi.FullName, $"{entityViewModel}InputModel.cs");
+    //                    foreach (var imFile in imFiles)
+    //                    {
+    //                        allImLines = GetInputModelLines(imFile);
+    //                    }
+    //                }
+
+    //                if (!entityViewModel.EndsWith("Shadow") && !entityViewModel.EndsWith("Doc"))
+    //                {
+    //                    CreateLandingComponent(allVmLines, fileNameWithoutExtension, vmDi.Name);
+    //                    CreateDetailComponent(allVmLines, fileNameWithoutExtension, vmDi.Name);
+    //                    CreateAddComponent(allImLines, fileNameWithoutExtension, vmDi.Name);
+    //                }
+
+
+    //                var tempLines = new List<string>();
+    //                tempLines.AddRange(allVmLines);
+    //                tempLines.AddRange(allImLines);
+
+    //                allLines = tempLines.Distinct().ToList();
+
+    //                CreateFeEntities(allLines, vmDi.Name, entityViewModel);
+    //            }
+    //        }
+    //    }
+    //    catch (Exception)
+    //    {
+    //        throw;
+    //    }
+    //}
+
     private void CreateBeControllers(string file, string projectName)
     {
         try
@@ -55,7 +192,7 @@ public class TommyService:BaseService
             projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
 
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-            var dest = Util.CreateDirectory($"{ResultDestRoot}\\Controllers");
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\Controllers");
 
             var lines = Util.ReadObjectLines(file);
             if (lines != null)
@@ -87,8 +224,8 @@ public class TommyService:BaseService
             if (files == null) throw new ArgumentNullException(nameof(files));
             projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
 
-            var interfaceDest = Util.CreateDirectory($"{ResultDestRoot}\\RepoInterfaces");
-            var repoDest = Util.CreateDirectory($"{ResultDestRoot}\\Repos");
+            var interfaceDest = Util.CreateDirectory($"{ResultBeDestRoot}\\RepoInterfaces");
+            var repoDest = Util.CreateDirectory($"{ResultBeDestRoot}\\Repos");
 
             string uowInterfacePropertyContent = GetUowInterfacePropertyContentOfBe(files);
             string uowPropertyContent = GetUowPropertyContentOfBe(files);
@@ -127,8 +264,8 @@ public class TommyService:BaseService
             projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
 
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-            var interfaceDest = Util.CreateDirectory($"{ResultDestRoot}\\ServiceInterfaces");
-            var serviceDest = Util.CreateDirectory($"{ResultDestRoot}\\Services");
+            var interfaceDest = Util.CreateDirectory($"{ResultBeDestRoot}\\ServiceInterfaces");
+            var serviceDest = Util.CreateDirectory($"{ResultBeDestRoot}\\Services");
             var partialDest = Util.CreateDirectory($"{serviceDest}\\Partials");
             
             var lines = Util.ReadObjectLines(file);
@@ -226,8 +363,8 @@ public class TommyService:BaseService
             projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
 
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-            var interfaceDest = Util.CreateDirectory($"{ResultDestRoot}\\RepoInterfaces");
-            var repoDest = Util.CreateDirectory($"{ResultDestRoot}\\Repos");
+            var interfaceDest = Util.CreateDirectory($"{ResultBeDestRoot}\\RepoInterfaces");
+            var repoDest = Util.CreateDirectory($"{ResultBeDestRoot}\\Repos");
             var partialRepoDest = Util.CreateDirectory($"{repoDest}\\Partials");
 
             var lines = Util.ReadObjectLines(file);
@@ -283,7 +420,7 @@ public class TommyService:BaseService
             projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
 
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-            var dest = Util.CreateDirectory($"{ResultDestRoot}\\FilterModels");
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\FilterModels");
             var partialDest = Util.CreateDirectory($"{dest}\\Partials");
 
             var lines = Util.ReadObjectLines(file);
@@ -327,7 +464,7 @@ public class TommyService:BaseService
             projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
 
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-            var dest = Util.CreateDirectory($"{ResultDestRoot}\\ViewModels");
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\ViewModels");
             var partialDest = Util.CreateDirectory($"{dest}\\Partials");
 
             var lines = Util.ReadObjectLines(file);
@@ -374,7 +511,7 @@ public class TommyService:BaseService
             projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
 
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-            var dest = Util.CreateDirectory($"{ResultDestRoot}\\InputModels");
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\InputModels");
             var partialDest = Util.CreateDirectory($"{dest}\\Partials");
 
             var lines = Util.ReadObjectLines(file);
@@ -411,6 +548,196 @@ public class TommyService:BaseService
         }
     }
 
+    private void CreateFeInputModels(string file, string projectName, string modelRoot)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+            modelRoot = string.IsNullOrWhiteSpace(modelRoot) ? throw new ArgumentNullException(nameof(modelRoot)) : modelRoot.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultFeDestRoot}\\InputModels");
+            //var partialDest = Util.CreateDirectory($"{dest}\\Partials");
+
+            var lines = Util.ReadObjectLines(file);
+            if (lines != null)
+            {
+                string propertyContent = GetPropertyContentOfFeModel(lines);
+                string dependencyContent = GetDependencyContentOfFeModel(lines);
+
+                //get template
+                var template = FileManager.Read($"{_template}\\FeInputModel.txt");
+                template = template.Replace("$WE$", fileNameWithoutExtension);
+                template = template.Replace("//todo input model content", propertyContent);
+                template = template.Replace("//todo dependency", dependencyContent);
+
+                //partials
+                var partialLines = Util.ReadObjectLines($"{modelRoot}\\InputModels\\Partials\\{Path.GetFileName(file)}");
+
+                string partialPropertyContent = GetPropertyContentOfFeModel(partialLines);
+                string partialDependencyContent = GetDependencyContentOfFeModel(partialLines);
+
+                template = template.Replace("//todo partial input model content", partialPropertyContent);
+                template = template.Replace("//todo partial dependency", partialDependencyContent);
+
+                //save it
+                FileManager.Append($"{dest}\\{FileManager.ToCamelCase(fileNameWithoutExtension)}.ts", template);
+            }
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
+
+    private void CreateFeViewModels(string file, string projectName, string modelRoot)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+            modelRoot = string.IsNullOrWhiteSpace(modelRoot) ? throw new ArgumentNullException(nameof(modelRoot)) : modelRoot.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultFeDestRoot}\\ViewModels");
+            //var partialDest = Util.CreateDirectory($"{dest}\\Partials");
+
+            var lines = Util.ReadObjectLines(file);
+            if (lines != null)
+            {
+                string propertyContent = GetPropertyContentOfFeModel(lines);
+                string dependencyContent = GetDependencyContentOfFeModel(lines);
+
+                //get template
+                var template = FileManager.Read($"{_template}\\FeViewModel.txt");
+                template = template.Replace("$WE$", fileNameWithoutExtension);
+                template = template.Replace("//todo model content", propertyContent);
+                template = template.Replace("//todo dependency", dependencyContent);
+
+                //partials
+                var partialLines = Util.ReadObjectLines($"{modelRoot}\\ViewModels\\Partials\\{Path.GetFileName(file)}");
+
+                string partialPropertyContent = GetPropertyContentOfFeModel(partialLines);
+                string partialDependencyContent = GetDependencyContentOfFeModel(partialLines);
+
+                template = template.Replace("//todo partial model content", partialPropertyContent);
+                template = template.Replace("//todo partial dependency", partialDependencyContent);
+
+                //save it
+                FileManager.Append($"{dest}\\{FileManager.ToCamelCase(fileNameWithoutExtension)}.ts", template);
+            }
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
+
+    private void CreateFeFilterModels(string file, string projectName, string modelRoot)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+            modelRoot = string.IsNullOrWhiteSpace(modelRoot) ? throw new ArgumentNullException(nameof(modelRoot)) : modelRoot.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultFeDestRoot}\\FilterModels");
+            //var partialDest = Util.CreateDirectory($"{dest}\\Partials");
+
+            var lines = Util.ReadObjectLines(file);
+            if (lines != null)
+            {
+                string propertyContent = GetPropertyContentOfFeFilterModel(lines);
+                string dependencyContent = GetDependencyContentOfFeModel(lines);
+
+                //get template
+                var template = FileManager.Read($"{_template}\\FeFilterModel.txt");
+                template = template.Replace("$WE$", fileNameWithoutExtension);
+                template = template.Replace("//todo model content", propertyContent);
+                template = template.Replace("//todo dependency", dependencyContent);
+
+                //partials
+                var partialLines = Util.ReadObjectLines($"{modelRoot}\\FilterModels\\Partials\\{Path.GetFileName(file)}");
+
+                string partialPropertyContent = GetPropertyContentOfFeFilterModel(partialLines);
+                string partialDependencyContent = GetDependencyContentOfFeModel(partialLines);
+
+                template = template.Replace("//todo partial model content", partialPropertyContent);
+                template = template.Replace("//todo partial dependency", partialDependencyContent);
+
+                //save it
+                FileManager.Append($"{dest}\\{FileManager.ToCamelCase(fileNameWithoutExtension)}.ts", template);
+            }
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
+
+    private void CreateFeServices(string file, string projectName, string modelRoot)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+            modelRoot = string.IsNullOrWhiteSpace(modelRoot) ? throw new ArgumentNullException(nameof(modelRoot)) : modelRoot.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultFeDestRoot}\\Services");
+            //var partialDest = Util.CreateDirectory($"{dest}\\Partials");
+
+            var lines = Util.ReadObjectLines(file);
+            if (lines != null)
+            {
+                string methodContent = GetPropertyContentOfFeServices(lines);
+                string methodInterfaceContent = GetPropertyContentOfFeServiceInterfaces(lines);
+
+                //get template
+                var template = FileManager.Read($"{_template}\\FeService.txt");
+                template = template.Replace("$WE$", fileNameWithoutExtension.Replace("Controller", ""));
+                template = template.Replace("//todo method content", $"\n\t{methodContent}");
+                template = template.Replace("//todo method interface content", $"\n\t{methodInterfaceContent}");
+
+                
+
+                //save it
+                FileManager.Append($"{dest}\\{FileManager.ToCamelCase(fileNameWithoutExtension.Replace("Controller", ""))}.service.ts", template);
+            }
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
+
+    private void CreateBeGateway(string file, string port)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            port = string.IsNullOrWhiteSpace(port) ? throw new ArgumentNullException(nameof(port)) : port.Trim();
+            
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultFeDestRoot}\\Gateway");
+
+            var lines = Util.ReadObjectLines(file);
+            if (lines != null)
+            {
+                string gatewayContent = GetPropertyContentOfBeGateway(lines, fileNameWithoutExtension, port);
+
+                //save it
+                FileManager.Append($"{dest}\\Gateway.txt", gatewayContent);
+            }
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
+
     private void CreateBeEntities(string file, string projectName)
     {
         try
@@ -419,7 +746,7 @@ public class TommyService:BaseService
             projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
 
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-            var dest = Util.CreateDirectory($"{ResultDestRoot}\\Entities");
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\Entities");
 
             var lines = Util.ReadObjectLines(file);
             if (lines != null)
@@ -480,7 +807,7 @@ public class TommyService:BaseService
 
             var content = string.Empty;
 
-            foreach (var line in lines)
+           foreach (var line in lines)
             {
                 if ((line.Contains("virtual")) ||
                     (line.Contains("public DateTime CreatedDate")) ||
@@ -489,6 +816,312 @@ public class TommyService:BaseService
                     continue;
 
                 content = string.Concat(content, $"\n\t{line}");
+            }
+
+            return content;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private string GetPropertyContentOfFeModel(IEnumerable<string> lines)
+    {
+        try
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+
+            var content = string.Empty;
+            var childEntity = string.Empty;
+            var fieldName = string.Empty;
+            var typeName = string.Empty;
+
+            foreach (var line in lines)
+            {
+                if (line.Contains("IList"))
+                {
+                    fieldName = line.Trim().Split(' ')[2];
+                    childEntity = line.Trim().Split('<', '>')[1];
+                    typeName = string.Empty;
+                }
+                else
+                {
+                    fieldName = line.Trim().Split(' ')[2];
+                    typeName = line.Trim().Split(' ')[1];
+                }
+
+                if ((typeName.Equals("int")) || (typeName.Equals("long")) || (typeName.Equals("double")) || (typeName.Equals("decimal")) ||
+                    (typeName.Equals("int?")) || (typeName.Equals("long?")) || (typeName.Equals("double?")) || (typeName.Equals("decimal?")))
+                {
+                    //content = string.Concat(content, typeName.Contains("?")
+                    //    ? $"\n\t{FileManager.ToCamelCase(fieldName)}?: number = 0;"
+                    //    : $"\n\t{FileManager.ToCamelCase(fieldName)}: number = 0;");
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: number = 0;");
+                }
+                else if ((typeName.Equals("string")) || (typeName.Equals("string?")))
+                {
+                    //content = string.Concat(content, typeName.Contains("?")
+                    //    ? $"\n\t{FileManager.ToCamelCase(fieldName)}?: string = \"\";"
+                    //    : $"\n\t{FileManager.ToCamelCase(fieldName)}: string = \"\";");
+
+                    if (fieldName.Equals("Id")) continue;
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: string = \"\";");
+                }
+                else if ((typeName.Equals("bool"))|| (typeName.Equals("bool?")))
+                {
+                    if (fieldName.Equals("Active"))continue;
+
+                    //content = string.Concat(content, typeName.Contains("?")
+                    //    ? $"\n\t{FileManager.ToCamelCase(fieldName)}?: boolean = false;"
+                    //    : $"\n\t{FileManager.ToCamelCase(fieldName)}: boolean = false;");
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: boolean = false;");
+                }
+                else if ((typeName.Equals("DateTime"))|| (typeName.Equals("DateTime?")))
+                {
+                    //content = string.Concat(content, typeName.Contains("?")
+                    //    ? $"\n\t{FileManager.ToCamelCase(fieldName)}?: any = null;"
+                    //    : $"\n\t{FileManager.ToCamelCase(fieldName)}: any = null;");
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: any = null;");
+                }
+                else if ((typeName.Equals("TimeSpan"))|| (typeName.Equals("TimeSpan?")))
+                {
+                    //content = string.Concat(content, typeName.Contains("?")
+                    //    ? $"\n\t{FileManager.ToCamelCase(fieldName)}?: any = null;"
+                    //    : $"\n\t{FileManager.ToCamelCase(fieldName)}: any = null;");
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: any = null;");
+                }
+                else
+                {
+                    content = string.Concat(content, $"\n\t{fieldName}: {childEntity}[] = [];");
+                }
+            }
+
+            return content;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private string GetPropertyContentOfFeFilterModel(IEnumerable<string> lines)
+    {
+        try
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+
+            var content = string.Empty;
+            var childEntity = string.Empty;
+            var fieldName = string.Empty;
+            var typeName = string.Empty;
+
+            foreach (var line in lines)
+            {
+                if (line.Contains("IList"))
+                {
+                    fieldName = line.Trim().Split(' ')[2];
+                    childEntity = line.Trim().Split('<', '>')[1];
+                    typeName = string.Empty;
+                }
+                else
+                {
+                    fieldName = line.Trim().Split(' ')[2];
+                    typeName = line.Trim().Split(' ')[1];
+                }
+
+                if ((typeName.Equals("int")) || (typeName.Equals("long")) || (typeName.Equals("double")) || (typeName.Equals("decimal")) ||
+                    (typeName.Equals("int?")) || (typeName.Equals("long?")) || (typeName.Equals("double?")) || (typeName.Equals("decimal?")))
+                {
+                    if(fieldName.Equals("PageIndex"))continue;
+                    if (fieldName.Equals("PageSize")) continue;
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: number = 0;");
+                }
+                else if ((typeName.Equals("string")) || (typeName.Equals("string?")))
+                {
+                    if (fieldName.Equals("Id")) continue;
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: string = \"\";");
+                }
+                else if ((typeName.Equals("bool")) || (typeName.Equals("bool?")))
+                {
+                    if (fieldName.Equals("Active")) continue;
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: boolean = false;");
+                }
+                else if ((typeName.Equals("DateTime")) || (typeName.Equals("DateTime?")))
+                {
+                    if (fieldName.Equals("CreatedDate")) continue;
+                    if (fieldName.Equals("ModifiedDate")) continue;
+                    if (fieldName.Equals("StartDate")) continue;
+                    if (fieldName.Equals("EndDate")) continue;
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: any = null;");
+                }
+                else if ((typeName.Equals("TimeSpan")) || (typeName.Equals("TimeSpan?")))
+                {
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: any = null;");
+                }
+                else
+                {
+                    if (fieldName.Equals("Print")) continue;
+                    content = string.Concat(content, $"\n\t{fieldName}: {childEntity}[] = [];");
+                }
+            }
+
+            return content;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private string GetPropertyContentOfFeServices(IEnumerable<string> lines)
+    {
+        try
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+
+            var content = string.Empty;
+            var childEntity = string.Empty;
+            var fieldName = string.Empty;
+            var typeName = string.Empty;
+
+            foreach (var line in lines)
+            {
+                if (line.Contains("public async"))
+                {
+                    var methodName = line.Trim().Split(' ', '(')[3];
+
+                    var template = string.Empty;
+
+                    if ((methodName.StartsWith("Save")) || (methodName.StartsWith("Update")) || (methodName.StartsWith("SoftDelete")) ||
+                        (methodName.StartsWith("Delete")))
+                    {
+                        template = FileManager.Read($"{_template}\\FeEntityServiceHelper.txt");
+                    }
+                    else
+                    {
+                        template = FileManager.Read($"{_template}\\FeFilterServiceHelper.txt");
+                    }
+
+                    template = template.Replace("$MethodName$", methodName);
+                    template = template.Replace("$methodName$", FileManager.ToCamelCase(methodName));
+
+                    content = string.Concat(content, $"\n{template}");
+                }
+            }
+
+            return content;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private string GetPropertyContentOfFeServiceInterfaces(IEnumerable<string> lines)
+    {
+        try
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+            
+            var content = string.Empty;
+            var childEntity = string.Empty;
+            var fieldName = string.Empty;
+            var typeName = string.Empty;
+
+            foreach (var line in lines)
+            {
+                if (line.Contains("public async"))
+                {
+                    var methodName = line.Trim().Split(' ', '(')[3];
+
+                    if ((methodName.StartsWith("Save")) || (methodName.StartsWith("Update")) || (methodName.StartsWith("SoftDelete")) ||
+                        (methodName.StartsWith("Delete")))
+                    {
+                        content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(methodName)}(entity: BaseEntity): Observable<any>;");
+                    }
+                    else
+                    {
+                        content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(methodName)}(filter: BaseFilter): Observable<any>;");
+                    }
+
+                    
+                }
+            }
+
+            return content;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private string GetPropertyContentOfBeGateway(IEnumerable<string> lines, string fileNameWithoutExtension, string port)
+    {
+        try
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+            if (fileNameWithoutExtension == null) throw new ArgumentNullException(nameof(fileNameWithoutExtension));
+            port = string.IsNullOrWhiteSpace(port) ? throw new ArgumentNullException(nameof(port)) : port.Trim();
+
+            var content = string.Empty;
+            var childEntity = string.Empty;
+            var fieldName = string.Empty;
+            var typeName = string.Empty;
+
+            var controllerName = fileNameWithoutExtension.Replace("Controller", "");
+
+            foreach (var line in lines)
+            {
+                if (line.Contains("public async"))
+                {
+                    var methodName = line.Trim().Split(' ', '(')[3];
+
+                    var template = FileManager.Read($"{_template}\\BeGateway.txt");
+
+                    template = template.Replace("$WE$", controllerName);
+                    template = template.Replace("$MethodName$", methodName);
+                    template = template.Replace("$port$", port);
+
+                    if (string.IsNullOrWhiteSpace(content))
+                    {
+                        content = string.Concat(content, $"\n{template}");
+                    }
+                    else
+                    {
+                        content = string.Concat(content, $",\n{template}");
+                    }
+                }
+            }
+
+            return content;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private string GetDependencyContentOfFeModel(IEnumerable<string> lines)
+    {
+        try
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+
+            var content = string.Empty;
+
+            foreach (var line in lines)
+            {
+                if (line.Contains("IList"))
+                {
+                    var childEntity = line.Trim().Split('<', '>')[1];
+                    var fieldName = line.Trim().Split(' ')[2];
+
+                    if (fieldName.Equals("SortFilters")) continue;
+
+                    content = string.Concat(content, $"import {{ {childEntity} }} from \"./{FileManager.ToCamelCase(childEntity)}\";");
+                }
             }
 
             return content;
