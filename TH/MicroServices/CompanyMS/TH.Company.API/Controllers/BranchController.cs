@@ -2,12 +2,13 @@ using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Core;
 
-namespace TH.CompanyMS;
+namespace TH.CompanyMS.API;
 
 [Authorize(Policy = "ClaimBasedPolicy")]
 public class BranchController : CustomBaseController
@@ -15,17 +16,21 @@ public class BranchController : CustomBaseController
     private readonly IBranchService _branchService;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IHubContext<BranchHub, IBranchHub> _hubContext;
 
-    public BranchController(IBranchService branchService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+    public BranchController(IBranchService branchService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<BranchHub, IBranchHub> hubContext) : base(httpContextAccessor)
     {
         _branchService = branchService ?? throw new ArgumentNullException(nameof(branchService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+        _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
+
+        _branchService.SetUserResolver(UserResolver);
     }
 
     [HttpPost("SaveBranchAsync")]
     [ProducesResponseType(typeof(BranchViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "WritePolicy")]
+    [Authorize(Policy = "BranchWritePolicy")]
     public async Task<IActionResult> SaveBranchAsync([FromBody] BranchInputModel model)
     {
         var entity = await _branchService.SaveAsync(_mapper.Map<BranchInputModel, Branch>(model), DataFilter);
@@ -36,13 +41,15 @@ public class BranchController : CustomBaseController
             var filter = _mapper.Map<Branch, BranchFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IBranchService>();
             var viewModel = _mapper.Map<Branch, BranchViewModel>(await service.FindAsync(filter, DataFilter));
-            return CustomResult(Lang.Find("success"), viewModel);
+
+            _hubContext.Clients.All.BroadcastOnSaveBranchAsync(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("UpdateBranchAsync")]
     [ProducesResponseType(typeof(BranchViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "UpdatePolicy")]
+    [Authorize(Policy = "BranchUpdatePolicy")]
     public async Task<IActionResult> UpdateBranchAsync([FromBody] BranchInputModel model)
     {
         var entity = await _branchService.UpdateAsync(_mapper.Map<BranchInputModel, Branch>(model), DataFilter);
@@ -53,33 +60,37 @@ public class BranchController : CustomBaseController
             var filter = _mapper.Map<Branch, BranchFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IBranchService>();
             var viewModel = _mapper.Map<Branch, BranchViewModel>(await service.FindAsync(filter, DataFilter));
-            return CustomResult(Lang.Find("success"), viewModel);
+
+            _hubContext.Clients.All.BroadcastOnUpdateBranchAsync(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("SoftDeleteBranchAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "SoftDeletePolicy")]
+    [Authorize(Policy = "BranchSoftDeletePolicy")]
     public async Task<IActionResult> SoftDeleteBranchAsync([FromBody] BranchInputModel model)
     {
-        var hasDeleted = await _branchService.SoftDeleteAsync(_mapper.Map<BranchInputModel, Branch>(model), DataFilter);
+        await _branchService.SoftDeleteAsync(_mapper.Map<BranchInputModel, Branch>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnSoftDeleteBranchAsync(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("DeleteBranchAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "DeletePolicy")]
+    [Authorize(Policy = "BranchDeletePolicy")]
     public async Task<IActionResult> DeleteBranchAsync([FromBody] BranchInputModel model)
     {
-        var hasDeleted = await _branchService.DeleteAsync(_mapper.Map<BranchInputModel, Branch>(model), DataFilter);
+        await _branchService.DeleteAsync(_mapper.Map<BranchInputModel, Branch>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnDeleteBranchAsync(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("FindBranchAsync")]
     [ProducesResponseType(typeof(BranchViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "BranchReadPolicy")]
     public async Task<IActionResult> FindBranchAsync([FromBody] BranchFilterModel filter)
     {
         var entity = await _branchService.FindAsync(filter, DataFilter);
@@ -90,7 +101,7 @@ public class BranchController : CustomBaseController
 
     [HttpPost("GetBranchesAsync")]
     [ProducesResponseType(typeof(List<BranchViewModel>), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "BranchReadPolicy")]
     public async Task<IActionResult> GetBranchesAsync([FromBody] BranchFilterModel filter)
     {
         var entities = await _branchService.GetAsync(filter, DataFilter);

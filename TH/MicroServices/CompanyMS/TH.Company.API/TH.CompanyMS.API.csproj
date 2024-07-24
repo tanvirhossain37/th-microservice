@@ -32,7 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="GrpcServices\" />
     <Folder Include="Mappings\" />
+    <Folder Include="Protos\" />
   </ItemGroup>
 
 </Project>

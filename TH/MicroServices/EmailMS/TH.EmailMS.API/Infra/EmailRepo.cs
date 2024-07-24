@@ -29,7 +29,7 @@ namespace TH.EmailMS.API
                 _smtpClient.Credentials = (ICredentialsByHost)new NetworkCredential(_config.GetSection("Email:Username").Value,
                     _config.GetSection("Email:Password").Value);
 
-                await Task.Run(() => _smtpClient.Send(message));
+                //await Task.Run(() => _smtpClient.Send(message));
                 return true;
             }
             catch (Exception)

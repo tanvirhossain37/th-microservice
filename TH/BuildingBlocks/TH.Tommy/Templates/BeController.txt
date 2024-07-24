@@ -2,12 +2,13 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using TH.Common.Lang;
 using TH.Common.Model;
-using TH.CompanyMS.App;
-using TH.CompanyMS.Core;
+using $namespace$.App;
+using $namespace$.Core;
 
-namespace $namespace$;
+namespace $namespace$.API;
 
 [Authorize(Policy = "ClaimBasedPolicy")]
 public class $WE$Controller : CustomBaseController
@@ -15,17 +16,21 @@ public class $WE$Controller : CustomBaseController
     private readonly I$WE$Service _$we$Service;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IHubContext<$WE$Hub, I$WE$Hub> _hubContext;
 
-    public $WE$Controller(I$WE$Service $we$Service, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+    public $WE$Controller(I$WE$Service $we$Service, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<$WE$Hub, I$WE$Hub> hubContext) : base(httpContextAccessor)
     {
         _$we$Service = $we$Service ?? throw new ArgumentNullException(nameof($we$Service));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+        _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
+
+        _$we$Service.SetUserResolver(UserResolver);
     }
 
     [HttpPost("Save$WE$Async")]
     [ProducesResponseType(typeof($WE$ViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "WritePolicy")]
+    [Authorize(Policy = "$WE$WritePolicy")]
     public async Task<IActionResult> Save$WE$Async([FromBody] $WE$InputModel model)
     {
         var entity = await _$we$Service.SaveAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
@@ -36,13 +41,15 @@ public class $WE$Controller : CustomBaseController
             var filter = _mapper.Map<$WE$, $WE$FilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<I$WE$Service>();
             var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await service.FindAsync(filter, DataFilter));
-            return CustomResult(Lang.Find("success"), viewModel);
+
+            _hubContext.Clients.All.BroadcastOnSave$WE$Async(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("Update$WE$Async")]
     [ProducesResponseType(typeof($WE$ViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "UpdatePolicy")]
+    [Authorize(Policy = "$WE$UpdatePolicy")]
     public async Task<IActionResult> Update$WE$Async([FromBody] $WE$InputModel model)
     {
         var entity = await _$we$Service.UpdateAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
@@ -53,33 +60,37 @@ public class $WE$Controller : CustomBaseController
             var filter = _mapper.Map<$WE$, $WE$FilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<I$WE$Service>();
             var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await service.FindAsync(filter, DataFilter));
-            return CustomResult(Lang.Find("success"), viewModel);
+
+            _hubContext.Clients.All.BroadcastOnUpdate$WE$Async(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("SoftDelete$WE$Async")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "SoftDeletePolicy")]
+    [Authorize(Policy = "$WE$SoftDeletePolicy")]
     public async Task<IActionResult> SoftDelete$WE$Async([FromBody] $WE$InputModel model)
     {
-        var hasDeleted = await _$we$Service.SoftDeleteAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
+        await _$we$Service.SoftDeleteAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnSoftDelete$WE$Async(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("Delete$WE$Async")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "DeletePolicy")]
+    [Authorize(Policy = "$WE$DeletePolicy")]
     public async Task<IActionResult> Delete$WE$Async([FromBody] $WE$InputModel model)
     {
-        var hasDeleted = await _$we$Service.DeleteAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
+        await _$we$Service.DeleteAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnDelete$WE$Async(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("Find$WE$Async")]
     [ProducesResponseType(typeof($WE$ViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "$WE$ReadPolicy")]
     public async Task<IActionResult> Find$WE$Async([FromBody] $WE$FilterModel filter)
     {
         var entity = await _$we$Service.FindAsync(filter, DataFilter);
@@ -90,7 +101,7 @@ public class $WE$Controller : CustomBaseController
 
     [HttpPost("Get$WES$Async")]
     [ProducesResponseType(typeof(List<$WE$ViewModel>), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "$WE$ReadPolicy")]
     public async Task<IActionResult> Get$WES$Async([FromBody] $WE$FilterModel filter)
     {
         var entities = await _$we$Service.GetAsync(filter, DataFilter);

@@ -1,0 +1,12 @@
+      {
+        "DownstreamPathTemplate": "/$WE$",
+        "DownstreamScheme": "ws",
+        "DownstreamHostAndPorts": [
+          {
+            "Host": "localhost",
+            "Port": $port$
+          }
+        ],
+        "UpstreamPathTemplate": "/$WE$",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
+      }

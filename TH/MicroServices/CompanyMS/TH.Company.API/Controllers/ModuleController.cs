@@ -2,12 +2,13 @@ using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Core;
 
-namespace TH.CompanyMS;
+namespace TH.CompanyMS.API;
 
 [Authorize(Policy = "ClaimBasedPolicy")]
 public class ModuleController : CustomBaseController
@@ -15,17 +16,21 @@ public class ModuleController : CustomBaseController
     private readonly IModuleService _moduleService;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IHubContext<ModuleHub, IModuleHub> _hubContext;
 
-    public ModuleController(IModuleService moduleService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+    public ModuleController(IModuleService moduleService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<ModuleHub, IModuleHub> hubContext) : base(httpContextAccessor)
     {
         _moduleService = moduleService ?? throw new ArgumentNullException(nameof(moduleService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+        _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
+
+        _moduleService.SetUserResolver(UserResolver);
     }
 
     [HttpPost("SaveModuleAsync")]
     [ProducesResponseType(typeof(ModuleViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "WritePolicy")]
+    [Authorize(Policy = "ModuleWritePolicy")]
     public async Task<IActionResult> SaveModuleAsync([FromBody] ModuleInputModel model)
     {
         var entity = await _moduleService.SaveAsync(_mapper.Map<ModuleInputModel, Module>(model), DataFilter);
@@ -36,13 +41,15 @@ public class ModuleController : CustomBaseController
             var filter = _mapper.Map<Module, ModuleFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IModuleService>();
             var viewModel = _mapper.Map<Module, ModuleViewModel>(await service.FindAsync(filter, DataFilter));
-            return CustomResult(Lang.Find("success"), viewModel);
+
+            _hubContext.Clients.All.BroadcastOnSaveModuleAsync(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("UpdateModuleAsync")]
     [ProducesResponseType(typeof(ModuleViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "UpdatePolicy")]
+    [Authorize(Policy = "ModuleUpdatePolicy")]
     public async Task<IActionResult> UpdateModuleAsync([FromBody] ModuleInputModel model)
     {
         var entity = await _moduleService.UpdateAsync(_mapper.Map<ModuleInputModel, Module>(model), DataFilter);
@@ -53,33 +60,37 @@ public class ModuleController : CustomBaseController
             var filter = _mapper.Map<Module, ModuleFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IModuleService>();
             var viewModel = _mapper.Map<Module, ModuleViewModel>(await service.FindAsync(filter, DataFilter));
-            return CustomResult(Lang.Find("success"), viewModel);
+
+            _hubContext.Clients.All.BroadcastOnUpdateModuleAsync(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("SoftDeleteModuleAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "SoftDeletePolicy")]
+    [Authorize(Policy = "ModuleSoftDeletePolicy")]
     public async Task<IActionResult> SoftDeleteModuleAsync([FromBody] ModuleInputModel model)
     {
-        var hasDeleted = await _moduleService.SoftDeleteAsync(_mapper.Map<ModuleInputModel, Module>(model), DataFilter);
+        await _moduleService.SoftDeleteAsync(_mapper.Map<ModuleInputModel, Module>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnSoftDeleteModuleAsync(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("DeleteModuleAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "DeletePolicy")]
+    [Authorize(Policy = "ModuleDeletePolicy")]
     public async Task<IActionResult> DeleteModuleAsync([FromBody] ModuleInputModel model)
     {
-        var hasDeleted = await _moduleService.DeleteAsync(_mapper.Map<ModuleInputModel, Module>(model), DataFilter);
+        await _moduleService.DeleteAsync(_mapper.Map<ModuleInputModel, Module>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnDeleteModuleAsync(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("FindModuleAsync")]
     [ProducesResponseType(typeof(ModuleViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "ModuleReadPolicy")]
     public async Task<IActionResult> FindModuleAsync([FromBody] ModuleFilterModel filter)
     {
         var entity = await _moduleService.FindAsync(filter, DataFilter);
@@ -90,7 +101,7 @@ public class ModuleController : CustomBaseController
 
     [HttpPost("GetModulesAsync")]
     [ProducesResponseType(typeof(List<ModuleViewModel>), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "ModuleReadPolicy")]
     public async Task<IActionResult> GetModulesAsync([FromBody] ModuleFilterModel filter)
     {
         var entities = await _moduleService.GetAsync(filter, DataFilter);

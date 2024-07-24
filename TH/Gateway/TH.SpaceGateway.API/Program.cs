@@ -52,7 +52,10 @@ namespace TH.SpaceGateway.API
             app.MapControllers();
 
             app.MapGet("/", () => "Hello Space!");
-            await app.UseOcelot();
+
+
+            app.UseWebSockets();
+            app.UseOcelot().Wait();
 
             app.Run();
         }

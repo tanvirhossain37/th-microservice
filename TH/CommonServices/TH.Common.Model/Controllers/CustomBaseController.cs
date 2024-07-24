@@ -31,6 +31,7 @@ namespace TH.Common.Model
 
             userResolver.UserName = httpContextAccessor.HttpContext.User.Identity.Name;
             userResolver.SpaceId = AuthorizeHelper.GetClaimValueByName("SpaceId", httpContextAccessor.HttpContext.User.Claims);
+            userResolver.FullName= AuthorizeHelper.GetClaimValueByName("FullName", httpContextAccessor.HttpContext.User.Claims);
 
             //if (url.Contains("localhost"))
             //{

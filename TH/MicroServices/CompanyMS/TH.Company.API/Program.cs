@@ -1,7 +1,5 @@
-
 using System.Reflection;
 using TH.Common.Model;
-using TH.CompanyMS.API.Hubs;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Infra;
 
@@ -32,6 +30,7 @@ namespace TH.CompanyMS.API
 
             //AutoMapper
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            //builder.Services.AddGrpc();
 
             const string CorsPolicy = "_corsPolicy";
 
@@ -62,8 +61,18 @@ namespace TH.CompanyMS.API
             app.UseCors(CorsPolicy); //tanvir
             app.UseAuthorization();
 
+            //tanvir
+            app.MapHub<CompanyHub>("/Branch");
+            app.MapHub<CompanyHub>("/BranchUser");
             app.MapHub<CompanyHub>("/Company");
+            app.MapHub<CompanyHub>("/Module");
+            app.MapHub<CompanyHub>("/Permission");
+            app.MapHub<CompanyHub>("/Role");
+            app.MapHub<CompanyHub>("/User");
+            app.MapHub<CompanyHub>("/UserRole");
 
+            //app.MapGrpcService<PermissionGrpcServerService>();
+            //app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
             app.MapControllers();
 

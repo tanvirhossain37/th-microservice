@@ -20,6 +20,29 @@ public partial class CompanyService
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
             //todo
+            var role = new Role();
+            role.Name = "Super Admin";
+            role.CompanyId = entity.Id;
+            role.SpaceId = entity.SpaceId;
+
+            entity.Roles.Add(role);
+
+            var user = new User();
+            user.Name = UserResolver.FullName;
+            user.CompanyId = entity.Id;
+            user.SpaceId = entity.SpaceId;
+            user.UserName = UserResolver.UserName;
+            user.UserTypeId = (int)UserTypeEnum.TenantUser;
+
+            entity.Users.Add(user);
+
+            var userRole = new UserRole();
+            userRole.SpaceId = entity.SpaceId;
+            userRole.CompanyId=entity.Id;
+            userRole.RoleId = role.Id;
+            userRole.UserId = user.Id;
+
+            entity.UserRoles.Add(userRole);
         }
         catch (Exception)
         {

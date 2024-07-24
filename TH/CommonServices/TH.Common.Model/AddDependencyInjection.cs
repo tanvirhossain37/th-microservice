@@ -27,19 +27,54 @@ public static class AddDependencyInjection
                 //policy.RequireClaim("Test");
             });
 
-            //company
-            options.AddPolicy("ReadPolicy", policy => { policy.RequireClaim("Company", "Read"); });
-            options.AddPolicy("WritePolicy", policy => { policy.RequireClaim("Company", "Write"); });
-            options.AddPolicy("UpdatePolicy", policy => { policy.RequireClaim("Company", "Update"); });
-            options.AddPolicy("SoftDeletePolicy", policy => { policy.RequireClaim("Company", "SoftDelete"); });
-            options.AddPolicy("DeletePolicy", policy => { policy.RequireClaim("Company", "Delete"); });
+            options.AddPolicy("BranchReadPolicy", policy => { policy.RequireClaim("Branch", TS.Permissions.Read); });
+            options.AddPolicy("BranchWritePolicy", policy => { policy.RequireClaim("Branch", TS.Permissions.Write); });
+            options.AddPolicy("BranchUpdatePolicy", policy => { policy.RequireClaim("Branch", TS.Permissions.Update); });
+            options.AddPolicy("BranchSoftDeletePolicy", policy => { policy.RequireClaim("Branch", TS.Permissions.SoftDelete); });
+            options.AddPolicy("BranchDeletePolicy", policy => { policy.RequireClaim("Branch", TS.Permissions.Delete); });
 
-            //shadow
-            options.AddPolicy("ReadPolicy", policy => { policy.RequireClaim("Shadow", "Read"); });
-            options.AddPolicy("WritePolicy", policy => { policy.RequireClaim("Shadow", "Write"); });
-            options.AddPolicy("UpdatePolicy", policy => { policy.RequireClaim("Shadow", "Update"); });
-            options.AddPolicy("SoftDeletePolicy", policy => { policy.RequireClaim("Shadow", "SoftDelete"); });
-            options.AddPolicy("DeletePolicy", policy => { policy.RequireClaim("Shadow", "Delete"); });
+            options.AddPolicy("BranchUserReadPolicy", policy => { policy.RequireClaim("BranchUser", TS.Permissions.Read); });
+            options.AddPolicy("BranchUserWritePolicy", policy => { policy.RequireClaim("BranchUser", TS.Permissions.Write); });
+            options.AddPolicy("BranchUserUpdatePolicy", policy => { policy.RequireClaim("BranchUser", TS.Permissions.Update); });
+            options.AddPolicy("BranchUserSoftDeletePolicy", policy => { policy.RequireClaim("BranchUser", TS.Permissions.SoftDelete); });
+            options.AddPolicy("BranchUserDeletePolicy", policy => { policy.RequireClaim("BranchUser", TS.Permissions.Delete); });
+
+            options.AddPolicy("CompanyReadPolicy", policy => { policy.RequireClaim("Company", TS.Permissions.Read); });
+            options.AddPolicy("CompanyWritePolicy", policy => { policy.RequireClaim("Company", TS.Permissions.Write); });
+            options.AddPolicy("CompanyUpdatePolicy", policy => { policy.RequireClaim("Company", TS.Permissions.Update); });
+            options.AddPolicy("CompanySoftDeletePolicy", policy => { policy.RequireClaim("Company", TS.Permissions.SoftDelete); });
+            options.AddPolicy("CompanyDeletePolicy", policy => { policy.RequireClaim("Company", TS.Permissions.Delete); });
+
+            options.AddPolicy("ModuleReadPolicy", policy => { policy.RequireClaim("Module", TS.Permissions.Read); });
+            options.AddPolicy("ModuleWritePolicy", policy => { policy.RequireClaim("Module", TS.Permissions.Write); });
+            options.AddPolicy("ModuleUpdatePolicy", policy => { policy.RequireClaim("Module", TS.Permissions.Update); });
+            options.AddPolicy("ModuleSoftDeletePolicy", policy => { policy.RequireClaim("Module", TS.Permissions.SoftDelete); });
+            options.AddPolicy("ModuleDeletePolicy", policy => { policy.RequireClaim("Module", TS.Permissions.Delete); });
+
+            options.AddPolicy("PermissionReadPolicy", policy => { policy.RequireClaim("Permission", TS.Permissions.Read); });
+            options.AddPolicy("PermissionWritePolicy", policy => { policy.RequireClaim("Permission", TS.Permissions.Write); });
+            options.AddPolicy("PermissionUpdatePolicy", policy => { policy.RequireClaim("Permission", TS.Permissions.Update); });
+            options.AddPolicy("PermissionSoftDeletePolicy", policy => { policy.RequireClaim("Permission", TS.Permissions.SoftDelete); });
+            options.AddPolicy("PermissionDeletePolicy", policy => { policy.RequireClaim("Permission", TS.Permissions.Delete); });
+
+            options.AddPolicy("RoleReadPolicy", policy => { policy.RequireClaim("Role", TS.Permissions.Read); });
+            options.AddPolicy("RoleWritePolicy", policy => { policy.RequireClaim("Role", TS.Permissions.Write); });
+            options.AddPolicy("RoleUpdatePolicy", policy => { policy.RequireClaim("Role", TS.Permissions.Update); });
+            options.AddPolicy("RoleSoftDeletePolicy", policy => { policy.RequireClaim("Role", TS.Permissions.SoftDelete); });
+            options.AddPolicy("RoleDeletePolicy", policy => { policy.RequireClaim("Role", TS.Permissions.Delete); });
+
+            options.AddPolicy("UserReadPolicy", policy => { policy.RequireClaim("User", TS.Permissions.Read); });
+            options.AddPolicy("UserWritePolicy", policy => { policy.RequireClaim("User", TS.Permissions.Write); });
+            options.AddPolicy("UserUpdatePolicy", policy => { policy.RequireClaim("User", TS.Permissions.Update); });
+            options.AddPolicy("UserSoftDeletePolicy", policy => { policy.RequireClaim("User", TS.Permissions.SoftDelete); });
+            options.AddPolicy("UserDeletePolicy", policy => { policy.RequireClaim("User", TS.Permissions.Delete); });
+
+            options.AddPolicy("UserRoleReadPolicy", policy => { policy.RequireClaim("UserRole", TS.Permissions.Read); });
+            options.AddPolicy("UserRoleWritePolicy", policy => { policy.RequireClaim("UserRole", TS.Permissions.Write); });
+            options.AddPolicy("UserRoleUpdatePolicy", policy => { policy.RequireClaim("UserRole", TS.Permissions.Update); });
+            options.AddPolicy("UserRoleSoftDeletePolicy", policy => { policy.RequireClaim("UserRole", TS.Permissions.SoftDelete); });
+            options.AddPolicy("UserRoleDeletePolicy", policy => { policy.RequireClaim("UserRole", TS.Permissions.Delete); });
+
         });
 
         //AutoMapper

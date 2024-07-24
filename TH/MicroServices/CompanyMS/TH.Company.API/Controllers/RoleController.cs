@@ -2,12 +2,13 @@ using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Core;
 
-namespace TH.CompanyMS;
+namespace TH.CompanyMS.API;
 
 [Authorize(Policy = "ClaimBasedPolicy")]
 public class RoleController : CustomBaseController
@@ -15,17 +16,21 @@ public class RoleController : CustomBaseController
     private readonly IRoleService _roleService;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IHubContext<RoleHub, IRoleHub> _hubContext;
 
-    public RoleController(IRoleService roleService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+    public RoleController(IRoleService roleService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<RoleHub, IRoleHub> hubContext) : base(httpContextAccessor)
     {
         _roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+        _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
+
+        _roleService.SetUserResolver(UserResolver);
     }
 
     [HttpPost("SaveRoleAsync")]
     [ProducesResponseType(typeof(RoleViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "WritePolicy")]
+    [Authorize(Policy = "RoleWritePolicy")]
     public async Task<IActionResult> SaveRoleAsync([FromBody] RoleInputModel model)
     {
         var entity = await _roleService.SaveAsync(_mapper.Map<RoleInputModel, Role>(model), DataFilter);
@@ -36,13 +41,15 @@ public class RoleController : CustomBaseController
             var filter = _mapper.Map<Role, RoleFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IRoleService>();
             var viewModel = _mapper.Map<Role, RoleViewModel>(await service.FindAsync(filter, DataFilter));
-            return CustomResult(Lang.Find("success"), viewModel);
+
+            _hubContext.Clients.All.BroadcastOnSaveRoleAsync(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("UpdateRoleAsync")]
     [ProducesResponseType(typeof(RoleViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "UpdatePolicy")]
+    [Authorize(Policy = "RoleUpdatePolicy")]
     public async Task<IActionResult> UpdateRoleAsync([FromBody] RoleInputModel model)
     {
         var entity = await _roleService.UpdateAsync(_mapper.Map<RoleInputModel, Role>(model), DataFilter);
@@ -53,33 +60,37 @@ public class RoleController : CustomBaseController
             var filter = _mapper.Map<Role, RoleFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IRoleService>();
             var viewModel = _mapper.Map<Role, RoleViewModel>(await service.FindAsync(filter, DataFilter));
-            return CustomResult(Lang.Find("success"), viewModel);
+
+            _hubContext.Clients.All.BroadcastOnUpdateRoleAsync(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("SoftDeleteRoleAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "SoftDeletePolicy")]
+    [Authorize(Policy = "RoleSoftDeletePolicy")]
     public async Task<IActionResult> SoftDeleteRoleAsync([FromBody] RoleInputModel model)
     {
-        var hasDeleted = await _roleService.SoftDeleteAsync(_mapper.Map<RoleInputModel, Role>(model), DataFilter);
+        await _roleService.SoftDeleteAsync(_mapper.Map<RoleInputModel, Role>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnSoftDeleteRoleAsync(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("DeleteRoleAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "DeletePolicy")]
+    [Authorize(Policy = "RoleDeletePolicy")]
     public async Task<IActionResult> DeleteRoleAsync([FromBody] RoleInputModel model)
     {
-        var hasDeleted = await _roleService.DeleteAsync(_mapper.Map<RoleInputModel, Role>(model), DataFilter);
+        await _roleService.DeleteAsync(_mapper.Map<RoleInputModel, Role>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnDeleteRoleAsync(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("FindRoleAsync")]
     [ProducesResponseType(typeof(RoleViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "RoleReadPolicy")]
     public async Task<IActionResult> FindRoleAsync([FromBody] RoleFilterModel filter)
     {
         var entity = await _roleService.FindAsync(filter, DataFilter);
@@ -90,7 +101,7 @@ public class RoleController : CustomBaseController
 
     [HttpPost("GetRolesAsync")]
     [ProducesResponseType(typeof(List<RoleViewModel>), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "RoleReadPolicy")]
     public async Task<IActionResult> GetRolesAsync([FromBody] RoleFilterModel filter)
     {
         var entities = await _roleService.GetAsync(filter, DataFilter);

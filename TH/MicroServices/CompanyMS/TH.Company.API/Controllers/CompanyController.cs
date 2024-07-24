@@ -5,11 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using TH.Common.Lang;
 using TH.Common.Model;
-using TH.CompanyMS.API.Hubs;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Core;
 
-namespace TH.CompanyMS;
+namespace TH.CompanyMS.API;
 
 [Authorize(Policy = "ClaimBasedPolicy")]
 public class CompanyController : CustomBaseController
@@ -31,7 +30,7 @@ public class CompanyController : CustomBaseController
 
     [HttpPost("SaveCompanyAsync")]
     [ProducesResponseType(typeof(CompanyViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "WritePolicy")]
+    [Authorize(Policy = "CompanyWritePolicy")]
     public async Task<IActionResult> SaveCompanyAsync([FromBody] CompanyInputModel model)
     {
         var entity = await _companyService.SaveAsync(_mapper.Map<CompanyInputModel, Company>(model), DataFilter);
@@ -43,15 +42,14 @@ public class CompanyController : CustomBaseController
             var service = scope.ServiceProvider.GetRequiredService<ICompanyService>();
             var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnSaveCompanyAsync( viewModel);
-
-            return CustomResult(Lang.Find("success"), viewModel);
+            _hubContext.Clients.All.BroadcastOnSaveCompanyAsync(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("UpdateCompanyAsync")]
     [ProducesResponseType(typeof(CompanyViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "UpdatePolicy")]
+    [Authorize(Policy = "CompanyUpdatePolicy")]
     public async Task<IActionResult> UpdateCompanyAsync([FromBody] CompanyInputModel model)
     {
         var entity = await _companyService.UpdateAsync(_mapper.Map<CompanyInputModel, Company>(model), DataFilter);
@@ -64,33 +62,35 @@ public class CompanyController : CustomBaseController
             var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnUpdateCompanyAsync(viewModel);
-            return CustomResult(Lang.Find("success"), viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("SoftDeleteCompanyAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "SoftDeletePolicy")]
+    [Authorize(Policy = "CompanySoftDeletePolicy")]
     public async Task<IActionResult> SoftDeleteCompanyAsync([FromBody] CompanyInputModel model)
     {
-        var hasDeleted = await _companyService.SoftDeleteAsync(_mapper.Map<CompanyInputModel, Company>(model), DataFilter);
+        await _companyService.SoftDeleteAsync(_mapper.Map<CompanyInputModel, Company>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnSoftDeleteCompanyAsync(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("DeleteCompanyAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "DeletePolicy")]
+    [Authorize(Policy = "CompanyDeletePolicy")]
     public async Task<IActionResult> DeleteCompanyAsync([FromBody] CompanyInputModel model)
     {
-        var hasDeleted = await _companyService.DeleteAsync(_mapper.Map<CompanyInputModel, Company>(model), DataFilter);
+        await _companyService.DeleteAsync(_mapper.Map<CompanyInputModel, Company>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnDeleteCompanyAsync(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("FindCompanyAsync")]
     [ProducesResponseType(typeof(CompanyViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "CompanyReadPolicy")]
     public async Task<IActionResult> FindCompanyAsync([FromBody] CompanyFilterModel filter)
     {
         var entity = await _companyService.FindAsync(filter, DataFilter);
@@ -101,7 +101,7 @@ public class CompanyController : CustomBaseController
 
     [HttpPost("GetCompaniesAsync")]
     [ProducesResponseType(typeof(List<CompanyViewModel>), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "CompanyReadPolicy")]
     public async Task<IActionResult> GetCompaniesAsync([FromBody] CompanyFilterModel filter)
     {
         var entities = await _companyService.GetAsync(filter, DataFilter);

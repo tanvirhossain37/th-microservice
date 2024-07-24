@@ -1,0 +1,27 @@
+﻿using Microsoft.AspNetCore.SignalR;
+using $dependency$;
+
+namespace $namespace$;
+
+public class $WE$Hub : Hub<I$WE$Hub>
+{
+    public async Task BroadcastOnSave$WE$Async($WE$ViewModel viewModel)
+    {
+        await Clients.All.BroadcastOnSave$WE$Async(viewModel);
+    }
+
+    public async Task BroadcastOnUpdate$WE$Async($WE$ViewModel viewModel)
+    {
+        await Clients.All.BroadcastOnUpdate$WE$Async(viewModel);
+    }
+
+    public async Task BroadcastOnSoftDelete$WE$Async($WE$InputModel inputModel)
+    {
+        await Clients.All.BroadcastOnSoftDelete$WE$Async(inputModel);
+    }
+
+    public async Task BroadcastOnDelete$WE$Async($WE$InputModel inputModel)
+    {
+        await Clients.All.BroadcastOnDelete$WE$Async(inputModel);
+    }
+}

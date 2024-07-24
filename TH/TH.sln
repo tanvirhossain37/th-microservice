@@ -126,13 +126,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.Repo", "BuildingBlocks\T
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShadowMS", "ShadowMS", "{67129BEB-D762-4F43-9925-E650BC326077}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.ShadowMS.API", "MicroServices\ShadowMS\TH.ShadowMS.API\TH.ShadowMS.API.csproj", "{12D1CC64-92FA-4194-A8CE-FA891EC1AD31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.ShadowMS.API", "MicroServices\ShadowMS\TH.ShadowMS.API\TH.ShadowMS.API.csproj", "{12D1CC64-92FA-4194-A8CE-FA891EC1AD31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.ShadowMS.Core", "MicroServices\ShadowMS\TH.ShadowMS.Core\TH.ShadowMS.Core.csproj", "{97F34624-0D75-43A6-80B0-012B4D69FB91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.ShadowMS.Core", "MicroServices\ShadowMS\TH.ShadowMS.Core\TH.ShadowMS.Core.csproj", "{97F34624-0D75-43A6-80B0-012B4D69FB91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.ShadowMS.App", "MicroServices\ShadowMS\TH.ShadowMS.App\TH.ShadowMS.App.csproj", "{00296B48-2C73-4F7F-BAEC-8C0B90E41FEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.ShadowMS.App", "MicroServices\ShadowMS\TH.ShadowMS.App\TH.ShadowMS.App.csproj", "{00296B48-2C73-4F7F-BAEC-8C0B90E41FEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.ShadowMS.Infra", "MicroServices\ShadowMS\TH.ShadowMS.Infra\TH.ShadowMS.Infra.csproj", "{506C68EF-5BC3-4A9C-9B4A-E7055624666F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.ShadowMS.Infra", "MicroServices\ShadowMS\TH.ShadowMS.Infra\TH.ShadowMS.Infra.csproj", "{506C68EF-5BC3-4A9C-9B4A-E7055624666F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{7CCB96C3-C33F-4869-928A-2E25DD614D07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

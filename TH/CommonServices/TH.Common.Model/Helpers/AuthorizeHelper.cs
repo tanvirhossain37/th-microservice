@@ -38,31 +38,31 @@ namespace TH.Common.Model
         {
             if (actionName.StartsWith("Save"))
             {
-                return "Write";
+                return TS.Permissions.Write;
             }
             else if (actionName.StartsWith("Update"))
             {
-                return "Update";
+                return TS.Permissions.Update;
             }
             else if (actionName.StartsWith("SoftDelete"))
             {
-                return "SoftDelete";
+                return TS.Permissions.SoftDelete;
             }
             else if (actionName.StartsWith("Delete"))
             {
-                return "Delete";
+                return TS.Permissions.Delete;
             }
             else if (actionName.StartsWith("Find"))
             {
-                return "Read";
+                return TS.Permissions.Read;
             }
             else if (actionName.StartsWith("Get"))
             {
-                return "Read";
+                return TS.Permissions.Read;
             }
             else
             {
-                return string.Empty;
+                return TS.Permissions.None;
             }
         }
     }

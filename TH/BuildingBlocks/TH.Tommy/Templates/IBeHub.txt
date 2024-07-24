@@ -1,0 +1,11 @@
+﻿using $dependency$;
+
+namespace $namespace$;
+
+public interface I$WE$Hub
+{
+    public Task BroadcastOnSave$WE$Async($WE$ViewModel viewModel);
+    public Task BroadcastOnUpdate$WE$Async($WE$ViewModel viewModel);
+    public Task BroadcastOnSoftDelete$WE$Async($WE$InputModel inputModel);
+    public Task BroadcastOnDelete$WE$Async($WE$InputModel inputModel);
+}

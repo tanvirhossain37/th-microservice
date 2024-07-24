@@ -2,12 +2,13 @@ using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Core;
 
-namespace TH.CompanyMS;
+namespace TH.CompanyMS.API;
 
 [Authorize(Policy = "ClaimBasedPolicy")]
 public class UserController : CustomBaseController
@@ -15,17 +16,21 @@ public class UserController : CustomBaseController
     private readonly IUserService _userService;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IHubContext<UserHub, IUserHub> _hubContext;
 
-    public UserController(IUserService userService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+    public UserController(IUserService userService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<UserHub, IUserHub> hubContext) : base(httpContextAccessor)
     {
         _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+        _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
+
+        _userService.SetUserResolver(UserResolver);
     }
 
     [HttpPost("SaveUserAsync")]
     [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "WritePolicy")]
+    [Authorize(Policy = "UserWritePolicy")]
     public async Task<IActionResult> SaveUserAsync([FromBody] UserInputModel model)
     {
         var entity = await _userService.SaveAsync(_mapper.Map<UserInputModel, User>(model), DataFilter);
@@ -36,13 +41,15 @@ public class UserController : CustomBaseController
             var filter = _mapper.Map<User, UserFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IUserService>();
             var viewModel = _mapper.Map<User, UserViewModel>(await service.FindAsync(filter, DataFilter));
-            return CustomResult(Lang.Find("success"), viewModel);
+
+            _hubContext.Clients.All.BroadcastOnSaveUserAsync(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("UpdateUserAsync")]
     [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "UpdatePolicy")]
+    [Authorize(Policy = "UserUpdatePolicy")]
     public async Task<IActionResult> UpdateUserAsync([FromBody] UserInputModel model)
     {
         var entity = await _userService.UpdateAsync(_mapper.Map<UserInputModel, User>(model), DataFilter);
@@ -53,33 +60,37 @@ public class UserController : CustomBaseController
             var filter = _mapper.Map<User, UserFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IUserService>();
             var viewModel = _mapper.Map<User, UserViewModel>(await service.FindAsync(filter, DataFilter));
-            return CustomResult(Lang.Find("success"), viewModel);
+
+            _hubContext.Clients.All.BroadcastOnUpdateUserAsync(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("SoftDeleteUserAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "SoftDeletePolicy")]
+    [Authorize(Policy = "UserSoftDeletePolicy")]
     public async Task<IActionResult> SoftDeleteUserAsync([FromBody] UserInputModel model)
     {
-        var hasDeleted = await _userService.SoftDeleteAsync(_mapper.Map<UserInputModel, User>(model), DataFilter);
+        await _userService.SoftDeleteAsync(_mapper.Map<UserInputModel, User>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnSoftDeleteUserAsync(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("DeleteUserAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "DeletePolicy")]
+    [Authorize(Policy = "UserDeletePolicy")]
     public async Task<IActionResult> DeleteUserAsync([FromBody] UserInputModel model)
     {
-        var hasDeleted = await _userService.DeleteAsync(_mapper.Map<UserInputModel, User>(model), DataFilter);
+        await _userService.DeleteAsync(_mapper.Map<UserInputModel, User>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnDeleteUserAsync(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("FindUserAsync")]
     [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "UserReadPolicy")]
     public async Task<IActionResult> FindUserAsync([FromBody] UserFilterModel filter)
     {
         var entity = await _userService.FindAsync(filter, DataFilter);
@@ -90,7 +101,7 @@ public class UserController : CustomBaseController
 
     [HttpPost("GetUsersAsync")]
     [ProducesResponseType(typeof(List<UserViewModel>), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "UserReadPolicy")]
     public async Task<IActionResult> GetUsersAsync([FromBody] UserFilterModel filter)
     {
         var entities = await _userService.GetAsync(filter, DataFilter);

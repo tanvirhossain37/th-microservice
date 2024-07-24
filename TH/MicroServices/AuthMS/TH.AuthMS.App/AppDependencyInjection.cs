@@ -30,6 +30,10 @@ namespace TH.AuthMS.App
             //    });
             //});
 
+            //services.AddGrpcClient<PermissionProtoService.PermissionProtoServiceClient>(
+            //    options => options.Address = new Uri(configuration.GetValue<string>("GrpcSettings:GrpcUrl")));
+            //services.AddScoped<PermissionGrpcClientService>();
+
             services.AddEventBus(configuration);
 
             return services;

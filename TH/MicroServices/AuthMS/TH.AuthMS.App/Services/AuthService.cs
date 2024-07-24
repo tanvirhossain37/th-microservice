@@ -3,6 +3,7 @@ using MassTransit;
 using TH.AuthMS.Core;
 using TH.Common.Lang;
 using TH.EventBus.Messages;
+using TH.Common.Model;
 
 namespace TH.AuthMS.App
 {
@@ -48,7 +49,7 @@ namespace TH.AuthMS.App
 
             await _publishEndpoint.Publish(emailEvent);
 
-            return result;
+                        return result;
         }
 
         public async Task<SignInViewModel> SignInAsync(SignInInputModel entity)

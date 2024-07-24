@@ -37,5 +37,9 @@ public class MappingProfile:Profile
         CreateMap<Role, RoleFilterModel>().ReverseMap();
         CreateMap<User, UserFilterModel>().ReverseMap();
         CreateMap<UserRole, UserRoleFilterModel>().ReverseMap();
+
+        //protobuf
+        //CreateMap<PermissionRequest, PermissionFilterModel>().ReverseMap();
+        //CreateMap<Permission, PermissionResponse>().ReverseMap();
     }
 }

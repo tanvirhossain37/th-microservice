@@ -187,6 +187,29 @@ public static class Util
         }
     }
 
+    public static IEnumerable<string> ReadLines(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+            {
+                var list = new List<string>();
+                var returnList = new List<string>();
+
+                using (var reader = new StreamReader(path))
+                {
+                    return File.ReadAllLines(path);
+                }
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
     public static string GetPluralOf(string value)
     {
         try

@@ -202,5 +202,32 @@ namespace TH.Tommy
                 throw;
             }
         }
+
+        public static string ToUnderscoreCase(string value)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    return string.Empty;
+
+                value = ToCamelCase(value.Trim());
+
+                string[] words = Regex.Matches(value, "(^[a-z]+|[A-Z]+(?![a-z])|[A-Z][a-z]+)")
+                    .OfType<Match>()
+                    .Select(m => m.Value)
+                    .ToArray();
+
+                for (int i = 0; i < words.Length; i++)
+                {
+                    words[i] = FileManager.ToCamelCase(words[i]);
+                }
+
+                return string.Join("_", words);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

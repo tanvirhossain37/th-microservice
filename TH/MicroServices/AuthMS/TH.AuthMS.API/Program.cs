@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 //Tanvir
 builder.Services.AddControllers(c => c.Filters.Add(new CustomExceptionFilter()));
 
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

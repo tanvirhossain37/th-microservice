@@ -2,12 +2,13 @@ using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Core;
 
-namespace TH.CompanyMS;
+namespace TH.CompanyMS.API;
 
 [Authorize(Policy = "ClaimBasedPolicy")]
 public class UserRoleController : CustomBaseController
@@ -15,17 +16,21 @@ public class UserRoleController : CustomBaseController
     private readonly IUserRoleService _userRoleService;
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IHubContext<UserRoleHub, IUserRoleHub> _hubContext;
 
-    public UserRoleController(IUserRoleService userRoleService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+    public UserRoleController(IUserRoleService userRoleService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<UserRoleHub, IUserRoleHub> hubContext) : base(httpContextAccessor)
     {
         _userRoleService = userRoleService ?? throw new ArgumentNullException(nameof(userRoleService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
+        _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
+
+        _userRoleService.SetUserResolver(UserResolver);
     }
 
     [HttpPost("SaveUserRoleAsync")]
     [ProducesResponseType(typeof(UserRoleViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "WritePolicy")]
+    [Authorize(Policy = "UserRoleWritePolicy")]
     public async Task<IActionResult> SaveUserRoleAsync([FromBody] UserRoleInputModel model)
     {
         var entity = await _userRoleService.SaveAsync(_mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
@@ -36,13 +41,15 @@ public class UserRoleController : CustomBaseController
             var filter = _mapper.Map<UserRole, UserRoleFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IUserRoleService>();
             var viewModel = _mapper.Map<UserRole, UserRoleViewModel>(await service.FindAsync(filter, DataFilter));
-            return CustomResult(Lang.Find("success"), viewModel);
+
+            _hubContext.Clients.All.BroadcastOnSaveUserRoleAsync(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("UpdateUserRoleAsync")]
     [ProducesResponseType(typeof(UserRoleViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "UpdatePolicy")]
+    [Authorize(Policy = "UserRoleUpdatePolicy")]
     public async Task<IActionResult> UpdateUserRoleAsync([FromBody] UserRoleInputModel model)
     {
         var entity = await _userRoleService.UpdateAsync(_mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
@@ -53,33 +60,37 @@ public class UserRoleController : CustomBaseController
             var filter = _mapper.Map<UserRole, UserRoleFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IUserRoleService>();
             var viewModel = _mapper.Map<UserRole, UserRoleViewModel>(await service.FindAsync(filter, DataFilter));
-            return CustomResult(Lang.Find("success"), viewModel);
+
+            _hubContext.Clients.All.BroadcastOnUpdateUserRoleAsync(viewModel);
+            return CustomResult(Lang.Find("success"));
         }
     }
 
     [HttpPost("SoftDeleteUserRoleAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "SoftDeletePolicy")]
+    [Authorize(Policy = "UserRoleSoftDeletePolicy")]
     public async Task<IActionResult> SoftDeleteUserRoleAsync([FromBody] UserRoleInputModel model)
     {
-        var hasDeleted = await _userRoleService.SoftDeleteAsync(_mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
+        await _userRoleService.SoftDeleteAsync(_mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnSoftDeleteUserRoleAsync(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("DeleteUserRoleAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "DeletePolicy")]
+    [Authorize(Policy = "UserRoleDeletePolicy")]
     public async Task<IActionResult> DeleteUserRoleAsync([FromBody] UserRoleInputModel model)
     {
-        var hasDeleted = await _userRoleService.DeleteAsync(_mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
+        await _userRoleService.DeleteAsync(_mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
 
-        return CustomResult(Lang.Find("success"), hasDeleted);
+        _hubContext.Clients.All.BroadcastOnDeleteUserRoleAsync(model);
+        return CustomResult(Lang.Find("success"));
     }
 
     [HttpPost("FindUserRoleAsync")]
     [ProducesResponseType(typeof(UserRoleViewModel), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "UserRoleReadPolicy")]
     public async Task<IActionResult> FindUserRoleAsync([FromBody] UserRoleFilterModel filter)
     {
         var entity = await _userRoleService.FindAsync(filter, DataFilter);
@@ -90,7 +101,7 @@ public class UserRoleController : CustomBaseController
 
     [HttpPost("GetUserRolesAsync")]
     [ProducesResponseType(typeof(List<UserRoleViewModel>), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ReadPolicy")]
+    [Authorize(Policy = "UserRoleReadPolicy")]
     public async Task<IActionResult> GetUserRolesAsync([FromBody] UserRoleFilterModel filter)
     {
         var entities = await _userRoleService.GetAsync(filter, DataFilter);

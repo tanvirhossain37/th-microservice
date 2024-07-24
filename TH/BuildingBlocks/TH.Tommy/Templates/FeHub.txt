@@ -1,0 +1,26 @@
+import { Injectable } from "@angular/core";
+import { BaseHub } from "./baseHub.service";
+import { Observable } from "rxjs";
+
+const url = "http://localhost:5000/$WE$"
+
+@Injectable({
+    providedIn: 'root'
+})
+export class $WE$Hub extends BaseHub {
+    connectToBroadcastOnSave$WE$Async(): Observable<any> {
+        return super.connect(url, "BroadcastOnSave$WE$Async");
+    }
+
+    connectToBroadcastOnUpdate$WE$Async(): Observable<any> {
+        return super.connect(url, "BroadcastOnUpdate$WE$Async");
+    }
+
+    connectToBroadcastOnSoftDelete$WE$Async(): Observable<any> {
+        return super.connect(url, "BroadcastOnSoftDelete$WE$Async");
+    }
+
+    connectToBroadcastOnDelete$WE$Async(): Observable<any> {
+        return super.connect(url, "BroadcastOnDelete$WE$Async");
+    }
+}

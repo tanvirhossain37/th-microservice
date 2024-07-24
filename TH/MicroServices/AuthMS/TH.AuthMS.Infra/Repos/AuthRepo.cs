@@ -13,8 +13,10 @@ using TH.AddressMS.App;
 using TH.AuthMS.App;
 using TH.AuthMS.Core;
 using TH.Common.Lang;
+using TH.Common.Model;
 using TH.Common.Util;
 using TH.CompanyMS.App;
+using CustomException = TH.AuthMS.App.CustomException;
 
 namespace TH.AuthMS.Infra
 {
@@ -70,17 +72,18 @@ namespace TH.AuthMS.Infra
                     new Claim(ClaimTypes.Name, identityUser.UserName),
                     new Claim(ClaimTypes.Email, identityUser.Email),
                     new Claim("SpaceId", identityUser.Id),
+                    new Claim("FullName", identityUser.Name),
                     new Claim("Test", 1.ToString()),
                     //new Claim("Test", 2),
                     new Claim("Test", 3.ToString()),
                     new Claim("Test", 4.ToString()),
-                    new Claim("Company", "Read"),
-                    new Claim("Company", "Write"),
-                    new Claim("Company", "update"),
-                    new Claim("Company", "softdelete"),
-                    new Claim("Company", "delete"),
-                    new Claim("Shadow", "Read"),
-                    new Claim("Shadow", "Write")
+                    new Claim("Company", TS.Permissions.Read),
+                    new Claim("Company", TS.Permissions.Write),
+                    new Claim("Company", TS.Permissions.Update),
+                    new Claim("Company", TS.Permissions.SoftDelete),
+                    new Claim("Company", TS.Permissions.Delete),
+                    new Claim("Shadow", TS.Permissions.Read),
+                    new Claim("Shadow", TS.Permissions.Write)
                 };
             }
 

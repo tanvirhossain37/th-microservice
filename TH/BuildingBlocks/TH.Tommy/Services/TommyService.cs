@@ -22,9 +22,10 @@ public class TommyService : BaseService
     }
 
 
-    public void CreateBE(string projectName)
+    public void CreateBE(string projectName, string modelRoot)
     {
         projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+        modelRoot = string.IsNullOrWhiteSpace(modelRoot) ? throw new ArgumentNullException(nameof(modelRoot)) : modelRoot.Trim();
 
         Console.WriteLine();
         Console.WriteLine($"Creating BackEnd...");
@@ -43,27 +44,55 @@ public class TommyService : BaseService
             CreateBeRepos(file, files, projectName);
             CreateBeServices(file, projectName);
             CreateBeControllers(file, projectName);
+            CreateBeHubs(file, projectName);
+            CreateBeUnitTests(file, projectName);
         }
 
         CreateBeUoW(files, projectName);
 
+        Console.WriteLine();
+        Console.WriteLine($"Creating protobuf...");
+        Console.WriteLine();
+
+        //InputModels
+        var inputFiles = Directory.GetFiles($"{modelRoot}\\InputModels");
+
+        foreach (var file in inputFiles)
+        {
+            Console.WriteLine($"Proto: {Path.GetFileNameWithoutExtension(file)}");
+
+            CreateBeProtos(file, projectName, modelRoot);
+        }
+
     }
 
-    public void CreateGateway(string port, string controllerRoot)
+    public void CreateGateway(string port, string projectRoot)
     {
         port = string.IsNullOrWhiteSpace(port) ? throw new ArgumentNullException(nameof(port)) : port.Trim();
-        controllerRoot = string.IsNullOrWhiteSpace(controllerRoot) ? throw new ArgumentNullException(nameof(controllerRoot)) : controllerRoot.Trim();
+        projectRoot = string.IsNullOrWhiteSpace(projectRoot) ? throw new ArgumentNullException(nameof(projectRoot)) : projectRoot.Trim();
 
         Console.WriteLine();
         Console.WriteLine($"Creating Gateway...");
         Console.WriteLine();
 
         //controllers
-        var controllerFiles = Directory.GetFiles($"{controllerRoot}");
+        var controllerFiles = Directory.GetFiles($"{projectRoot}\\Controllers");
 
         foreach (var file in controllerFiles)
         {
-            CreateBeGateway(file, port);
+            Console.WriteLine($"Controller: {Path.GetFileNameWithoutExtension(file)}");
+
+            CreateBeGatewayForControllers(file, port);
+        }
+
+        //hubs
+        var hubFiles = Directory.GetFiles($"{projectRoot}\\Hubs");
+
+        foreach (var file in hubFiles)
+        {
+            Console.WriteLine($"Hub: {Path.GetFileNameWithoutExtension(file)}");
+
+            CreateBeGatewayForHubs(file, port);
         }
     }
 
@@ -114,6 +143,7 @@ public class TommyService : BaseService
         foreach (var file in controllerFiles)
         {
             CreateFeServices(file, projectName, modelRoot);
+            CreateFeHubs(file, projectName);
         }
 
     }
@@ -209,9 +239,137 @@ public class TommyService : BaseService
 
                 //save it
                 FileManager.Write($"{dest}\\{fileNameWithoutExtension}Controller.cs", template);
+
+                var policyContent = string.Empty;
+
+                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}ReadPolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Read); }});");
+                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}WritePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Write); }});");
+                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}UpdatePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Update); }});");
+                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}SoftDeletePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.SoftDelete); }});");
+                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}DeletePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Delete); }});");
+
+                //save it
+                FileManager.Append($"{dest}\\Policies.text", policyContent);
             }
         }
         catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void CreateBeUnitTests(string file, string projectName)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\UnitTests");
+
+            var lines = Util.ReadObjectLines(file);
+            if (lines != null)
+            {
+                //get content
+
+                //replace template
+                string template = FileManager.Read($"{_template}\\BeController.txt");
+                template = template.Replace("$namespace$", $"{projectName}");
+                template = template.Replace("$WE$", fileNameWithoutExtension);
+                template = template.Replace("$WES$", Util.TryPluralize(fileNameWithoutExtension));
+                template = template.Replace("$we$", FileManager.ToCamelCase(fileNameWithoutExtension));
+                template = template.Replace("$Access$", $"{projectName}RestrictAccess");
+
+                //save it
+                FileManager.Write($"{dest}\\{fileNameWithoutExtension}Controller.cs", template);
+
+                var policyContent = string.Empty;
+
+                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}ReadPolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Read); }});");
+                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}WritePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Write); }});");
+                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}UpdatePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Update); }});");
+                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}SoftDeletePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.SoftDelete); }});");
+                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}DeletePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Delete); }});");
+
+                //save it
+                FileManager.Append($"{dest}\\Policies.text", policyContent);
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void CreateBeHubs(string file, string projectName)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\Hubs");
+
+            var lines = Util.ReadObjectLines(file);
+            if (lines != null)
+            {
+                //get content
+
+                //replace template
+                string interfaceTemplate = FileManager.Read($"{_template}\\IBeHub.txt");
+                interfaceTemplate = interfaceTemplate.Replace("$dependency$", $"{projectName}.App");
+                interfaceTemplate = interfaceTemplate.Replace("$namespace$", $"{projectName}.API");
+                interfaceTemplate = interfaceTemplate.Replace("$WE$", fileNameWithoutExtension);
+
+                string template = FileManager.Read($"{_template}\\BeHub.txt");
+                template = template.Replace("$dependency$", $"{projectName}.App");
+                template = template.Replace("$namespace$", $"{projectName}.API");
+                template = template.Replace("$WE$", fileNameWithoutExtension);
+
+                //save it
+                FileManager.Write($"{dest}\\I{fileNameWithoutExtension}Hub.cs", interfaceTemplate);
+                //save it
+                FileManager.Write($"{dest}\\{fileNameWithoutExtension}Hub.cs", template);
+                //save it
+                FileManager.Append($"{dest}\\Hubs.txt", $"app.MapHub<CompanyHub>(\"/{fileNameWithoutExtension}\");");
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void CreateBeProtos(string file, string projectName, string modelRoot)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+            modelRoot = string.IsNullOrWhiteSpace(modelRoot) ? throw new ArgumentNullException(nameof(modelRoot)) : modelRoot.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultFeDestRoot}\\Protos");
+            //var partialDest = Util.CreateDirectory($"{dest}\\Partials");
+
+            var lines = Util.ReadObjectLines(file);
+            if (lines != null)
+            {
+                string protoContent = GetPropertyContentOfBeProto(lines);
+                string dependencyContent = GetDependencyContentOfFeModel(lines);
+
+                //get template
+                var template = FileManager.Read($"{_template}\\BeProto.txt");
+                template = template.Replace("$WE$", fileNameWithoutExtension.Replace("Model",""));
+                template = template.Replace("//todo proto content", protoContent);
+
+                //save it
+                FileManager.Append($"{dest}\\{fileNameWithoutExtension.Replace("Model", "")}Request.cs", template);
+            }
+        }
+        catch (Exception e)
         {
             throw;
         }
@@ -713,7 +871,36 @@ public class TommyService : BaseService
         }
     }
 
-    private void CreateBeGateway(string file, string port)
+    private void CreateFeHubs(string file, string projectName)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultFeDestRoot}\\Hubs");
+
+            var lines = Util.ReadObjectLines(file);
+            if (lines != null)
+            {
+                //get content
+
+                //replace template
+                string template = FileManager.Read($"{_template}\\FeHub.txt");
+                template = template.Replace("$WE$", fileNameWithoutExtension.Replace("Controller", ""));
+
+                //save it
+                FileManager.Write($"{dest}\\{fileNameWithoutExtension.Replace("Controller","")}Hub.service.ts", template);
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private void CreateBeGatewayForControllers(string file, string port)
     {
         try
         {
@@ -721,15 +908,40 @@ public class TommyService : BaseService
             port = string.IsNullOrWhiteSpace(port) ? throw new ArgumentNullException(nameof(port)) : port.Trim();
             
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-            var dest = Util.CreateDirectory($"{ResultFeDestRoot}\\Gateway");
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\Gateway");
 
             var lines = Util.ReadObjectLines(file);
             if (lines != null)
             {
-                string gatewayContent = GetPropertyContentOfBeGateway(lines, fileNameWithoutExtension, port);
+                string gatewayContent = GetPropertyContentOfBeGatewayForControllers(lines, fileNameWithoutExtension, port);
 
                 //save it
-                FileManager.Append($"{dest}\\Gateway.txt", gatewayContent);
+                FileManager.Append($"{dest}\\GatewayForControllers.txt", gatewayContent);
+            }
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
+
+    private void CreateBeGatewayForHubs(string file, string port)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            port = string.IsNullOrWhiteSpace(port) ? throw new ArgumentNullException(nameof(port)) : port.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\Gateway");
+
+            var lines = Util.ReadLines(file);
+            if (lines != null)
+            {
+                string gatewayContent = GetPropertyContentOfBeGatewayForHubs(lines, fileNameWithoutExtension, port);
+
+                //save it
+                FileManager.Append($"{dest}\\GatewayForHubs.txt", gatewayContent);
             }
         }
         catch (Exception e)
@@ -905,6 +1117,69 @@ public class TommyService : BaseService
         }
     }
 
+    private string GetPropertyContentOfBeProto(IEnumerable<string> lines)
+    {
+        try
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+
+            var content = string.Empty;
+            var childEntity = string.Empty;
+            var fieldName = string.Empty;
+            var typeName = string.Empty;
+
+            int count = 1;
+            foreach (var line in lines)
+            {
+                if (line.Contains("IList")) continue;
+
+                fieldName = line.Trim().Split(' ')[2];
+                typeName = line.Trim().Split(' ')[1];
+
+                if ((typeName.Equals("int"))|| (typeName.Equals("int?")))
+                {
+                    content = string.Concat(content, $"\n\tsint32 {FileManager.ToUnderscoreCase(fieldName)} = {count};");
+                }
+                else if ((typeName.Equals("long")) || (typeName.Equals("long?")))
+                {
+                    content = string.Concat(content, $"\n\tlong {FileManager.ToUnderscoreCase(fieldName)} = {count};");
+                }
+                else if ((typeName.Equals("double")) || (typeName.Equals("double?")))
+                {
+                    content = string.Concat(content, $"\n\tdouble {FileManager.ToUnderscoreCase(fieldName)} = {count};");
+                }
+                else if ((typeName.Equals("decimal")) || (typeName.Equals("decimal?")))
+                {
+                    content = string.Concat(content, $"\n\tdecimal {FileManager.ToUnderscoreCase(fieldName)} = {count};");
+                }
+                else if ((typeName.Equals("string")) || (typeName.Equals("string?")))
+                {
+                    content = string.Concat(content, $"\n\tstring {FileManager.ToUnderscoreCase(fieldName)} = {count};");
+                }
+                else if ((typeName.Equals("bool")) || (typeName.Equals("bool?")))
+                {
+                    content = string.Concat(content, $"\n\tbool {FileManager.ToUnderscoreCase(fieldName)} = {count};");
+                }
+                else if ((typeName.Equals("DateTime")) || (typeName.Equals("DateTime?")))
+                {
+                    content = string.Concat(content, $"\n\tgoogle.protobuf.timestamp {FileManager.ToUnderscoreCase(fieldName)} = {count};");
+                }
+                else if ((typeName.Equals("TimeSpan")) || (typeName.Equals("TimeSpan?")))
+                {
+                    content = string.Concat(content, $"\n\tgoogle.protobuf.timestamp {FileManager.ToUnderscoreCase(fieldName)} = {count};");
+                }
+                
+                count++;
+            }
+
+            return content;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
     private string GetPropertyContentOfFeFilterModel(IEnumerable<string> lines)
     {
         try
@@ -1057,7 +1332,7 @@ public class TommyService : BaseService
         }
     }
 
-    private string GetPropertyContentOfBeGateway(IEnumerable<string> lines, string fileNameWithoutExtension, string port)
+    private string GetPropertyContentOfBeGatewayForControllers(IEnumerable<string> lines, string fileNameWithoutExtension, string port)
     {
         try
         {
@@ -1078,7 +1353,7 @@ public class TommyService : BaseService
                 {
                     var methodName = line.Trim().Split(' ', '(')[3];
 
-                    var template = FileManager.Read($"{_template}\\BeGateway.txt");
+                    var template = FileManager.Read($"{_template}\\BeGatewayController.txt");
 
                     template = template.Replace("$WE$", controllerName);
                     template = template.Replace("$MethodName$", methodName);
@@ -1096,6 +1371,40 @@ public class TommyService : BaseService
             }
 
             return content;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private string GetPropertyContentOfBeGatewayForHubs(IEnumerable<string> lines, string fileNameWithoutExtension, string port)
+    {
+        try
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+            if (fileNameWithoutExtension == null) throw new ArgumentNullException(nameof(fileNameWithoutExtension));
+            port = string.IsNullOrWhiteSpace(port) ? throw new ArgumentNullException(nameof(port)) : port.Trim();
+
+            if (fileNameWithoutExtension.StartsWith("I")) return string.Empty;
+
+
+            var content = string.Empty;
+            var childEntity = string.Empty;
+            var fieldName = string.Empty;
+            var typeName = string.Empty;
+
+            var hubName = fileNameWithoutExtension.Replace("Hub", "");
+
+            var template = FileManager.Read($"{_template}\\BeGatewayHub.txt");
+
+            template = template.Replace("$WE$", hubName);
+            template = template.Replace("$port$", port);
+
+            content = string.Concat(content, $",\n{template}");
+
+            return content;
+
         }
         catch (Exception)
         {
