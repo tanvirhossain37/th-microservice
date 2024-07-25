@@ -6,6 +6,7 @@ using System.Net;
 using MassTransit;
 using Microsoft.Extensions.Options;
 using TH.AuthMS.App;
+using TH.AuthMS.App.GrpcServices;
 using TH.AuthMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
@@ -19,13 +20,17 @@ namespace TH.AuthMS.API
         private readonly IAuthService _authService;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly JwtConfiguration _configuration;
+        private readonly CompanyGrpcClientService _grpcClientService;
 
         public AuthController(IAuthService authService, IPublishEndpoint publishEndpoint, IOptions<JwtConfiguration> options,
-            HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+            HttpContextAccessor httpContextAccessor, CompanyGrpcClientService grpcClientService) : base(httpContextAccessor)
         {
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
             _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
+            _grpcClientService = grpcClientService ?? throw new ArgumentNullException(nameof(grpcClientService));
             _configuration = options.Value;
+
+            _authService.GrpcClientService = _grpcClientService;
         }
 
         [HttpPost("SignUpAsync")]

@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\TH.EventBus.Messages\TH.EventBus.Messages.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\TH.Grpc\TH.Grpc.csproj" />
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Lang\TH.Common.Lang.csproj" />
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Util\TH.Common.Util.csproj" />
     <ProjectReference Include="..\..\UserSvc\TH.UserSvc.App\TH.UserSvc.App.csproj" />
@@ -43,6 +44,12 @@
 
   <ItemGroup>
     <Folder Include="GrpcServices\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\..\..\BuildingBlocks\TH.Grpc\Protos\company.proto" GrpcServices="Client">
+      <Link>Protos\company.proto</Link>
+    </Protobuf>
   </ItemGroup>
 
 </Project>

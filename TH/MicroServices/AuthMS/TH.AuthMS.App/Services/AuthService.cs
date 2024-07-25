@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MassTransit;
+using TH.AuthMS.App.GrpcServices;
 using TH.AuthMS.Core;
 using TH.Common.Lang;
 using TH.EventBus.Messages;
@@ -12,6 +13,7 @@ namespace TH.AuthMS.App
         private readonly IAuthRepo _authRepo;
         private readonly IConfiguration _config;
         private readonly IPublishEndpoint _publishEndpoint;
+        public CompanyGrpcClientService GrpcClientService { get; set; }
 
         public AuthService(IAuthRepo authRepo, IConfiguration config, IPublishEndpoint publishEndpoint)
         {
@@ -32,10 +34,10 @@ namespace TH.AuthMS.App
                 UserTypeId = (int)UserTypeEnum.Owner,
                 CreatedDate = DateTime.Now,
                 ActivationCode = Guid.NewGuid().ToString(),
-                CodeExpiryTime = DateTime.Now.AddDays(Convert.ToDouble(_config.GetSection("ActivationCodeExpiryTime").Value))//1 day
+                CodeExpiryTime = DateTime.Now.AddDays(Convert.ToDouble(_config.GetSection("ActivationCodeExpiryTime").Value)) //1 day
             };
 
-            var result= await _authRepo.SaveAsync(user, entity.Password);
+            var result = await _authRepo.SaveAsync(user, entity.Password);
 
             //send email
             //publish to eventbus
@@ -49,7 +51,7 @@ namespace TH.AuthMS.App
 
             await _publishEndpoint.Publish(emailEvent);
 
-                        return result;
+            return result;
         }
 
         public async Task<SignInViewModel> SignInAsync(SignInInputModel entity)
@@ -97,7 +99,10 @@ namespace TH.AuthMS.App
             emailEvent.Subject = "Security Alter";
             emailEvent.Content = $"{identityUser.UserName}, you got signed in at {DateTime.Now}";
 
-            await _publishEndpoint.Publish(emailEvent);
+            //await _publishEndpoint.Publish(emailEvent);
+
+            //grpc service
+            var reply = await GrpcClientService.GetPermissions("Tanvir");
 
             return signInViewModel;
         }

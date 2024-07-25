@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MassTransit;
-using TH.AuthMS.Core;
 using TH.Common.Model;
+using TH.AuthMS.App.GrpcServices;
+using TH.Grpc.Protos;
 
 namespace TH.AuthMS.App
 {
@@ -30,9 +24,9 @@ namespace TH.AuthMS.App
             //    });
             //});
 
-            //services.AddGrpcClient<PermissionProtoService.PermissionProtoServiceClient>(
-            //    options => options.Address = new Uri(configuration.GetValue<string>("GrpcSettings:GrpcUrl")));
-            //services.AddScoped<PermissionGrpcClientService>();
+            services.AddGrpcClient<CompanyProtoService.CompanyProtoServiceClient>(
+                options => options.Address = new Uri(configuration.GetValue<string>("GrpcSettings:GrpcUrl")));
+            services.AddScoped<CompanyGrpcClientService>();
 
             services.AddEventBus(configuration);
 

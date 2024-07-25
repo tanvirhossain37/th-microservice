@@ -1,3 +1,4 @@
+using System.Reflection;
 using TH.AuthMS.API;
 using TH.AuthMS.App;
 using TH.AuthMS.Infra;
@@ -19,6 +20,9 @@ builder.Services.AddAppDependencyInjection(builder.Configuration);
 builder.Services.AddInfraDependencyInjection(builder.Configuration);
 builder.Services.AddJwtTokenBasedAuthentication(builder.Configuration);
 //builder.Services.AddCookieBasedAuthentication(builder.Configuration);
+
+//AutoMapper
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 const string CorsPolicy = "_corsPolicy";
 

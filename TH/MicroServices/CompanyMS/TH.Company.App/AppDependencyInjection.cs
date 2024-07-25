@@ -57,6 +57,8 @@ public static class AppDependencyInjection
 
         services.AddEventBus(configuration);
 
+        
+
         return services;
     }
 }
