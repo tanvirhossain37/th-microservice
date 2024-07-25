@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.57.0" />
     <PackageReference Include="CoreApiResponse" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
@@ -40,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\company.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\company.proto" />
   </ItemGroup>
 
 </Project>

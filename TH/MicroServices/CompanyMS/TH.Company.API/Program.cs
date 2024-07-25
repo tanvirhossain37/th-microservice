@@ -30,7 +30,6 @@ namespace TH.CompanyMS.API
 
             //AutoMapper
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            //builder.Services.AddGrpc();
 
             const string CorsPolicy = "_corsPolicy";
 
