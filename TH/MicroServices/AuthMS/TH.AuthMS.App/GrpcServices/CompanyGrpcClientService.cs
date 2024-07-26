@@ -5,17 +5,17 @@ namespace TH.AuthMS.App.GrpcServices;
 
 public class CompanyGrpcClientService
 {
-    private readonly CompanyProtoService.CompanyProtoServiceClient _grpcClient;
+    private readonly SpaceProtoService.SpaceProtoServiceClient _grpcClient;
     private readonly IMapper _mapper;
 
-    public CompanyGrpcClientService(CompanyProtoService.CompanyProtoServiceClient grpClient, IMapper mapper)
+    public CompanyGrpcClientService(SpaceProtoService.SpaceProtoServiceClient grpcClient, IMapper mapper)
     {
-        _grpcClient = grpClient ?? throw new ArgumentNullException(nameof(grpClient));
+        _grpcClient = grpcClient ?? throw new ArgumentNullException(nameof(grpcClient));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<PermissionReply> GetPermissions(string name)
+    public async Task<ListPermissionViewReplies> GetPermissions(PermissionFilterRequest request)
     {
-        return await _grpcClient.GetPermissionsAsync(new PermissionRequest { Name = name });
+        return await _grpcClient.GetPermissionsAsync(request);
     }
 }

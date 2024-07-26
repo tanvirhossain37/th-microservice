@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MassTransit;
 using TH.AuthMS.App.GrpcServices;
-using TH.AuthMS.Core;
 using TH.Common.Lang;
 using TH.EventBus.Messages;
 using TH.Common.Model;
@@ -63,11 +62,11 @@ namespace TH.AuthMS.App
             if (!isCorrectPassword) throw new UnauthorizedAccessException(Lang.Find("error_wrongpassword"));
 
             //email confirmed?
-            if(!identityUser.EmailConfirmed) throw new UnauthorizedAccessException(Lang.Find("error_emailnotconfirmed"));
+            if (!identityUser.EmailConfirmed) throw new UnauthorizedAccessException(Lang.Find("error_emailnotconfirmed"));
 
             var signInViewModel = _authRepo.GenerateToken(identityUser);
             signInViewModel.RefreshToken = _authRepo.GenerateRefreshToken();
-            
+
             signInViewModel.userName = identityUser.UserName;
             signInViewModel.Name = identityUser.Name;
             signInViewModel.Email = identityUser.Email;
@@ -103,6 +102,8 @@ namespace TH.AuthMS.App
 
             //grpc service
             var reply = await GrpcClientService.GetPermissions("Tanvir");
+
+            //reply.Message
 
             return signInViewModel;
         }

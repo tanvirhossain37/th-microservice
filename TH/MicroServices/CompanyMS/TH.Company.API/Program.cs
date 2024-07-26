@@ -70,7 +70,7 @@ namespace TH.CompanyMS.API
             app.MapHub<CompanyHub>("/User");
             app.MapHub<CompanyHub>("/UserRole");
 
-            
+
             app.MapControllers();
 
             app.Run();

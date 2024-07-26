@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Protos\company.proto" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="CoreApiResponse" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="8.0.7" />
@@ -37,10 +33,6 @@
 
   <ItemGroup>
     <Folder Include="Mappings\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Protobuf Include="Protos\company.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>

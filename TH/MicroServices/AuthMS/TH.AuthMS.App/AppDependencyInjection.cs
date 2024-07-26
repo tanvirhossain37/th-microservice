@@ -24,8 +24,16 @@ namespace TH.AuthMS.App
             //    });
             //});
 
-            services.AddGrpcClient<CompanyProtoService.CompanyProtoServiceClient>(
-                options => options.Address = new Uri(configuration.GetValue<string>("GrpcSettings:GrpcUrl")));
+            services.AddGrpcClient<SpaceProtoService.SpaceProtoServiceClient>(
+                    options => options.Address = new Uri(configuration.GetValue<string>("GrpcSettings:GrpcUrl")))
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    var handler = new HttpClientHandler();
+                    handler.ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+                    return handler;
+                });
             services.AddScoped<CompanyGrpcClientService>();
 
             services.AddEventBus(configuration);

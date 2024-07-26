@@ -61,9 +61,28 @@ public class TommyService : BaseService
         {
             Console.WriteLine($"Proto: {Path.GetFileNameWithoutExtension(file)}");
 
-            CreateBeProtos(file, projectName, modelRoot);
+            CreateBeInputProtos(file, projectName, modelRoot);
         }
 
+        //FilterModels
+        var filterFiles = Directory.GetFiles($"{modelRoot}\\FilterModels");
+
+        foreach (var file in filterFiles)
+        {
+            Console.WriteLine($"Proto: {Path.GetFileNameWithoutExtension(file)}");
+
+            CreateBeFilterProtos(file, projectName, modelRoot);
+        }
+
+        //ViewModels
+        var viewFiles = Directory.GetFiles($"{modelRoot}\\ViewModels");
+
+        foreach (var file in viewFiles)
+        {
+            Console.WriteLine($"Proto: {Path.GetFileNameWithoutExtension(file)}");
+
+            CreateBeViewProtos(file, projectName, modelRoot);
+        }
     }
 
     public void CreateGateway(string port, string projectRoot)
@@ -342,7 +361,7 @@ public class TommyService : BaseService
         }
     }
 
-    private void CreateBeProtos(string file, string projectName, string modelRoot)
+    private void CreateBeInputProtos(string file, string projectName, string modelRoot)
     {
         try
         {
@@ -351,22 +370,94 @@ public class TommyService : BaseService
             modelRoot = string.IsNullOrWhiteSpace(modelRoot) ? throw new ArgumentNullException(nameof(modelRoot)) : modelRoot.Trim();
 
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-            var dest = Util.CreateDirectory($"{ResultFeDestRoot}\\Protos");
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\Protos");
             //var partialDest = Util.CreateDirectory($"{dest}\\Partials");
 
             var lines = Util.ReadObjectLines(file);
             if (lines != null)
             {
                 string protoContent = GetPropertyContentOfBeProto(lines);
-                string dependencyContent = GetDependencyContentOfFeModel(lines);
 
                 //get template
                 var template = FileManager.Read($"{_template}\\BeProto.txt");
-                template = template.Replace("$WE$", fileNameWithoutExtension.Replace("Model",""));
+                template = template.Replace("$WE$", $"{fileNameWithoutExtension.Replace("Model", "")}Request");
                 template = template.Replace("//todo proto content", protoContent);
 
                 //save it
-                FileManager.Append($"{dest}\\{fileNameWithoutExtension.Replace("Model", "")}Request.cs", template);
+                FileManager.Append($"{dest}\\Protobuf.proto", template);
+
+                //mapper
+                FileManager.Append(Path.Combine(_mapper, "Protos.txt"), $"CreateMap<{fileNameWithoutExtension.Replace("Model","")}Request, {fileNameWithoutExtension.Replace("InputModel","")}>().ReverseMap();");
+            }
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
+
+    private void CreateBeFilterProtos(string file, string projectName, string modelRoot)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+            modelRoot = string.IsNullOrWhiteSpace(modelRoot) ? throw new ArgumentNullException(nameof(modelRoot)) : modelRoot.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\Protos");
+            //var partialDest = Util.CreateDirectory($"{dest}\\Partials");
+
+            var lines = Util.ReadObjectLines(file);
+            if (lines != null)
+            {
+                string protoContent = GetPropertyContentOfBeProto(lines);
+
+                //get template
+                var template = FileManager.Read($"{_template}\\BeProto.txt");
+                template = template.Replace("$WE$", $"{fileNameWithoutExtension.Replace("Model", "")}Request");
+                template = template.Replace("//todo proto content", protoContent);
+
+                //save it
+                FileManager.Append($"{dest}\\Protobuf.proto", template);
+
+                //mapper
+                FileManager.Append(Path.Combine(_mapper, "Protos.txt"), $"CreateMap<{fileNameWithoutExtension.Replace("Model","")}Request, {fileNameWithoutExtension}>().ReverseMap();");
+            }
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
+
+    private void CreateBeViewProtos(string file, string projectName, string modelRoot)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+            modelRoot = string.IsNullOrWhiteSpace(modelRoot) ? throw new ArgumentNullException(nameof(modelRoot)) : modelRoot.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\Protos");
+            //var partialDest = Util.CreateDirectory($"{dest}\\Partials");
+
+            var lines = Util.ReadObjectLines(file);
+            if (lines != null)
+            {
+                string protoContent = GetPropertyContentOfBeProto(lines);
+
+                //get template
+                var template = FileManager.Read($"{_template}\\BeProto.txt");
+                template = template.Replace("$WE$", $"{fileNameWithoutExtension.Replace("Model", "")}Reply");
+                template = template.Replace("//todo proto content", protoContent);
+
+                //save it
+                FileManager.Append($"{dest}\\Protobuf.proto", template);
+
+                //mapper
+                FileManager.Append(Path.Combine(_mapper, "Protos.txt"), $"CreateMap<{fileNameWithoutExtension.Replace("Model", "")}Reply, {fileNameWithoutExtension}>().ReverseMap();");
             }
         }
         catch (Exception e)
@@ -1162,11 +1253,11 @@ public class TommyService : BaseService
                 }
                 else if ((typeName.Equals("DateTime")) || (typeName.Equals("DateTime?")))
                 {
-                    content = string.Concat(content, $"\n\tgoogle.protobuf.timestamp {FileManager.ToUnderscoreCase(fieldName)} = {count};");
+                    content = string.Concat(content, $"\n\tgoogle.protobuf.Timestamp {FileManager.ToUnderscoreCase(fieldName)} = {count};");
                 }
                 else if ((typeName.Equals("TimeSpan")) || (typeName.Equals("TimeSpan?")))
                 {
-                    content = string.Concat(content, $"\n\tgoogle.protobuf.timestamp {FileManager.ToUnderscoreCase(fieldName)} = {count};");
+                    content = string.Concat(content, $"\n\tgoogle.protobuf.Timestamp {FileManager.ToUnderscoreCase(fieldName)} = {count};");
                 }
                 
                 count++;

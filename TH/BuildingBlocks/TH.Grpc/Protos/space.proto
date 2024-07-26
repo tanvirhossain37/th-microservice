@@ -1,0 +1,293 @@
+syntax = "proto3";
+
+import "google/protobuf/duration.proto";  
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "TH.Grpc.Protos";
+
+service SpaceProtoService{
+	rpc GetPermissions(PermissionFilterRequest) returns (ListPermissionViewReplies);
+}
+
+message BranchInputRequest {	
+	
+	string id = 1;
+	string space_id = 2;
+	string company_id = 3;
+	string code = 4;
+	string name = 5;
+	bool is_default = 6;
+}
+message BranchUserInputRequest {	
+	
+	string id = 1;
+	string space_id = 2;
+	string company_id = 3;
+	string branch_id = 4;
+	string user_id = 5;
+	bool is_default = 6;
+}
+message CompanyInputRequest {	
+	
+	string id = 1;
+	string space_id = 2;
+	string name = 3;
+	string code = 4;
+	string website = 5;
+	string slogan = 6;
+	string logo = 7;
+}
+message ModuleInputRequest {	
+	
+	string id = 1;
+	string name = 2;
+	string code = 3;
+	string route = 4;
+	string icon = 5;
+	sint32 level = 6;
+	string parent_id = 7;
+	sint32 order = 8;
+}
+message PermissionInputRequest {	
+	
+	string id = 1;
+	string space_id = 2;
+	string company_id = 3;
+	string role_id = 4;
+	string module_id = 5;
+	bool read = 6;
+	bool write = 7;
+	bool update = 8;
+	bool delete = 9;
+	sint32 access_type_id = 10;
+}
+message RoleInputRequest {	
+	
+	string id = 1;
+	string space_id = 2;
+	string company_id = 3;
+	string code = 4;
+	string name = 5;
+}
+message UserInputRequest {	
+	
+	string id = 1;
+	string space_id = 2;
+	string company_id = 3;
+	sint32 user_type_id = 4;
+	string name = 5;
+	string user_name = 6;
+}
+message UserRoleInputRequest {	
+	
+	string id = 1;
+	string space_id = 2;
+	string company_id = 3;
+	string user_id = 4;
+	string role_id = 5;
+}
+message BranchFilterRequest {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string company_id = 6;
+	string code = 7;
+	string name = 8;
+	bool is_default = 9;
+}
+message BranchUserFilterRequest {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string company_id = 6;
+	string branch_id = 7;
+	string user_id = 8;
+	bool is_default = 9;
+}
+message CompanyFilterRequest {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string name = 6;
+	string code = 7;
+	string website = 8;
+	string slogan = 9;
+	string logo = 10;
+}
+message ModuleFilterRequest {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string name = 5;
+	string code = 6;
+	string route = 7;
+	string icon = 8;
+	sint32 level = 9;
+	string parent_id = 10;
+	sint32 order = 11;
+}
+message PermissionFilterRequest {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string company_id = 6;
+	string role_id = 7;
+	string module_id = 8;
+	bool read = 9;
+	bool write = 10;
+	bool update = 11;
+	bool delete = 12;
+	sint32 access_type_id = 13;
+}
+message RoleFilterRequest {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string company_id = 6;
+	string code = 7;
+	string name = 8;
+}
+message UserFilterRequest {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string company_id = 6;
+	sint32 user_type_id = 7;
+	string name = 8;
+	string user_name = 9;
+}
+message UserRoleFilterRequest {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string company_id = 6;
+	string user_id = 7;
+	string role_id = 8;
+}
+message BranchUserViewReply {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string company_id = 6;
+	string branch_id = 7;
+	string user_id = 8;
+	bool is_default = 9;
+}
+message BranchViewReply {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string company_id = 6;
+	string code = 7;
+	string name = 8;
+	bool is_default = 9;
+}
+message CompanyViewReply {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string name = 6;
+	string code = 7;
+	string website = 8;
+	string slogan = 9;
+	string logo = 10;
+}
+message ModuleViewReply {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string name = 5;
+	string code = 6;
+	string route = 7;
+	string icon = 8;
+	sint32 level = 9;
+	string parent_id = 10;
+	sint32 order = 11;
+}
+message PermissionViewReply {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string company_id = 6;
+	string role_id = 7;
+	string module_id = 8;
+	bool read = 9;
+	bool write = 10;
+	bool update = 11;
+	bool delete = 12;
+	sint32 access_type_id = 13;
+}
+message RoleViewReply {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string company_id = 6;
+	string code = 7;
+	string name = 8;
+}
+message UserRoleViewReply {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string company_id = 6;
+	string user_id = 7;
+	string role_id = 8;
+}
+message UserViewReply {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string space_id = 5;
+	string company_id = 6;
+	sint32 user_type_id = 7;
+	string name = 8;
+	string user_name = 9;
+}
+message ListPermissionViewReplies {
+	repeated PermissionViewReply permissions=1;
+}
