@@ -6,13 +6,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TH.CompanyMS.App;
 
 public partial class CompanyInputModel
-{
-    public string Id { get; set; } = null!;
-    public string SpaceId { get; set; } = null!;
-    public string Name { get; set; } = null!;
-    public string? Code { get; set; }
-    public string? Website { get; set; }
-    public string? Slogan { get; set; }
-    public string? Logo { get; set; }
-    public IList<BranchInputModel> Branches { get; set; } = new List<BranchInputModel>();
+{   
+	public string Id { get; set; } = null!;
+	public string SpaceId { get; set; } = null!;
+	public string Name { get; set; } = null!;
+	public string? Code { get; set; }
+	public string? Website { get; set; }
+	public string? Slogan { get; set; }
+	public string? Logo { get; set; }
 }

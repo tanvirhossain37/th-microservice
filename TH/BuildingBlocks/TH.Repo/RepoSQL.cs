@@ -89,8 +89,8 @@ public class RepoSQL<TEntity> : IRepoSQL<TEntity> where TEntity : class
         int pageIndex = (int)PageEnum.PageIndex, int pageSize = (int)PageEnum.PageSize,
         DataFilter dataFilter = new DataFilter())
     {
-        if (predicate == null) throw new ArgumentNullException(nameof(predicate));
-        if (includePredicate == null) throw new ArgumentNullException(nameof(includePredicate));
+        //if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+        //if (includePredicate == null) throw new ArgumentNullException(nameof(includePredicate));
         if (orderBy == null) throw new ArgumentNullException(nameof(orderBy));
         IQueryable<TEntity> queryResult = DbContext.Set<TEntity>();
 

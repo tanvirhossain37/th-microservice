@@ -27,21 +27,5 @@ public partial class ModuleRepo : RepoSQL<Module>, IModuleRepo
             (!e.Id.Equals(id)) &&
             (e.Name.Equals(name)), dataFilter);
     }
-    public async Task<Module> FindByCodeAsync(string code, DataFilter dataFilter)
-    {
-        code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
 
-        return await SingleOrDefaultQueryableAsync(e =>
-            (e.Code.Equals(code)), dataFilter);
-    }
-
-    public async Task<Module> FindByCodeExceptMeAsync(string id, string code, DataFilter dataFilter)
-    {
-        id = string.IsNullOrWhiteSpace(id) ? throw new ArgumentNullException(nameof(id)) : id.Trim().ToLower();
-        code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
-
-        return await SingleOrDefaultQueryableAsync(e =>
-            (!e.Id.Equals(id)) &&
-            (e.Code.Equals(code)), dataFilter);
-    }
 }

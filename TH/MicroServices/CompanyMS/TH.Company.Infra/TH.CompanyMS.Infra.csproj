@@ -9,6 +9,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20240709132945_Initial.cs" />
     <Compile Remove="Migrations\20240709132945_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20240728171605_Initial.cs" />
+    <Compile Remove="Migrations\20240728171605_Initial.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +19,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

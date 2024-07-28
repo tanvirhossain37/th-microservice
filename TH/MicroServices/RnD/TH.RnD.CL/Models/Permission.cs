@@ -31,9 +31,17 @@ public partial class Permission
 
     public int AccessTypeId { get; set; }
 
+    public string? ParentId { get; set; }
+
+    public int MenuOrder { get; set; }
+
     public virtual Company Company { get; set; } = null!;
 
+    public virtual ICollection<Permission> InverseParent { get; set; } = new List<Permission>();
+
     public virtual Module Module { get; set; } = null!;
+
+    public virtual Permission? Parent { get; set; }
 
     public virtual Role Role { get; set; } = null!;
 }

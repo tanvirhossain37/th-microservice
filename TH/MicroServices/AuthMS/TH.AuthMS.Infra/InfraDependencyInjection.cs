@@ -24,7 +24,7 @@ namespace TH.AuthMS.Infra
             IConfiguration configuration)
         {
             services.AddDbContext<AuthDbContext>(options => { options.UseSqlServer(configuration.GetConnectionString("AuthDB")); });
-            services.AddIdentity<User, IdentityRole>(options =>
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
                 {
                     //options.Password.RequireNonAlphanumeric = true;
                     //options.Password.RequireDigit = true;
@@ -47,7 +47,7 @@ namespace TH.AuthMS.Infra
             //services.AddScoped<UserManager<User>>();
             //services.AddScoped<RoleManager<User>>();
 
-            services.AddIdentityCore<User>();
+            //services.AddIdentityCore<ApplicationUser>();
 
             return services;
         }

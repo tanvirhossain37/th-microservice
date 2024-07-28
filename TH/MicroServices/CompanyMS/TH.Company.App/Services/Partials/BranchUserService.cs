@@ -13,149 +13,94 @@ public partial class BranchUserService
     //{
     //}
 
-    private void ApplyOnSavingBl(BranchUser entity, DataFilter dataFilter)
+    private async Task ApplyOnSavingBlAsync(BranchUser entity, DataFilter dataFilter)
     {
-        try
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnSavedBl(BranchUser entity, DataFilter dataFilter)
+    private async Task ApplyOnSavedBlAsync(BranchUser entity, DataFilter dataFilter)
     {
-        try
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnUpdatingBl(BranchUser existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnUpdatingBlAsync(BranchUser existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnUpdatedBl(BranchUser existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnUpdatedBlAsync(BranchUser existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnDeletingBl(BranchUser existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnSoftDeletingBlAsync(BranchUser existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnDeletedBl(BranchUser existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnSoftDeletedBlAsync(BranchUser existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnFindByIdBl(BranchUser entity, DataFilter dataFilter)
+    private async Task ApplyOnDeletingBlAsync(BranchUser existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnGetBl(BranchUserFilterModel filter, DataFilter dataFilter)
+    private async Task ApplyOnDeletedBlAsync(BranchUser existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (filter == null) throw new ArgumentNullException(nameof(filter));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyCustomGetFilterBl(BranchUserFilterModel filter, List<Expression<Func<BranchUser, bool>>> predicates)
+    private async Task ApplyOnFindBlAsync(BranchUser entity, DataFilter dataFilter)
     {
-        try
-        {
-            if (filter == null) throw new ArgumentNullException(nameof(filter));
-            if (predicates == null) throw new ArgumentNullException(nameof(predicates));
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            //todo
-            //additional
-            if (filter.StartDate.HasValue && filter.EndDate.HasValue)
-            {
-                filter.StartDate = Util.TryFloorTime((DateTime)filter.StartDate);
-                filter.EndDate = Util.TryCeilTime((DateTime)filter.EndDate);
+        //todo
+    }
 
-                predicates.Add(t => (t.CreatedDate >= filter.StartDate) && (t.CreatedDate <= filter.EndDate));
-            }
-        }
-        catch (Exception)
+    private async Task ApplyOnGetBlAsync(BranchUserFilterModel filter, DataFilter dataFilter)
+    {
+        if (filter == null) throw new ArgumentNullException(nameof(filter));
+
+        //todo
+    }
+
+    private async Task ApplyCustomGetFilterBlAsync(BranchUserFilterModel filter, List<Expression<Func<BranchUser, bool>>> predicates, DataFilter dataFilter)
+    {
+        if (filter == null) throw new ArgumentNullException(nameof(filter));
+        if (predicates == null) throw new ArgumentNullException(nameof(predicates));
+
+        //todo
+        //additional
+        if (filter.StartDate.HasValue && filter.EndDate.HasValue)
         {
-            throw;
+            filter.StartDate = Util.TryFloorTime((DateTime)filter.StartDate);
+            filter.EndDate = Util.TryCeilTime((DateTime)filter.EndDate);
+
+            predicates.Add(t => (t.CreatedDate >= filter.StartDate) && (t.CreatedDate <= filter.EndDate));
         }
     }
 
     private void DisposeOthers()
     {
-        try
-        {
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 }

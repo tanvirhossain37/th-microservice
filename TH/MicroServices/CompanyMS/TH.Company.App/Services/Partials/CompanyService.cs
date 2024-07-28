@@ -13,172 +13,163 @@ public partial class CompanyService
     //{
     //}
 
-    private void ApplyOnSavingBl(Company entity, DataFilter dataFilter)
+    private async Task ApplyOnSavingBlAsync(Company entity, DataFilter dataFilter)
     {
-        try
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+        //todo
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+        //todo
+        var role = new Role();
+        role.Name = "Super Admin";
+        role.CompanyId = entity.Id;
+        role.SpaceId = UserResolver.SpaceId;
+
+        entity.Roles.Add(role);
+
+        var user = new User();
+        user.Name = UserResolver.FullName;
+        user.CompanyId = entity.Id;
+        user.SpaceId = UserResolver.SpaceId;
+        user.UserName = UserResolver.UserName;
+        user.UserTypeId = (int)UserTypeEnum.TenantUser;
+
+        entity.Users.Add(user);
+
+        var userRole = new UserRole();
+        userRole.SpaceId = UserResolver.SpaceId;
+        userRole.CompanyId = entity.Id;
+        userRole.RoleId = role.Id;
+        userRole.UserId = user.Id;
+
+        entity.UserRoles.Add(userRole);
+
+        //permissions
+        var modules = await Repo.ModuleRepo.GetQueryableAsync(null, null, o => o.OrderBy(m => m.MenuOrder), (int)PageEnum.PageIndex,
+            (int)PageEnum.PageSize);
+        //modules
+        foreach (var module in modules)
         {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
-
-            //todo
-            var role = new Role();
-            role.Name = "Super Admin";
-            role.CompanyId = entity.Id;
-            role.SpaceId = entity.SpaceId;
-
-            entity.Roles.Add(role);
-
-            var user = new User();
-            user.Name = UserResolver.FullName;
-            user.CompanyId = entity.Id;
-            user.SpaceId = entity.SpaceId;
-            user.UserName = UserResolver.UserName;
-            user.UserTypeId = (int)UserTypeEnum.TenantUser;
-
-            entity.Users.Add(user);
-
-            var userRole = new UserRole();
-            userRole.SpaceId = entity.SpaceId;
-            userRole.CompanyId=entity.Id;
-            userRole.RoleId = role.Id;
-            userRole.UserId = user.Id;
-
-            entity.UserRoles.Add(userRole);
-        }
-        catch (Exception)
-        {
-            throw;
+            await AddPermissionRecursivelyAsync(role, module, null, dataFilter, entity.Id);
         }
     }
 
-    private void ApplyOnSavedBl(Company entity, DataFilter dataFilter)
+    private async Task ApplyOnSavedBlAsync(Company entity, DataFilter dataFilter)
     {
-        try
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            //todo
-        }
-        catch (Exception)
+        //todo
+    }
+
+    private async Task ApplyOnUpdatingBlAsync(Company existingEntity, DataFilter dataFilter)
+    {
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+
+        //todo
+    }
+
+    private async Task ApplyOnUpdatedBlAsync(Company existingEntity, DataFilter dataFilter)
+    {
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+
+        //todo
+    }
+
+    private async Task ApplyOnSoftDeletingBlAsync(Company existingEntity, DataFilter dataFilter)
+    {
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+
+        //todo
+    }
+
+    private async Task ApplyOnSoftDeletedBlAsync(Company existingEntity, DataFilter dataFilter)
+    {
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+
+        //todo
+    }
+
+    private async Task ApplyOnDeletingBlAsync(Company existingEntity, DataFilter dataFilter)
+    {
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+
+        //todo
+    }
+
+    private async Task ApplyOnDeletedBlAsync(Company existingEntity, DataFilter dataFilter)
+    {
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+
+        //todo
+    }
+
+    private async Task ApplyOnFindBlAsync(Company entity, DataFilter dataFilter)
+    {
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+        //todo
+    }
+
+    private async Task ApplyOnGetBlAsync(CompanyFilterModel filter, DataFilter dataFilter)
+    {
+        if (filter == null) throw new ArgumentNullException(nameof(filter));
+
+        //todo
+    }
+
+    private async Task ApplyCustomGetFilterBlAsync(CompanyFilterModel filter, List<Expression<Func<Company, bool>>> predicates, DataFilter dataFilter)
+    {
+        if (filter == null) throw new ArgumentNullException(nameof(filter));
+        if (predicates == null) throw new ArgumentNullException(nameof(predicates));
+
+        //todo
+        //additional
+        if (filter.StartDate.HasValue && filter.EndDate.HasValue)
         {
-            throw;
+            filter.StartDate = Util.TryFloorTime((DateTime)filter.StartDate);
+            filter.EndDate = Util.TryCeilTime((DateTime)filter.EndDate);
+
+            predicates.Add(t => (t.CreatedDate >= filter.StartDate) && (t.CreatedDate <= filter.EndDate));
         }
     }
 
-    private void ApplyOnUpdatingBl(Company existingEntity, DataFilter dataFilter)
+    private async Task AddPermissionRecursivelyAsync(Role role, Module module, Permission parentPermission, DataFilter dataFilter, string companyId)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (module == null) throw new ArgumentNullException(nameof(module));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
+        //disable filters as it runs in init
+        var existingPermission = await Repo.PermissionRepo.SingleOrDefaultQueryableAsync(x => x.RoleId == role.Id && x.ModuleId == module.Id, dataFilter);
 
-    private void ApplyOnUpdatedBl(Company existingEntity, DataFilter dataFilter)
-    {
-        try
+        //jodi pai, skip - otherwise add
+        if (existingPermission == null)
         {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
-
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    private void ApplyOnDeletingBl(Company existingEntity, DataFilter dataFilter)
-    {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
-
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    private void ApplyOnDeletedBl(Company existingEntity, DataFilter dataFilter)
-    {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
-
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    private void ApplyOnFindByIdBl(Company entity, DataFilter dataFilter)
-    {
-        try
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
-
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    private void ApplyOnGetBl(CompanyFilterModel filter, DataFilter dataFilter)
-    {
-        try
-        {
-            if (filter == null) throw new ArgumentNullException(nameof(filter));
-
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    private void ApplyCustomGetFilterBl(CompanyFilterModel filter, List<Expression<Func<Company, bool>>> predicates)
-    {
-        try
-        {
-            if (filter == null) throw new ArgumentNullException(nameof(filter));
-            if (predicates == null) throw new ArgumentNullException(nameof(predicates));
-
-            //todo
-            //additional
-            if (filter.StartDate.HasValue && filter.EndDate.HasValue)
+            var permission = new Permission
             {
-                filter.StartDate = Util.TryFloorTime((DateTime)filter.StartDate);
-                filter.EndDate = Util.TryCeilTime((DateTime)filter.EndDate);
+                SpaceId = UserResolver.SpaceId,
+                CompanyId = companyId,
+                RoleId = role.Id,
+                ParentId = parentPermission?.Id,
+                ModuleId = module.Id,
+                CreatedDate = role.CreatedDate
+            };
 
-                predicates.Add(t => (t.CreatedDate >= filter.StartDate) && (t.CreatedDate <= filter.EndDate));
-            }
+            parentPermission = await PermissionService.SaveAsync(permission, dataFilter, false);
         }
-        catch (Exception)
+        else
         {
-            throw;
+            parentPermission = existingPermission;
+        }
+
+        foreach (var childModule in module.InverseParent)
+        {
+            await AddPermissionRecursivelyAsync(role, childModule, parentPermission, dataFilter, companyId);
         }
     }
+
 
     private void DisposeOthers()
     {
-        try
-        {
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 }

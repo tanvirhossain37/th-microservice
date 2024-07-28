@@ -91,7 +91,7 @@ public partial class DoNotDeleteSpaceContext : DbContext
 
         modelBuilder.Entity<Module>(entity =>
         {
-            entity.Property(e => e.Code).HasMaxLength(256);
+            entity.Property(e => e.ControllerName).HasMaxLength(256);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Icon).HasMaxLength(256);
             entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
@@ -110,6 +110,7 @@ public partial class DoNotDeleteSpaceContext : DbContext
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
             entity.Property(e => e.ModuleId).HasMaxLength(450);
+            entity.Property(e => e.ParentId).HasMaxLength(450);
             entity.Property(e => e.RoleId).HasMaxLength(450);
             entity.Property(e => e.SpaceId).HasMaxLength(450);
 
@@ -122,6 +123,10 @@ public partial class DoNotDeleteSpaceContext : DbContext
                 .HasForeignKey(d => d.ModuleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Permissions_Modules");
+
+            entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent)
+                .HasForeignKey(d => d.ParentId)
+                .HasConstraintName("FK_Permissions_Permissions");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Permissions)
                 .HasForeignKey(d => d.RoleId)

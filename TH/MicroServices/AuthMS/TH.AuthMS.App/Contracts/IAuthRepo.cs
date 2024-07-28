@@ -11,13 +11,13 @@ namespace TH.AuthMS.App
 {
     public interface IAuthRepo : IDisposable
     {
-        Task<bool> SaveAsync(User identityUser, string password);
-        Task<IdentityResult> UpdateAsync(User identityUser);
-        Task<User> FindByUserNameAsync(string userName);
-        Task<bool> CheckPasswordAsync(User user, string password);
-        SignInViewModel GenerateToken(User identityUser);
+        Task<bool> SaveAsync(ApplicationUser identityApplicationUser, string password);
+        Task<IdentityResult> UpdateAsync(ApplicationUser identityApplicationUser);
+        Task<ApplicationUser> FindByUserNameAsync(string userName);
+        Task<bool> CheckPasswordAsync(ApplicationUser applicationUser, string password);
+        SignInViewModel GenerateToken(ApplicationUser identityApplicationUser);
         string GenerateRefreshToken();
         ClaimsPrincipal GetTokenPrincipal(string token);
-        Task<User> ActivateAccountAsync(ActgivationCodeInputModel model);
+        Task<ApplicationUser> ActivateAccountAsync(ActgivationCodeInputModel model);
     }
 }

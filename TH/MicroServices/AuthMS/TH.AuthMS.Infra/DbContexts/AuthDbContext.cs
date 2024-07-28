@@ -9,7 +9,7 @@ using TH.AuthMS.App;
 
 namespace TH.AuthMS.Infra
 {
-    public class AuthDbContext : IdentityDbContext<User>
+    public class AuthDbContext : IdentityDbContext<ApplicationUser>
     {
         public AuthDbContext(DbContextOptions options) : base(options)
         {

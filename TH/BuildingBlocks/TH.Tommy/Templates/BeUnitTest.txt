@@ -1,0 +1,125 @@
+using Microsoft.Extensions.DependencyInjection;
+using TH.Common.Model;
+using $namespace$.App;
+using $namespace$.Core;
+
+namespace $namespace$.Test;
+
+[TestClass]
+public class $WE$ServiceUnitTest : BaseUnitTest
+{
+    private I$WE$Service _service;
+
+
+    [TestInitialize]
+    public override void Init()
+    {
+        base.Init();
+        _service = ServiceProvider.GetRequiredService<I$WE$Service>();
+    }
+
+    [TestMethod]
+    public async Task SaveAsyncUnitTest()
+    {
+        try
+        {
+            var model = new $WE$InputModel
+            {
+            };
+
+            var entity = await _service.SaveAsync(Mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
+            var viewModel = Mapper.Map<$WE$, $WE$ViewModel>(entity);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    [TestMethod]
+    public async Task UpdateAsyncUnitTest()
+    {
+        try
+        {
+            var model = new $WE$InputModel
+            {
+            };
+
+            var entity = await _service.UpdateAsync(Mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
+            var viewModel = Mapper.Map<$WE$, $WE$ViewModel>(entity);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    [TestMethod]
+    public async Task SoftDeleteAsyncUnitTest()
+    {
+        try
+        {
+            var model = new $WE$InputModel
+            {
+                Id = "", //todo
+            };
+
+            await _service.SoftDeleteAsync(Mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    [TestMethod]
+    public async Task DeleteAsyncUnitTest()
+    {
+        try
+        {
+            var model = new $WE$InputModel
+            {
+                Id = "" //todo
+            };
+
+            await _service.DeleteAsync(Mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    [TestMethod]
+    public async Task FindByIdAsyncUnitTest()
+    {
+        try
+        {
+            var filter = new $WE$FilterModel();
+
+            var entity = await _service.FindAsync(filter, DataFilter); //todo
+            var viewModel = Mapper.Map<$WE$, $WE$ViewModel>(entity);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    [TestMethod]
+    public async Task GetAsyncUnitTest()
+    {
+        try
+        {
+            var filter = new $WE$FilterModel();
+            filter.PageSize = (int)PageEnum.All;
+
+            var entity = await _service.GetAsync(filter, DataFilter);
+            var viewModel = Mapper.Map<List<$WE$>, List<$WE$ViewModel>>(entity.ToList());
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+}

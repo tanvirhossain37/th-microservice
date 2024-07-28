@@ -13,149 +13,94 @@ public partial class UserService
     //{
     //}
 
-    private void ApplyOnSavingBl(User entity, DataFilter dataFilter)
+    private async Task ApplyOnSavingBlAsync(User entity, DataFilter dataFilter)
     {
-        try
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnSavedBl(User entity, DataFilter dataFilter)
+    private async Task ApplyOnSavedBlAsync(User entity, DataFilter dataFilter)
     {
-        try
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnUpdatingBl(User existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnUpdatingBlAsync(User existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnUpdatedBl(User existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnUpdatedBlAsync(User existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnDeletingBl(User existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnSoftDeletingBlAsync(User existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnDeletedBl(User existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnSoftDeletedBlAsync(User existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnFindByIdBl(User entity, DataFilter dataFilter)
+    private async Task ApplyOnDeletingBlAsync(User existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnGetBl(UserFilterModel filter, DataFilter dataFilter)
+    private async Task ApplyOnDeletedBlAsync(User existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (filter == null) throw new ArgumentNullException(nameof(filter));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyCustomGetFilterBl(UserFilterModel filter, List<Expression<Func<User, bool>>> predicates)
+    private async Task ApplyOnFindBlAsync(User entity, DataFilter dataFilter)
     {
-        try
-        {
-            if (filter == null) throw new ArgumentNullException(nameof(filter));
-            if (predicates == null) throw new ArgumentNullException(nameof(predicates));
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            //todo
-            //additional
-            if (filter.StartDate.HasValue && filter.EndDate.HasValue)
-            {
-                filter.StartDate = Util.TryFloorTime((DateTime)filter.StartDate);
-                filter.EndDate = Util.TryCeilTime((DateTime)filter.EndDate);
+        //todo
+    }
 
-                predicates.Add(t => (t.CreatedDate >= filter.StartDate) && (t.CreatedDate <= filter.EndDate));
-            }
-        }
-        catch (Exception)
+    private async Task ApplyOnGetBlAsync(UserFilterModel filter, DataFilter dataFilter)
+    {
+        if (filter == null) throw new ArgumentNullException(nameof(filter));
+
+        //todo
+    }
+
+    private async Task ApplyCustomGetFilterBlAsync(UserFilterModel filter, List<Expression<Func<User, bool>>> predicates, DataFilter dataFilter)
+    {
+        if (filter == null) throw new ArgumentNullException(nameof(filter));
+        if (predicates == null) throw new ArgumentNullException(nameof(predicates));
+
+        //todo
+        //additional
+        if (filter.StartDate.HasValue && filter.EndDate.HasValue)
         {
-            throw;
+            filter.StartDate = Util.TryFloorTime((DateTime)filter.StartDate);
+            filter.EndDate = Util.TryCeilTime((DateTime)filter.EndDate);
+
+            predicates.Add(t => (t.CreatedDate >= filter.StartDate) && (t.CreatedDate <= filter.EndDate));
         }
     }
 
     private void DisposeOthers()
     {
-        try
-        {
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 }

@@ -9,6 +9,4 @@ public interface IModuleRepo : IRepoSQL<Module>
 	Task<Module> FindByNameAsync(string name, DataFilter dataFilter);
 	Task<Module> FindByNameExceptMeAsync(string id, string name, DataFilter dataFilter);
     
-	Task<Module> FindByCodeAsync(string code, DataFilter dataFilter);
-	Task<Module> FindByCodeExceptMeAsync(string id, string code, DataFilter dataFilter);
 }

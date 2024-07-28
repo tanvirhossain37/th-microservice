@@ -55,9 +55,12 @@ public static class AppDependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRoleService, UserRoleService>();
 
-        services.AddEventBus(configuration);
+        return services;
+    }
 
-        
+    public static IServiceCollection AddAppEventBus(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddEventBus(configuration);
 
         return services;
     }

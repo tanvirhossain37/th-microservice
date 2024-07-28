@@ -1,7 +1,9 @@
+using System.Net;
 using System.Reflection;
 using TH.AuthMS.API;
 using TH.AuthMS.App;
 using TH.AuthMS.Infra;
+using Microsoft.AspNetCore.Connections;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +39,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -55,6 +56,5 @@ app.UseCors(CorsPolicy);//tanvir
 app.UseAuthorization();
 
 app.MapControllers();
-
 
 app.Run();

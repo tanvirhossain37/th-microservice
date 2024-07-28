@@ -30,7 +30,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
-        ApplyOnSavingBl(entity, dataFilter);
+        await ApplyOnSavingBlAsync(entity, dataFilter);
 
         //Chain effect
         
@@ -42,7 +42,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("error_save"));
 
             //Add your business logic here
-            ApplyOnSavedBl(entity, dataFilter);
+            await ApplyOnSavedBlAsync(entity, dataFilter);
         }
 
         return entity;
@@ -64,7 +64,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
         await ApplyDuplicateOnUpdateBl(existingEntity, dataFilter);
 
         //Add your business logic here
-        ApplyOnUpdatingBl(existingEntity, dataFilter);
+        await ApplyOnUpdatingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -74,7 +74,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("update_error"));
 
             //Add your business logic here
-            ApplyOnUpdatedBl(existingEntity, dataFilter);
+            await ApplyOnUpdatedBlAsync(existingEntity, dataFilter);
         }
 
         return existingEntity;
@@ -91,7 +91,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
         existingEntity.Active = false;
 
         //Add your business logic here
-        ApplyOnDeletingBl(existingEntity, dataFilter);
+        await ApplyOnSoftDeletingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -101,7 +101,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            ApplyOnDeletedBl(existingEntity, dataFilter);
+            await ApplyOnSoftDeletedBlAsync(existingEntity, dataFilter);
         }
 
         return true;
@@ -115,7 +115,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         //Add your business logic here
-        ApplyOnDeletingBl(existingEntity, dataFilter);
+        await ApplyOnDeletingBlAsync(existingEntity, dataFilter);
 
         Repo.UserRoleRepo.Delete(existingEntity);
 
@@ -127,7 +127,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            ApplyOnDeletedBl(existingEntity, dataFilter);
+            await ApplyOnDeletedBlAsync(existingEntity, dataFilter);
         }
 
         return true;
@@ -143,7 +143,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
             if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
 
             //Add your business logic here
-            ApplyOnFindByIdBl(entity, dataFilter);
+            await ApplyOnFindBlAsync(entity, dataFilter);
 
             return entity;
         }
@@ -165,11 +165,11 @@ public partial class UserRoleService : BaseService, IUserRoleService
             var includePredicates = new List<Expression<Func<UserRole, object>>>();
 
             //Add your business logic here
-            ApplyOnGetBl(filter, dataFilter);
+            await ApplyOnGetBlAsync(filter, dataFilter);
 
             #region Filters
             //Add your custom filter here
-            ApplyCustomGetFilterBl(filter, predicates);
+            await ApplyCustomGetFilterBlAsync(filter, predicates, dataFilter);
             
 			if (!string.IsNullOrWhiteSpace(filter.Id)) predicates.Add(t => t.Id.Contains(filter.Id.Trim()));
 			if (filter.CreatedDate.HasValue) predicates.Add(t => t.CreatedDate == filter.CreatedDate);

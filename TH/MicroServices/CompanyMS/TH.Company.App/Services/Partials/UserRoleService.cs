@@ -13,149 +13,94 @@ public partial class UserRoleService
     //{
     //}
 
-    private void ApplyOnSavingBl(UserRole entity, DataFilter dataFilter)
+    private async Task ApplyOnSavingBlAsync(UserRole entity, DataFilter dataFilter)
     {
-        try
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnSavedBl(UserRole entity, DataFilter dataFilter)
+    private async Task ApplyOnSavedBlAsync(UserRole entity, DataFilter dataFilter)
     {
-        try
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnUpdatingBl(UserRole existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnUpdatingBlAsync(UserRole existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnUpdatedBl(UserRole existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnUpdatedBlAsync(UserRole existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnDeletingBl(UserRole existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnSoftDeletingBlAsync(UserRole existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnDeletedBl(UserRole existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnSoftDeletedBlAsync(UserRole existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnFindByIdBl(UserRole entity, DataFilter dataFilter)
+    private async Task ApplyOnDeletingBlAsync(UserRole existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (entity == null) throw new ArgumentNullException(nameof(entity));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyOnGetBl(UserRoleFilterModel filter, DataFilter dataFilter)
+    private async Task ApplyOnDeletedBlAsync(UserRole existingEntity, DataFilter dataFilter)
     {
-        try
-        {
-            if (filter == null) throw new ArgumentNullException(nameof(filter));
+        if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
-            //todo
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 
-    private void ApplyCustomGetFilterBl(UserRoleFilterModel filter, List<Expression<Func<UserRole, bool>>> predicates)
+    private async Task ApplyOnFindBlAsync(UserRole entity, DataFilter dataFilter)
     {
-        try
-        {
-            if (filter == null) throw new ArgumentNullException(nameof(filter));
-            if (predicates == null) throw new ArgumentNullException(nameof(predicates));
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            //todo
-            //additional
-            if (filter.StartDate.HasValue && filter.EndDate.HasValue)
-            {
-                filter.StartDate = Util.TryFloorTime((DateTime)filter.StartDate);
-                filter.EndDate = Util.TryCeilTime((DateTime)filter.EndDate);
+        //todo
+    }
 
-                predicates.Add(t => (t.CreatedDate >= filter.StartDate) && (t.CreatedDate <= filter.EndDate));
-            }
-        }
-        catch (Exception)
+    private async Task ApplyOnGetBlAsync(UserRoleFilterModel filter, DataFilter dataFilter)
+    {
+        if (filter == null) throw new ArgumentNullException(nameof(filter));
+
+        //todo
+    }
+
+    private async Task ApplyCustomGetFilterBlAsync(UserRoleFilterModel filter, List<Expression<Func<UserRole, bool>>> predicates, DataFilter dataFilter)
+    {
+        if (filter == null) throw new ArgumentNullException(nameof(filter));
+        if (predicates == null) throw new ArgumentNullException(nameof(predicates));
+
+        //todo
+        //additional
+        if (filter.StartDate.HasValue && filter.EndDate.HasValue)
         {
-            throw;
+            filter.StartDate = Util.TryFloorTime((DateTime)filter.StartDate);
+            filter.EndDate = Util.TryCeilTime((DateTime)filter.EndDate);
+
+            predicates.Add(t => (t.CreatedDate >= filter.StartDate) && (t.CreatedDate <= filter.EndDate));
         }
     }
 
     private void DisposeOthers()
     {
-        try
-        {
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        //todo
     }
 }

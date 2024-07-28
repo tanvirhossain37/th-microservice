@@ -233,6 +233,32 @@ public class TommyService : BaseService
     //    }
     //}
 
+    private void CreateBeUnitTests(string file, string projectName)
+    {
+        try
+        {
+            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
+            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\UniTTests");
+
+            //get template
+            var template = FileManager.Read($"{_template}\\BeUnitTest.txt");
+
+            //change it
+            template = template.Replace("$namespace$", projectName);
+            template = template.Replace("$WE$", fileNameWithoutExtension);
+
+            //save it
+            FileManager.Write($"{dest}\\{fileNameWithoutExtension}ServiceUnitTest.cs", template);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
     private void CreateBeControllers(string file, string projectName)
     {
         try
@@ -242,50 +268,6 @@ public class TommyService : BaseService
 
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
             var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\Controllers");
-
-            var lines = Util.ReadObjectLines(file);
-            if (lines != null)
-            {
-                //get content
-
-                //replace template
-                string template = FileManager.Read($"{_template}\\BeController.txt");
-                template = template.Replace("$namespace$", $"{projectName}");
-                template = template.Replace("$WE$", fileNameWithoutExtension);
-                template = template.Replace("$WES$", Util.TryPluralize(fileNameWithoutExtension));
-                template = template.Replace("$we$", FileManager.ToCamelCase(fileNameWithoutExtension));
-                template = template.Replace("$Access$", $"{projectName}RestrictAccess");
-
-                //save it
-                FileManager.Write($"{dest}\\{fileNameWithoutExtension}Controller.cs", template);
-
-                var policyContent = string.Empty;
-
-                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}ReadPolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Read); }});");
-                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}WritePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Write); }});");
-                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}UpdatePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Update); }});");
-                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}SoftDeletePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.SoftDelete); }});");
-                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}DeletePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Delete); }});");
-
-                //save it
-                FileManager.Append($"{dest}\\Policies.text", policyContent);
-            }
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    private void CreateBeUnitTests(string file, string projectName)
-    {
-        try
-        {
-            file = string.IsNullOrWhiteSpace(file) ? throw new ArgumentNullException(nameof(file)) : file.Trim();
-            projectName = string.IsNullOrWhiteSpace(projectName) ? throw new ArgumentNullException(nameof(projectName)) : projectName.Trim();
-
-            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-            var dest = Util.CreateDirectory($"{ResultBeDestRoot}\\UnitTests");
 
             var lines = Util.ReadObjectLines(file);
             if (lines != null)
@@ -2199,6 +2181,11 @@ public class TommyService : BaseService
                     {
                         content = string.Concat(content,
                             $"\n\t\t\tentity.{fieldName} = string.IsNullOrWhiteSpace(entity.{fieldName}) ? Util.TryGenerateCode() : entity.{fieldName}.Trim();");
+                    }
+                    else if (fieldName.Equals("ParentId"))
+                    {
+                        content = string.Concat(content,
+                            $"\n\t\t\tentity.{fieldName} = string.IsNullOrWhiteSpace(entity.{fieldName}) ? null : entity.{fieldName}.Trim();");
                     }
                     else
                     {

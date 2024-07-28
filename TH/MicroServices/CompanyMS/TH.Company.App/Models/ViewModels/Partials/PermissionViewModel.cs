@@ -12,4 +12,5 @@ public partial class PermissionViewModel
 	public string RoleName { get; set; }
 	public string ModuleName { get; set; }
 	public string AccessTypeName { get; set; }
+	public string ParentName { get; set; }
 }

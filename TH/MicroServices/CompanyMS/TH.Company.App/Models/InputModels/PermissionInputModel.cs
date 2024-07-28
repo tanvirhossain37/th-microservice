@@ -17,4 +17,6 @@ public partial class PermissionInputModel
 	public bool Update { get; set; }
 	public bool Delete { get; set; }
 	public int AccessTypeId { get; set; }
+	public string? ParentId { get; set; }
+	public int MenuOrder { get; set; }
 }

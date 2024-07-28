@@ -17,7 +17,7 @@ namespace TH.CompanyMS.Infra.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -166,7 +166,7 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Code")
+                    b.Property<string>("ControllerName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -177,7 +177,7 @@ namespace TH.CompanyMS.Infra.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int>("Level")
+                    b.Property<int>("MenuOrder")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedDate")
@@ -187,9 +187,6 @@ namespace TH.CompanyMS.Infra.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
 
                     b.Property<string>("ParentId")
                         .HasMaxLength(450)
@@ -228,11 +225,18 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Property<bool>("Delete")
                         .HasColumnType("bit");
 
+                    b.Property<int>("MenuOrder")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime");
 
                     b.Property<string>("ModuleId")
                         .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ParentId")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
@@ -260,6 +264,8 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("ModuleId");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("RoleId");
 
@@ -457,6 +463,11 @@ namespace TH.CompanyMS.Infra.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Permissions_Modules");
 
+                    b.HasOne("TH.CompanyMS.Core.Permission", "Parent")
+                        .WithMany("InverseParent")
+                        .HasForeignKey("ParentId")
+                        .HasConstraintName("FK_Permissions_Permissions");
+
                     b.HasOne("TH.CompanyMS.Core.Role", "Role")
                         .WithMany("Permissions")
                         .HasForeignKey("RoleId")
@@ -466,6 +477,8 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("Module");
+
+                    b.Navigation("Parent");
 
                     b.Navigation("Role");
                 });
@@ -544,6 +557,11 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Navigation("InverseParent");
 
                     b.Navigation("Permissions");
+                });
+
+            modelBuilder.Entity("TH.CompanyMS.Core.Permission", b =>
+                {
+                    b.Navigation("InverseParent");
                 });
 
             modelBuilder.Entity("TH.CompanyMS.Core.Role", b =>

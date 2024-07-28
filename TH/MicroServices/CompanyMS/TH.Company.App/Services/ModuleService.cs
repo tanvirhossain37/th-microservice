@@ -33,7 +33,7 @@ public partial class ModuleService : BaseService, IModuleService
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
-        ApplyOnSavingBl(entity, dataFilter);
+        await ApplyOnSavingBlAsync(entity, dataFilter);
 
         //Chain effect
         
@@ -50,7 +50,7 @@ public partial class ModuleService : BaseService, IModuleService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("error_save"));
 
             //Add your business logic here
-            ApplyOnSavedBl(entity, dataFilter);
+            await ApplyOnSavedBlAsync(entity, dataFilter);
         }
 
         return entity;
@@ -66,18 +66,17 @@ public partial class ModuleService : BaseService, IModuleService
         existingEntity.ModifiedDate = DateTime.Now;
         
 		existingEntity.Name = entity.Name;
-		existingEntity.Code = entity.Code;
+		existingEntity.ControllerName = entity.ControllerName;
 		existingEntity.Route = entity.Route;
 		existingEntity.Icon = entity.Icon;
-		existingEntity.Level = entity.Level;
 		existingEntity.ParentId = entity.ParentId;
-		existingEntity.Order = entity.Order;
+		existingEntity.MenuOrder = entity.MenuOrder;
 
         ApplyValidationBl(existingEntity);
         await ApplyDuplicateOnUpdateBl(existingEntity, dataFilter);
 
         //Add your business logic here
-        ApplyOnUpdatingBl(existingEntity, dataFilter);
+        await ApplyOnUpdatingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -92,7 +91,7 @@ public partial class ModuleService : BaseService, IModuleService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("update_error"));
 
             //Add your business logic here
-            ApplyOnUpdatedBl(existingEntity, dataFilter);
+            await ApplyOnUpdatedBlAsync(existingEntity, dataFilter);
         }
 
         return existingEntity;
@@ -109,7 +108,7 @@ public partial class ModuleService : BaseService, IModuleService
         existingEntity.Active = false;
 
         //Add your business logic here
-        ApplyOnDeletingBl(existingEntity, dataFilter);
+        await ApplyOnSoftDeletingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -124,7 +123,7 @@ public partial class ModuleService : BaseService, IModuleService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            ApplyOnDeletedBl(existingEntity, dataFilter);
+            await ApplyOnSoftDeletedBlAsync(existingEntity, dataFilter);
         }
 
         return true;
@@ -138,7 +137,7 @@ public partial class ModuleService : BaseService, IModuleService
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         //Add your business logic here
-        ApplyOnDeletingBl(existingEntity, dataFilter);
+        await ApplyOnDeletingBlAsync(existingEntity, dataFilter);
 
         Repo.ModuleRepo.Delete(existingEntity);
 
@@ -155,7 +154,7 @@ public partial class ModuleService : BaseService, IModuleService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            ApplyOnDeletedBl(existingEntity, dataFilter);
+            await ApplyOnDeletedBlAsync(existingEntity, dataFilter);
         }
 
         return true;
@@ -171,7 +170,7 @@ public partial class ModuleService : BaseService, IModuleService
             if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
 
             //Add your business logic here
-            ApplyOnFindByIdBl(entity, dataFilter);
+            await ApplyOnFindBlAsync(entity, dataFilter);
 
             return entity;
         }
@@ -193,23 +192,22 @@ public partial class ModuleService : BaseService, IModuleService
             var includePredicates = new List<Expression<Func<Module, object>>>();
 
             //Add your business logic here
-            ApplyOnGetBl(filter, dataFilter);
+            await ApplyOnGetBlAsync(filter, dataFilter);
 
             #region Filters
             //Add your custom filter here
-            ApplyCustomGetFilterBl(filter, predicates);
+            await ApplyCustomGetFilterBlAsync(filter, predicates, dataFilter);
             
 			if (!string.IsNullOrWhiteSpace(filter.Id)) predicates.Add(t => t.Id.Contains(filter.Id.Trim()));
 			if (filter.CreatedDate.HasValue) predicates.Add(t => t.CreatedDate == filter.CreatedDate);
 			if (filter.ModifiedDate.HasValue) predicates.Add(t => t.ModifiedDate == filter.ModifiedDate);
 			if (filter.Active.HasValue) predicates.Add(t => t.Active == filter.Active);
 			if (!string.IsNullOrWhiteSpace(filter.Name)) predicates.Add(t => t.Name.Contains(filter.Name.Trim()));
-			if (!string.IsNullOrWhiteSpace(filter.Code)) predicates.Add(t => t.Code.Contains(filter.Code.Trim()));
+			if (!string.IsNullOrWhiteSpace(filter.ControllerName)) predicates.Add(t => t.ControllerName.Contains(filter.ControllerName.Trim()));
 			if (!string.IsNullOrWhiteSpace(filter.Route)) predicates.Add(t => t.Route.Contains(filter.Route.Trim()));
 			if (!string.IsNullOrWhiteSpace(filter.Icon)) predicates.Add(t => t.Icon.Contains(filter.Icon.Trim()));
-			if (filter.Level > 0) predicates.Add(t => t.Level == filter.Level);
 			if (!string.IsNullOrWhiteSpace(filter.ParentId)) predicates.Add(t => t.ParentId.Contains(filter.ParentId.Trim()));
-			if (filter.Order > 0) predicates.Add(t => t.Order == filter.Order);
+			if (filter.MenuOrder > 0) predicates.Add(t => t.MenuOrder == filter.MenuOrder);
 
             #endregion
 
@@ -262,12 +260,11 @@ public partial class ModuleService : BaseService, IModuleService
 			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException($"{Lang.Find("validation_error")}: CreatedDate");
 			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate"); }
 			entity.Name = string.IsNullOrWhiteSpace(entity.Name) ? throw new CustomException($"{Lang.Find("validation_error")}: Name") : entity.Name.Trim();
-			entity.Code = string.IsNullOrWhiteSpace(entity.Code) ? Util.TryGenerateCode() : entity.Code.Trim();
+			entity.ControllerName = string.IsNullOrWhiteSpace(entity.ControllerName) ? string.Empty : entity.ControllerName.Trim();
 			entity.Route = string.IsNullOrWhiteSpace(entity.Route) ? string.Empty : entity.Route.Trim();
 			entity.Icon = string.IsNullOrWhiteSpace(entity.Icon) ? string.Empty : entity.Icon.Trim();
-			if (entity.Level <= 0) throw new CustomException($"{Lang.Find("validation_error")}: Level");
-			entity.ParentId = string.IsNullOrWhiteSpace(entity.ParentId) ? string.Empty : entity.ParentId.Trim();
-			if (entity.Order <= 0) throw new CustomException($"{Lang.Find("validation_error")}: Order");
+			entity.ParentId = string.IsNullOrWhiteSpace(entity.ParentId) ? null : entity.ParentId.Trim();
+			if (entity.MenuOrder <= 0) throw new CustomException($"{Lang.Find("validation_error")}: MenuOrder");
             
 			if (entity.InverseParent == null) entity.InverseParent = new List<Module>();
 			if (entity.Permissions == null) entity.Permissions = new List<Permission>();
@@ -287,8 +284,6 @@ public partial class ModuleService : BaseService, IModuleService
             
 		var existingEntityByName = await Repo.ModuleRepo.FindByNameAsync(entity.Name, dataFilter);
 		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
-		var existingEntityByCode = await Repo.ModuleRepo.FindByCodeAsync(entity.Code, dataFilter);
-		if (existingEntityByCode is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Code");
         }
         catch (Exception)
         {
@@ -305,8 +300,6 @@ public partial class ModuleService : BaseService, IModuleService
             
 		var existingEntityByName = await Repo.ModuleRepo.FindByNameExceptMeAsync(entity.Id, entity.Name, dataFilter);
 		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
-		 var existingEntityByCode = await Repo.ModuleRepo.FindByCodeExceptMeAsync(entity.Id, entity.Code, dataFilter);
-		if (existingEntityByCode is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Code");
         }
         catch (Exception)
         {

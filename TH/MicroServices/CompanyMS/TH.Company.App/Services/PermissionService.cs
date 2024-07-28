@@ -12,6 +12,7 @@ public partial class PermissionService : BaseService, IPermissionService
 {
     protected readonly IUow Repo;
     
+	//protected readonly IPermissionService PermissionService;
         
     public PermissionService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper) : base(mapper,publishEndpoint)
     {
@@ -30,7 +31,7 @@ public partial class PermissionService : BaseService, IPermissionService
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
-        ApplyOnSavingBl(entity, dataFilter);
+        await ApplyOnSavingBlAsync(entity, dataFilter);
 
         //Chain effect
         
@@ -42,7 +43,7 @@ public partial class PermissionService : BaseService, IPermissionService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("error_save"));
 
             //Add your business logic here
-            ApplyOnSavedBl(entity, dataFilter);
+            await ApplyOnSavedBlAsync(entity, dataFilter);
         }
 
         return entity;
@@ -64,12 +65,14 @@ public partial class PermissionService : BaseService, IPermissionService
 		existingEntity.Update = entity.Update;
 		existingEntity.Delete = entity.Delete;
 		existingEntity.AccessTypeId = entity.AccessTypeId;
+		existingEntity.ParentId = entity.ParentId;
+		existingEntity.MenuOrder = entity.MenuOrder;
 
         ApplyValidationBl(existingEntity);
         await ApplyDuplicateOnUpdateBl(existingEntity, dataFilter);
 
         //Add your business logic here
-        ApplyOnUpdatingBl(existingEntity, dataFilter);
+        await ApplyOnUpdatingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -79,7 +82,7 @@ public partial class PermissionService : BaseService, IPermissionService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("update_error"));
 
             //Add your business logic here
-            ApplyOnUpdatedBl(existingEntity, dataFilter);
+            await ApplyOnUpdatedBlAsync(existingEntity, dataFilter);
         }
 
         return existingEntity;
@@ -96,7 +99,7 @@ public partial class PermissionService : BaseService, IPermissionService
         existingEntity.Active = false;
 
         //Add your business logic here
-        ApplyOnDeletingBl(existingEntity, dataFilter);
+        await ApplyOnSoftDeletingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -106,7 +109,7 @@ public partial class PermissionService : BaseService, IPermissionService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            ApplyOnDeletedBl(existingEntity, dataFilter);
+            await ApplyOnSoftDeletedBlAsync(existingEntity, dataFilter);
         }
 
         return true;
@@ -120,7 +123,7 @@ public partial class PermissionService : BaseService, IPermissionService
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         //Add your business logic here
-        ApplyOnDeletingBl(existingEntity, dataFilter);
+        await ApplyOnDeletingBlAsync(existingEntity, dataFilter);
 
         Repo.PermissionRepo.Delete(existingEntity);
 
@@ -132,7 +135,7 @@ public partial class PermissionService : BaseService, IPermissionService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            ApplyOnDeletedBl(existingEntity, dataFilter);
+            await ApplyOnDeletedBlAsync(existingEntity, dataFilter);
         }
 
         return true;
@@ -148,7 +151,7 @@ public partial class PermissionService : BaseService, IPermissionService
             if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
 
             //Add your business logic here
-            ApplyOnFindByIdBl(entity, dataFilter);
+            await ApplyOnFindBlAsync(entity, dataFilter);
 
             return entity;
         }
@@ -170,11 +173,11 @@ public partial class PermissionService : BaseService, IPermissionService
             var includePredicates = new List<Expression<Func<Permission, object>>>();
 
             //Add your business logic here
-            ApplyOnGetBl(filter, dataFilter);
+            await ApplyOnGetBlAsync(filter, dataFilter);
 
             #region Filters
             //Add your custom filter here
-            ApplyCustomGetFilterBl(filter, predicates);
+            await ApplyCustomGetFilterBlAsync(filter, predicates, dataFilter);
             
 			if (!string.IsNullOrWhiteSpace(filter.Id)) predicates.Add(t => t.Id.Contains(filter.Id.Trim()));
 			if (filter.CreatedDate.HasValue) predicates.Add(t => t.CreatedDate == filter.CreatedDate);
@@ -189,6 +192,8 @@ public partial class PermissionService : BaseService, IPermissionService
 			if (filter.Update.HasValue) predicates.Add(t => t.Update == filter.Update);
 			if (filter.Delete.HasValue) predicates.Add(t => t.Delete == filter.Delete);
 			if (filter.AccessTypeId > 0) predicates.Add(t => t.AccessTypeId == filter.AccessTypeId);
+			if (!string.IsNullOrWhiteSpace(filter.ParentId)) predicates.Add(t => t.ParentId.Contains(filter.ParentId.Trim()));
+			if (filter.MenuOrder > 0) predicates.Add(t => t.MenuOrder == filter.MenuOrder);
 
             #endregion
 
@@ -201,6 +206,7 @@ public partial class PermissionService : BaseService, IPermissionService
 				if (sortFilter.PropertyName.Equals("RoleName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "Role.Name";
 				if (sortFilter.PropertyName.Equals("ModuleName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "Module.Name";
 				if (sortFilter.PropertyName.Equals("AccessTypeName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "AccessType.Name";
+				if (sortFilter.PropertyName.Equals("ParentName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "Parent.Name";
             }
 
             #endregion
@@ -248,7 +254,10 @@ public partial class PermissionService : BaseService, IPermissionService
 			entity.RoleId = string.IsNullOrWhiteSpace(entity.RoleId) ? throw new CustomException($"{Lang.Find("validation_error")}: RoleId") : entity.RoleId.Trim();
 			entity.ModuleId = string.IsNullOrWhiteSpace(entity.ModuleId) ? throw new CustomException($"{Lang.Find("validation_error")}: ModuleId") : entity.ModuleId.Trim();
 			if (entity.AccessTypeId <= 0) throw new CustomException($"{Lang.Find("validation_error")}: AccessTypeId");
+			entity.ParentId = string.IsNullOrWhiteSpace(entity.ParentId) ? null : entity.ParentId.Trim();
+			if (entity.MenuOrder <= 0) throw new CustomException($"{Lang.Find("validation_error")}: MenuOrder");
             
+			if (entity.InverseParent == null) entity.InverseParent = new List<Permission>();
         }
         catch (Exception)
         {

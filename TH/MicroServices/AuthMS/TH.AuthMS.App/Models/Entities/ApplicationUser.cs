@@ -8,15 +8,16 @@ using TH.AuthMS.Core;
 
 namespace TH.AuthMS.App
 {
-    public class User : IdentityUser, IEntity
+    public class ApplicationUser : IdentityUser, IEntity
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
         public int UserTypeId { get; set; }
+        public string? CompanyId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
-        public string ActivationCode { get; set; }
+        public string? ActivationCode { get; set; }
         public DateTime CodeExpiryTime { get; set; }
     }
 }

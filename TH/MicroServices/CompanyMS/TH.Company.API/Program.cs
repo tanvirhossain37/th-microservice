@@ -19,7 +19,9 @@ namespace TH.CompanyMS.API
 
             //Tanvir
             builder.Services.AddAppDependencyInjection(builder.Configuration);
+            builder.Services.AddAppEventBus(builder.Configuration);
             builder.Services.AddInfraDependencyInjection(builder.Configuration);
+            builder.Services.AddDbContext(builder.Configuration);
             builder.Services.AddJwtTokenBasedAuthentication(builder.Configuration);
 
             builder.Services.AddSignalR();

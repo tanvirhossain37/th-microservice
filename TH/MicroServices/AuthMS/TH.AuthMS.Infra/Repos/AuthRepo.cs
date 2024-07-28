@@ -22,20 +22,20 @@ namespace TH.AuthMS.Infra
 {
     public class AuthRepo : IAuthRepo
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         //private readonly RoleManager<User>  _roleManager;
         private readonly IConfiguration _config;
 
-        public AuthRepo(UserManager<User> userManager, IConfiguration config)
+        public AuthRepo(UserManager<ApplicationUser> userManager, IConfiguration config)
         {
             _userManager = userManager;
             
             _config = config;
         }
 
-        public async Task<bool> SaveAsync(User identityUser, string password)
+        public async Task<bool> SaveAsync(ApplicationUser identityApplicationUser, string password)
         {
-            var result = await _userManager.CreateAsync(identityUser, password);
+            var result = await _userManager.CreateAsync(identityApplicationUser, password);
 
             if (!result.Succeeded)
             {
@@ -46,33 +46,33 @@ namespace TH.AuthMS.Infra
             return result.Succeeded;
         }
 
-        public async Task<IdentityResult> UpdateAsync(User identityUser)
+        public async Task<IdentityResult> UpdateAsync(ApplicationUser identityApplicationUser)
         {
-            return await _userManager.UpdateAsync(identityUser);
+            return await _userManager.UpdateAsync(identityApplicationUser);
         }
 
-        public async Task<User> FindByUserNameAsync(string userName)
+        public async Task<ApplicationUser> FindByUserNameAsync(string userName)
         {
             return await _userManager.FindByNameAsync(userName);
         }
 
-        public Task<bool> CheckPasswordAsync(User user, string password)
+        public Task<bool> CheckPasswordAsync(ApplicationUser applicationUser, string password)
         {
-            return _userManager.CheckPasswordAsync(user, password);
+            return _userManager.CheckPasswordAsync(applicationUser, password);
         }
 
-        public SignInViewModel GenerateToken(User identityUser)
+        public SignInViewModel GenerateToken(ApplicationUser identityApplicationUser)
         {
             var claims = new List<Claim>();
-            if (identityUser.UserTypeId == (int)UserTypeEnum.Owner)
+            if (identityApplicationUser.UserTypeId == (int)UserTypeEnum.Owner)
             {
                 //call permissions
                 claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, identityUser.UserName),
-                    new Claim(ClaimTypes.Email, identityUser.Email),
-                    new Claim("SpaceId", identityUser.Id),
-                    new Claim("FullName", identityUser.Name),
+                    new Claim(ClaimTypes.Name, identityApplicationUser.UserName),
+                    new Claim(ClaimTypes.Email, identityApplicationUser.Email),
+                    new Claim("SpaceId", identityApplicationUser.Id),
+                    new Claim("FullName", identityApplicationUser.Name),
                     new Claim("Test", 1.ToString()),
                     //new Claim("Test", 2),
                     new Claim("Test", 3.ToString()),
@@ -85,6 +85,10 @@ namespace TH.AuthMS.Infra
                     new Claim("Shadow", TS.Permissions.Read),
                     new Claim("Shadow", TS.Permissions.Write)
                 };
+            }
+            else
+            {
+                //grpc call with username
             }
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
@@ -135,7 +139,7 @@ namespace TH.AuthMS.Infra
             return new JwtSecurityTokenHandler().ValidateToken(token, validation, out _);
         }
 
-        public async Task<User> ActivateAccountAsync(ActgivationCodeInputModel model)
+        public async Task<ApplicationUser> ActivateAccountAsync(ActgivationCodeInputModel model)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 

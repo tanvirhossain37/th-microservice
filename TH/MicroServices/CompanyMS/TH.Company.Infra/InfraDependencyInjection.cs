@@ -12,8 +12,6 @@ public static class InfraDependencyInjection
 {
     public static IServiceCollection AddInfraDependencyInjection(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<CompanyDbContext>(options => { options.UseSqlServer(configuration.GetConnectionString("CompanyDB")); });
-
         services.AddScoped<IBranchRepo, BranchRepo>();
         services.AddScoped<IBranchUserRepo, BranchUserRepo>();
         services.AddScoped<ICompanyRepo, CompanyRepo>();
@@ -26,6 +24,13 @@ public static class InfraDependencyInjection
 
         services.AddScoped<CompanyDbContext>();
         services.AddScoped<ICustomSort, CustomSort>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<CompanyDbContext>(options => { options.UseSqlServer(configuration.GetConnectionString("CompanyDB")); });
 
         return services;
     }

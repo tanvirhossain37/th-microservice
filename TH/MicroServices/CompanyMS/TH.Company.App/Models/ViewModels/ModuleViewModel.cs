@@ -12,10 +12,9 @@ public partial class ModuleViewModel
 	public DateTime? ModifiedDate { get; set; }
 	public bool Active { get; set; }
 	public string Name { get; set; } = null!;
-	public string? Code { get; set; }
+	public string? ControllerName { get; set; }
 	public string? Route { get; set; }
 	public string? Icon { get; set; }
-	public int Level { get; set; }
 	public string? ParentId { get; set; }
-	public int Order { get; set; }
+	public int MenuOrder { get; set; }
 }

@@ -4,6 +4,9 @@ Scaffold-DbContext "Data Source=localhost;Initial Catalog=DoNotDeleteSpace;User 
 add-migration Initial_Company -Context CompanyDbContext -o Migrations/Company
 update-database -Context CompanyDbContext
 
+add-migration Initial_Company -Context CompanyDbContext -o Migrations/Company
+update-database -Context CompanyDbContext
+
 
 
 DotNet Migration

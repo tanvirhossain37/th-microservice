@@ -1,9 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Grpc.Net.Client;
+using Microsoft.Extensions.Configuration;
 using MassTransit;
 using TH.AuthMS.App.GrpcServices;
 using TH.Common.Lang;
 using TH.EventBus.Messages;
 using TH.Common.Model;
+using TH.Grpc;
+using TH.Grpc.Protos;
+using TH.Grpc.Services;
 
 namespace TH.AuthMS.App
 {
@@ -25,7 +29,7 @@ namespace TH.AuthMS.App
         {
             ApplyValidationBl(entity);
 
-            var user = new User
+            var user = new ApplicationUser
             {
                 Name = entity.Name,
                 UserName = entity.UserName,
@@ -101,7 +105,7 @@ namespace TH.AuthMS.App
             //await _publishEndpoint.Publish(emailEvent);
 
             //grpc service
-            var reply = await GrpcClientService.GetPermissions("Tanvir");
+            //var reply = await GrpcClientService.GetPermissions(new PermissionFilterRequest { SpaceId =  });
 
             //reply.Message
 
