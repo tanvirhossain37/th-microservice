@@ -83,7 +83,7 @@ public partial class BranchUserService
         //todo
     }
 
-    private async Task ApplyCustomGetFilterBlAsync(BranchUserFilterModel filter, List<Expression<Func<BranchUser, bool>>> predicates, DataFilter dataFilter)
+    private async Task ApplyCustomGetFilterBlAsync(BranchUserFilterModel filter, List<Expression<Func<BranchUser, bool>>> predicates, List<Expression<Func<BranchUser, object>>> includePredicates, DataFilter dataFilter)
     {
         if (filter == null) throw new ArgumentNullException(nameof(filter));
         if (predicates == null) throw new ArgumentNullException(nameof(predicates));

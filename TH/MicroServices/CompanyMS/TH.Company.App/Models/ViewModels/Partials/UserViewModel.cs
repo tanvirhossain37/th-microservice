@@ -10,4 +10,5 @@ public partial class UserViewModel
 	public string SpaceName { get; set; }
 	public string CompanyName { get; set; }
 	public string UserTypeName { get; set; }
+	public string AccessTypeName { get; set; }
 }

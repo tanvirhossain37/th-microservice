@@ -18,41 +18,6 @@ public partial class CompanyService
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
         //todo
-        if (entity == null) throw new ArgumentNullException(nameof(entity));
-
-        //todo
-        var role = new Role();
-        role.Name = "Super Admin";
-        role.CompanyId = entity.Id;
-        role.SpaceId = UserResolver.SpaceId;
-
-        entity.Roles.Add(role);
-
-        var user = new User();
-        user.Name = UserResolver.FullName;
-        user.CompanyId = entity.Id;
-        user.SpaceId = UserResolver.SpaceId;
-        user.UserName = UserResolver.UserName;
-        user.UserTypeId = (int)UserTypeEnum.TenantUser;
-
-        entity.Users.Add(user);
-
-        var userRole = new UserRole();
-        userRole.SpaceId = UserResolver.SpaceId;
-        userRole.CompanyId = entity.Id;
-        userRole.RoleId = role.Id;
-        userRole.UserId = user.Id;
-
-        entity.UserRoles.Add(userRole);
-
-        //permissions
-        var modules = await Repo.ModuleRepo.GetQueryableAsync(null, null, o => o.OrderBy(m => m.MenuOrder), (int)PageEnum.PageIndex,
-            (int)PageEnum.PageSize);
-        //modules
-        foreach (var module in modules)
-        {
-            await AddPermissionRecursivelyAsync(role, module, null, dataFilter, entity.Id);
-        }
     }
 
     private async Task ApplyOnSavedBlAsync(Company entity, DataFilter dataFilter)
@@ -60,6 +25,39 @@ public partial class CompanyService
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
         //todo
+        var role = new Role();
+        role.SpaceId = entity.SpaceId;
+        role.CompanyId = entity.Id;
+        role.Name = "Super Admin";
+
+        role = await RoleService.SaveAsync(role, dataFilter);
+
+        var user = new User();
+        user.SpaceId = entity.SpaceId;
+        user.CompanyId = entity.Id;
+        user.Name = UserResolver.FullName;
+        user.UserName = UserResolver.UserName;
+        user.AccessTypeId = (int)AccessTypeEnum.TenantAccess;
+        user.UserTypeId = (int)UserTypeEnum.TenantUser;
+
+        user = await UserService.SaveAsync(user, dataFilter);
+
+        var userRole = new UserRole();
+        userRole.SpaceId = entity.SpaceId;
+        userRole.CompanyId = entity.Id;
+        userRole.RoleId = role.Id;
+        userRole.UserId = user.Id;
+
+        userRole = await UserRoleService.SaveAsync(userRole, dataFilter);
+
+        //get modules
+        var modules = await Repo.ModuleRepo.GetQueryableAsync(x => x.ParentId == null, i => i.InverseParent, o => o.OrderBy(m => m.Id), (int)PageEnum.PageIndex,
+            (int)PageEnum.All, dataFilter);
+
+        foreach (var module in modules)
+        {
+            await AddPermissionRecursivelyAsync(entity, role, module, null, dataFilter);
+        }
     }
 
     private async Task ApplyOnUpdatingBlAsync(Company existingEntity, DataFilter dataFilter)
@@ -118,7 +116,7 @@ public partial class CompanyService
         //todo
     }
 
-    private async Task ApplyCustomGetFilterBlAsync(CompanyFilterModel filter, List<Expression<Func<Company, bool>>> predicates, DataFilter dataFilter)
+    private async Task ApplyCustomGetFilterBlAsync(CompanyFilterModel filter, List<Expression<Func<Company, bool>>> predicates, List<Expression<Func<Company, object>>> includePredicates, DataFilter dataFilter)
     {
         if (filter == null) throw new ArgumentNullException(nameof(filter));
         if (predicates == null) throw new ArgumentNullException(nameof(predicates));
@@ -134,39 +132,38 @@ public partial class CompanyService
         }
     }
 
-    private async Task AddPermissionRecursivelyAsync(Role role, Module module, Permission parentPermission, DataFilter dataFilter, string companyId)
+    private async Task AddPermissionRecursivelyAsync(Company company, Role role, Module module, Permission parentPermission, DataFilter dataFilter)
     {
-        if (module == null) throw new ArgumentNullException(nameof(module));
-
-        //disable filters as it runs in init
-        var existingPermission = await Repo.PermissionRepo.SingleOrDefaultQueryableAsync(x => x.RoleId == role.Id && x.ModuleId == module.Id, dataFilter);
-
-        //jodi pai, skip - otherwise add
-        if (existingPermission == null)
+        try
         {
+            if (module == null) throw new ArgumentNullException(nameof(module));
+
             var permission = new Permission
             {
-                SpaceId = UserResolver.SpaceId,
-                CompanyId = companyId,
+                SpaceId = role.SpaceId,
+                CompanyId = company.Id,
                 RoleId = role.Id,
                 ParentId = parentPermission?.Id,
                 ModuleId = module.Id,
-                CreatedDate = role.CreatedDate
+                Read = true,
+                Write = true,
+                Update = true,
+                Delete = true,
+                MenuOrder = module.MenuOrder
             };
 
-            parentPermission = await PermissionService.SaveAsync(permission, dataFilter, false);
-        }
-        else
-        {
-            parentPermission = existingPermission;
-        }
+            permission = await PermissionService.SaveAsync(permission, dataFilter);
 
-        foreach (var childModule in module.InverseParent)
+            foreach (var childModule in module.InverseParent)
+            {
+                await AddPermissionRecursivelyAsync(company, role, childModule, permission, dataFilter);
+            }
+        }
+        catch (Exception)
         {
-            await AddPermissionRecursivelyAsync(role, childModule, parentPermission, dataFilter, companyId);
+            throw;
         }
     }
-
 
     private void DisposeOthers()
     {

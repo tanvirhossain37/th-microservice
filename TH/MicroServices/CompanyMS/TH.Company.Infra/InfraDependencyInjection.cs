@@ -30,7 +30,13 @@ public static class InfraDependencyInjection
 
     public static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<CompanyDbContext>(options => { options.UseSqlServer(configuration.GetConnectionString("CompanyDB")); });
+        services.AddDbContext<CompanyDbContext>(options =>
+        {
+            options.UseSqlServer(configuration.GetConnectionString("CompanyDB"));
+            //.UseLazyLoadingProxies()
+            //.UseChangeTrackingProxies();
+            //options.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
+        });
 
         return services;
     }

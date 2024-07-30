@@ -26,7 +26,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
         entity.Id = Util.TryGenerateGuid();
         entity.CreatedDate = DateTime.Now;
 
-        ApplyValidationBl(entity);
+        ApplyValidationBl(entity, commit);
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
@@ -167,7 +167,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
 
             #region Filters
             //Add your custom filter here
-            await ApplyCustomGetFilterBlAsync(filter, predicates, dataFilter);
+            await ApplyCustomGetFilterBlAsync(filter, predicates, includePredicates, dataFilter);
             //we todo filter
 
             #endregion
@@ -209,7 +209,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
 
     #region Business logic
 
-    private void ApplyValidationBl($WE$ entity, bool skip = false)
+    private void ApplyValidationBl($WE$ entity, bool check = true)
     {
         try
         {

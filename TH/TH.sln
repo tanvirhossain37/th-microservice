@@ -138,7 +138,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.Grpc", "BuildingBlocks\TH.Grpc\TH.Grpc.csproj", "{3A5E22C9-EC32-4C4B-BEEF-CDA5301ABA66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.CompanyMS.Test", "UnitTests\TH.Space.Test\TH.CompanyMS.Test.csproj", "{D7B833F6-C115-4EC2-8A70-CEFB6A63D42F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.CompanyMS.Test", "UnitTests\TH.Space.Test\TH.CompanyMS.Test.csproj", "{D7B833F6-C115-4EC2-8A70-CEFB6A63D42F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

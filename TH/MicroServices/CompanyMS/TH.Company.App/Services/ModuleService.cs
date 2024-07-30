@@ -29,7 +29,7 @@ public partial class ModuleService : BaseService, IModuleService
         entity.Id = Util.TryGenerateGuid();
         entity.CreatedDate = DateTime.Now;
 
-        ApplyValidationBl(entity);
+        ApplyValidationBl(entity, commit);
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
@@ -196,7 +196,7 @@ public partial class ModuleService : BaseService, IModuleService
 
             #region Filters
             //Add your custom filter here
-            await ApplyCustomGetFilterBlAsync(filter, predicates, dataFilter);
+            await ApplyCustomGetFilterBlAsync(filter, predicates, includePredicates, dataFilter);
             
 			if (!string.IsNullOrWhiteSpace(filter.Id)) predicates.Add(t => t.Id.Contains(filter.Id.Trim()));
 			if (filter.CreatedDate.HasValue) predicates.Add(t => t.CreatedDate == filter.CreatedDate);
@@ -250,13 +250,13 @@ public partial class ModuleService : BaseService, IModuleService
 
     #region Business logic
 
-    private void ApplyValidationBl(Module entity, bool skip = false)
+    private void ApplyValidationBl(Module entity, bool check = true)
     {
         try
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             
-			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
+			if (check) entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
 			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException($"{Lang.Find("validation_error")}: CreatedDate");
 			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate"); }
 			entity.Name = string.IsNullOrWhiteSpace(entity.Name) ? throw new CustomException($"{Lang.Find("validation_error")}: Name") : entity.Name.Trim();

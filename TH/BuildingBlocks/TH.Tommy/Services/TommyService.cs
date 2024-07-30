@@ -2189,10 +2189,20 @@ public class TommyService : BaseService
                     }
                     else
                     {
-                        content = string.Concat(content,
-                            line.Contains("?")
-                                ? $"\n\t\t\tentity.{fieldName} = string.IsNullOrWhiteSpace(entity.{fieldName}) ? string.Empty : entity.{fieldName}.Trim();"
-                                : $"\n\t\t\tentity.{fieldName} = string.IsNullOrWhiteSpace(entity.{fieldName}) ? throw new CustomException($\"{{Lang.Find(\"validation_error\")}}: {fieldName}\") : entity.{fieldName}.Trim();");
+                        if (fieldName.EndsWith("Id"))
+                        {
+                            content = string.Concat(content,
+                                line.Contains("?")
+                                    ? $"\n\t\t\tif (check) entity.{fieldName} = string.IsNullOrWhiteSpace(entity.{fieldName}) ? string.Empty : entity.{fieldName}.Trim();"
+                                    : $"\n\t\t\tif (check) entity.{fieldName} = string.IsNullOrWhiteSpace(entity.{fieldName}) ? throw new CustomException($\"{{Lang.Find(\"validation_error\")}}: {fieldName}\") : entity.{fieldName}.Trim();");
+                        }
+                        else
+                        {
+                            content = string.Concat(content,
+                                line.Contains("?")
+                                    ? $"\n\t\t\tentity.{fieldName} = string.IsNullOrWhiteSpace(entity.{fieldName}) ? string.Empty : entity.{fieldName}.Trim();"
+                                    : $"\n\t\t\tentity.{fieldName} = string.IsNullOrWhiteSpace(entity.{fieldName}) ? throw new CustomException($\"{{Lang.Find(\"validation_error\")}}: {fieldName}\") : entity.{fieldName}.Trim();");
+                        }
                     }
                 }
                 else if (typeName.Contains("bool"))

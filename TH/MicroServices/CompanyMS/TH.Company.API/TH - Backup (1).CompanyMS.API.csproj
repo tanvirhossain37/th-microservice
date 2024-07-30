@@ -10,8 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\company.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
     <PackageReference Include="CoreApiResponse" Version="1.0.1" />
+    <PackageReference Include="Grpc.Tools" Version="2.65.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Grpc.JsonTranscoding" Version="8.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
@@ -33,13 +42,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="google\NewFolder\" />
     <Folder Include="Mappings\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\..\..\BuildingBlocks\TH.Grpc\Protos\space.proto" GrpcServices="Server">
-      <Link>Protos\space.proto</Link>
-    </Protobuf>
+    <Protobuf Include="Protos\company.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>

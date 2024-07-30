@@ -27,7 +27,7 @@ public partial class PermissionService : BaseService, IPermissionService
         entity.Id = Util.TryGenerateGuid();
         entity.CreatedDate = DateTime.Now;
 
-        ApplyValidationBl(entity);
+        ApplyValidationBl(entity, commit);
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
@@ -64,7 +64,6 @@ public partial class PermissionService : BaseService, IPermissionService
 		existingEntity.Write = entity.Write;
 		existingEntity.Update = entity.Update;
 		existingEntity.Delete = entity.Delete;
-		existingEntity.AccessTypeId = entity.AccessTypeId;
 		existingEntity.ParentId = entity.ParentId;
 		existingEntity.MenuOrder = entity.MenuOrder;
 
@@ -177,7 +176,7 @@ public partial class PermissionService : BaseService, IPermissionService
 
             #region Filters
             //Add your custom filter here
-            await ApplyCustomGetFilterBlAsync(filter, predicates, dataFilter);
+            await ApplyCustomGetFilterBlAsync(filter, predicates, includePredicates, dataFilter);
             
 			if (!string.IsNullOrWhiteSpace(filter.Id)) predicates.Add(t => t.Id.Contains(filter.Id.Trim()));
 			if (filter.CreatedDate.HasValue) predicates.Add(t => t.CreatedDate == filter.CreatedDate);
@@ -191,7 +190,6 @@ public partial class PermissionService : BaseService, IPermissionService
 			if (filter.Write.HasValue) predicates.Add(t => t.Write == filter.Write);
 			if (filter.Update.HasValue) predicates.Add(t => t.Update == filter.Update);
 			if (filter.Delete.HasValue) predicates.Add(t => t.Delete == filter.Delete);
-			if (filter.AccessTypeId > 0) predicates.Add(t => t.AccessTypeId == filter.AccessTypeId);
 			if (!string.IsNullOrWhiteSpace(filter.ParentId)) predicates.Add(t => t.ParentId.Contains(filter.ParentId.Trim()));
 			if (filter.MenuOrder > 0) predicates.Add(t => t.MenuOrder == filter.MenuOrder);
 
@@ -205,7 +203,6 @@ public partial class PermissionService : BaseService, IPermissionService
 				if (sortFilter.PropertyName.Equals("CompanyName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "Company.Name";
 				if (sortFilter.PropertyName.Equals("RoleName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "Role.Name";
 				if (sortFilter.PropertyName.Equals("ModuleName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "Module.Name";
-				if (sortFilter.PropertyName.Equals("AccessTypeName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "AccessType.Name";
 				if (sortFilter.PropertyName.Equals("ParentName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "Parent.Name";
             }
 
@@ -240,20 +237,19 @@ public partial class PermissionService : BaseService, IPermissionService
 
     #region Business logic
 
-    private void ApplyValidationBl(Permission entity, bool skip = false)
+    private void ApplyValidationBl(Permission entity, bool check = true)
     {
         try
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             
-			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
+			if (check) entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
 			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException($"{Lang.Find("validation_error")}: CreatedDate");
 			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate"); }
-			entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
-			entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException($"{Lang.Find("validation_error")}: CompanyId") : entity.CompanyId.Trim();
-			entity.RoleId = string.IsNullOrWhiteSpace(entity.RoleId) ? throw new CustomException($"{Lang.Find("validation_error")}: RoleId") : entity.RoleId.Trim();
-			entity.ModuleId = string.IsNullOrWhiteSpace(entity.ModuleId) ? throw new CustomException($"{Lang.Find("validation_error")}: ModuleId") : entity.ModuleId.Trim();
-			if (entity.AccessTypeId <= 0) throw new CustomException($"{Lang.Find("validation_error")}: AccessTypeId");
+			if (check) entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
+			if (check) entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException($"{Lang.Find("validation_error")}: CompanyId") : entity.CompanyId.Trim();
+			if (check) entity.RoleId = string.IsNullOrWhiteSpace(entity.RoleId) ? throw new CustomException($"{Lang.Find("validation_error")}: RoleId") : entity.RoleId.Trim();
+			if (check) entity.ModuleId = string.IsNullOrWhiteSpace(entity.ModuleId) ? throw new CustomException($"{Lang.Find("validation_error")}: ModuleId") : entity.ModuleId.Trim();
 			entity.ParentId = string.IsNullOrWhiteSpace(entity.ParentId) ? null : entity.ParentId.Trim();
 			if (entity.MenuOrder <= 0) throw new CustomException($"{Lang.Find("validation_error")}: MenuOrder");
             

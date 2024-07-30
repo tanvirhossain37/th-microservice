@@ -83,7 +83,7 @@ public partial class PermissionService
         //todo
     }
 
-    private async Task ApplyCustomGetFilterBlAsync(PermissionFilterModel filter, List<Expression<Func<Permission, bool>>> predicates, DataFilter dataFilter)
+    private async Task ApplyCustomGetFilterBlAsync(PermissionFilterModel filter, List<Expression<Func<Permission, bool>>> predicates, List<Expression<Func<Permission, object>>> includePredicates, DataFilter dataFilter)
     {
         if (filter == null) throw new ArgumentNullException(nameof(filter));
         if (predicates == null) throw new ArgumentNullException(nameof(predicates));
@@ -96,6 +96,12 @@ public partial class PermissionService
             filter.EndDate = Util.TryCeilTime((DateTime)filter.EndDate);
 
             predicates.Add(t => (t.CreatedDate >= filter.StartDate) && (t.CreatedDate <= filter.EndDate));
+        }
+
+        if (filter.ByTree.HasValue)
+        {
+            predicates.Add(t => t.ParentId==null);
+            //includePredicates?.Add(x=>x.InverseParent);
         }
     }
 

@@ -34,7 +34,11 @@ namespace TH.CompanyMS.Test
             serviceCollection.AddAppDependencyInjection(builder.Configuration);
             serviceCollection.AddInfraDependencyInjection(builder.Configuration);
 
-            serviceCollection.AddDbContext<CompanyDbContext>(options => { options.UseSqlServer("Data Source=localhost;Initial Catalog=CompanyDB;User ID=sa;Password=admin123##;Trust Server Certificate=True"); });
+            serviceCollection.AddDbContext<CompanyDbContext>(options =>
+            {
+                options.UseSqlServer(
+                    "Data Source=localhost;Initial Catalog=CompanyDB;User ID=sa;Password=admin123##;Trust Server Certificate=True");
+            });
 
             //RabbitMQ Config
             serviceCollection.AddMassTransit(config => { config.UsingRabbitMq((ctx, cfg) => { cfg.Host("amqp://guest:guest@localhost:5672"); }); });
@@ -56,6 +60,16 @@ namespace TH.CompanyMS.Test
                 IncludeInactive = true
             };
 
+        }
+
+        public void LoginAsOwner(IBaseService service)
+        {
+            var userResolver = new UserResolver();
+            userResolver.UserName = "tanvirhossain";
+            userResolver.SpaceId = "f0f01ad3-d0fc-4baa-9fae-547ecf6cc71d";
+            userResolver.FullName = "Tanvir Hossain";
+
+            service.SetUserResolver(userResolver);
         }
     }
 }

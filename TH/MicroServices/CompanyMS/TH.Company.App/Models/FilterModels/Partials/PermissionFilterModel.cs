@@ -12,6 +12,7 @@ public partial class PermissionFilterModel
 
     public Print Print { get; set; }
     public IList<SortFilter> SortFilters { get; set; }
+    public bool? ByTree { get; set; }
 
     public PermissionFilterModel()
     {

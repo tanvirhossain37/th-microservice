@@ -83,7 +83,7 @@ public partial class UserService
         //todo
     }
 
-    private async Task ApplyCustomGetFilterBlAsync(UserFilterModel filter, List<Expression<Func<User, bool>>> predicates, DataFilter dataFilter)
+    private async Task ApplyCustomGetFilterBlAsync(UserFilterModel filter, List<Expression<Func<User, bool>>> predicates, List<Expression<Func<User, object>>> includePredicates, DataFilter dataFilter)
     {
         if (filter == null) throw new ArgumentNullException(nameof(filter));
         if (predicates == null) throw new ArgumentNullException(nameof(predicates));

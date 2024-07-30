@@ -16,6 +16,7 @@ public class CompanyServiceUnitTest : BaseUnitTest
     {
         base.Init();
         _service = ServiceProvider.GetRequiredService<ICompanyService>();
+        base.LoginAsOwner(_service);
     }
 
     [TestMethod]
@@ -25,6 +26,8 @@ public class CompanyServiceUnitTest : BaseUnitTest
         {
             var model = new CompanyInputModel
             {
+                SpaceId = "f0f01ad3-d0fc-4baa-9fae-547ecf6cc71d",
+                Name = "Demo Tenant"
             };
 
             var entity = await _service.SaveAsync(Mapper.Map<CompanyInputModel, Company>(model), DataFilter);

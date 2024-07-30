@@ -29,8 +29,6 @@ public partial class Permission
 
     public bool Delete { get; set; }
 
-    public int AccessTypeId { get; set; }
-
     public string? ParentId { get; set; }
 
     public int MenuOrder { get; set; }

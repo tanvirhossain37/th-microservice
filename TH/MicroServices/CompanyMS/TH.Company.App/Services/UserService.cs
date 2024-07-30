@@ -30,7 +30,7 @@ public partial class UserService : BaseService, IUserService
         entity.Id = Util.TryGenerateGuid();
         entity.CreatedDate = DateTime.Now;
 
-        ApplyValidationBl(entity);
+        ApplyValidationBl(entity, commit);
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
@@ -74,6 +74,7 @@ public partial class UserService : BaseService, IUserService
 		existingEntity.UserTypeId = entity.UserTypeId;
 		existingEntity.Name = entity.Name;
 		existingEntity.UserName = entity.UserName;
+		existingEntity.AccessTypeId = entity.AccessTypeId;
 
         ApplyValidationBl(existingEntity);
         await ApplyDuplicateOnUpdateBl(existingEntity, dataFilter);
@@ -214,7 +215,7 @@ public partial class UserService : BaseService, IUserService
 
             #region Filters
             //Add your custom filter here
-            await ApplyCustomGetFilterBlAsync(filter, predicates, dataFilter);
+            await ApplyCustomGetFilterBlAsync(filter, predicates, includePredicates, dataFilter);
             
 			if (!string.IsNullOrWhiteSpace(filter.Id)) predicates.Add(t => t.Id.Contains(filter.Id.Trim()));
 			if (filter.CreatedDate.HasValue) predicates.Add(t => t.CreatedDate == filter.CreatedDate);
@@ -225,6 +226,7 @@ public partial class UserService : BaseService, IUserService
 			if (filter.UserTypeId > 0) predicates.Add(t => t.UserTypeId == filter.UserTypeId);
 			if (!string.IsNullOrWhiteSpace(filter.Name)) predicates.Add(t => t.Name.Contains(filter.Name.Trim()));
 			if (!string.IsNullOrWhiteSpace(filter.UserName)) predicates.Add(t => t.UserName.Contains(filter.UserName.Trim()));
+			if (filter.AccessTypeId > 0) predicates.Add(t => t.AccessTypeId == filter.AccessTypeId);
 
             #endregion
 
@@ -235,6 +237,7 @@ public partial class UserService : BaseService, IUserService
 				if (sortFilter.PropertyName.Equals("SpaceName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "Space.Name";
 				if (sortFilter.PropertyName.Equals("CompanyName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "Company.Name";
 				if (sortFilter.PropertyName.Equals("UserTypeName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "UserType.Name";
+				if (sortFilter.PropertyName.Equals("AccessTypeName", StringComparison.InvariantCultureIgnoreCase)) sortFilter.PropertyName = "AccessType.Name";
             }
 
             #endregion
@@ -270,20 +273,21 @@ public partial class UserService : BaseService, IUserService
 
     #region Business logic
 
-    private void ApplyValidationBl(User entity, bool skip = false)
+    private void ApplyValidationBl(User entity, bool check = true)
     {
         try
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             
-			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
+			if (check) entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
 			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException($"{Lang.Find("validation_error")}: CreatedDate");
 			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate"); }
-			entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
-			entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException($"{Lang.Find("validation_error")}: CompanyId") : entity.CompanyId.Trim();
+			if (check) entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
+			if (check) entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException($"{Lang.Find("validation_error")}: CompanyId") : entity.CompanyId.Trim();
 			if (entity.UserTypeId <= 0) throw new CustomException($"{Lang.Find("validation_error")}: UserTypeId");
 			entity.Name = string.IsNullOrWhiteSpace(entity.Name) ? throw new CustomException($"{Lang.Find("validation_error")}: Name") : entity.Name.Trim();
 			entity.UserName = string.IsNullOrWhiteSpace(entity.UserName) ? throw new CustomException($"{Lang.Find("validation_error")}: UserName") : entity.UserName.Trim();
+			if (entity.AccessTypeId <= 0) throw new CustomException($"{Lang.Find("validation_error")}: AccessTypeId");
             
 			if (entity.BranchUsers == null) entity.BranchUsers = new List<BranchUser>();
 			if (entity.UserRoles == null) entity.UserRoles = new List<UserRole>();

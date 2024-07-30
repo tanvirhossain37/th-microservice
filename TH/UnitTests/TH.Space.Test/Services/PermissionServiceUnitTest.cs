@@ -113,6 +113,7 @@ public class PermissionServiceUnitTest : BaseUnitTest
         {
             var filter = new PermissionFilterModel();
             filter.PageSize = (int)PageEnum.All;
+            filter.ByTree = true;
 
             var entity = await _service.GetAsync(filter, DataFilter);
             var viewModel = Mapper.Map<List<Permission>, List<PermissionViewModel>>(entity.ToList());

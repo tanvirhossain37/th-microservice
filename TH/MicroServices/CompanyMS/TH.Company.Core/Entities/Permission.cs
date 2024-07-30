@@ -11,7 +11,6 @@ public class Permission : BaseEntity
 	public bool Write { get; set; }
 	public bool Update { get; set; }
 	public bool Delete { get; set; }
-	public int AccessTypeId { get; set; }
 	public string? ParentId { get; set; }
 	public int MenuOrder { get; set; }
 	public virtual Company Company { get; set; } = null!;

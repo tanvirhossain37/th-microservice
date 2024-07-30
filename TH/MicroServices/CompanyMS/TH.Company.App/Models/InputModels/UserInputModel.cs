@@ -13,4 +13,5 @@ public partial class UserInputModel
 	public int UserTypeId { get; set; }
 	public string Name { get; set; } = null!;
 	public string UserName { get; set; } = null!;
+	public int AccessTypeId { get; set; }
 }

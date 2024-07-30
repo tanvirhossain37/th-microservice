@@ -130,9 +130,27 @@ public class ModuleServiceUnitTest : BaseUnitTest
         {
             var filter = new ModuleFilterModel();
             filter.PageSize = (int)PageEnum.All;
+            filter.ByTree = true;
 
             var entity = await _service.GetAsync(filter, DataFilter);
             var viewModel = Mapper.Map<List<Module>, List<ModuleViewModel>>(entity.ToList());
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    [TestMethod]
+    public async Task InitAsync()
+    {
+        try
+        {
+            var model = new ModuleInputModel
+            {
+            };
+
+            await _service.InitAsync(DataFilter);
         }
         catch (Exception e)
         {

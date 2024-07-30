@@ -25,9 +25,15 @@ public class CompanyDbContext : DbContext
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseLazyLoadingProxies();
+    }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        //base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Branch>(entity =>
         {

@@ -23,6 +23,8 @@ public partial class User
 
     public string UserName { get; set; } = null!;
 
+    public int AccessTypeId { get; set; }
+
     public virtual ICollection<BranchUser> BranchUsers { get; set; } = new List<BranchUser>();
 
     public virtual Company Company { get; set; } = null!;
