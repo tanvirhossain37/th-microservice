@@ -112,12 +112,12 @@ public static class AddDependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddEventBus(this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        //RabbitMQ Config
-        services.AddMassTransit(config => { config.UsingRabbitMq((ctx, cfg) => { cfg.Host(configuration.GetSection("EventBus:Host").Value); }); });
+    //public static IServiceCollection AddEventBus(this IServiceCollection services,
+    //    IConfiguration configuration)
+    //{
+    //    //RabbitMQ Config
+    //    services.AddMassTransit(config => { config.UsingRabbitMq((ctx, cfg) => { cfg.Host(configuration.GetSection("EventBus:Host").Value); }); });
 
-        return services;
-    }
+    //    return services;
+    //}
 }

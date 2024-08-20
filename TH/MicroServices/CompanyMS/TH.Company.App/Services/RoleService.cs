@@ -34,7 +34,7 @@ public partial class RoleService : BaseService, IRoleService
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
-        await ApplyOnSavingBlAsync(entity, dataFilter);
+        //await ApplyOnSavingBlAsync(entity, dataFilter);
 
         //Chain effect
         

@@ -31,6 +31,16 @@ namespace TH.AuthMS.API
                                 })
                                 { StatusCode = (int?)HttpStatusCode.NotAcceptable };
                         break;
+                    case InactiveUserException:
+                        context.Result =
+                            new ObjectResult(new
+                                {
+                                    Message = exception.Message,
+                                    Data = "",
+                                    StatusCode = HttpStatusCode.NoContent
+                                })
+                                { StatusCode = (int?)HttpStatusCode.NotAcceptable };
+                        break;
                     case NoNullAllowedException:
                         context.Result =
                             new ObjectResult(new

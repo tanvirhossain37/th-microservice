@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
 using TH.CompanyMS.Core;
@@ -83,7 +84,8 @@ public partial class PermissionService
         //todo
     }
 
-    private async Task ApplyCustomGetFilterBlAsync(PermissionFilterModel filter, List<Expression<Func<Permission, bool>>> predicates, List<Expression<Func<Permission, object>>> includePredicates, DataFilter dataFilter)
+    private async Task ApplyCustomGetFilterBlAsync(PermissionFilterModel filter, List<Expression<Func<Permission, bool>>> predicates,
+        List<Expression<Func<Permission, object>>> includePredicates, DataFilter dataFilter)
     {
         if (filter == null) throw new ArgumentNullException(nameof(filter));
         if (predicates == null) throw new ArgumentNullException(nameof(predicates));
@@ -100,11 +102,22 @@ public partial class PermissionService
 
         if (filter.ByTree.HasValue)
         {
-            predicates.Add(t => t.ParentId==null);
-            //includePredicates?.Add(x=>x.InverseParent);
+            predicates.Add(x => x.ParentId == null);
+        }
+
+        if (filter.IsLastLevel.HasValue)
+        {
+            predicates.Add(x => x.InverseParent.Count <= 0);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.UserName))
+        {
+            var user = await Repo.UserRepo.FindByNameAsync(filter.SpaceId, filter.CompanyId, filter.UserName, dataFilter);
+            if (user == null) throw new CustomException(Lang.Find("data_notfound"));
+
+            filter.RoleId = user.UserRoles.FirstOrDefault().RoleId;
         }
     }
-
     private void DisposeOthers()
     {
         //todo

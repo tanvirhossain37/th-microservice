@@ -14,10 +14,13 @@ namespace TH.AuthMS.App
         Task<bool> SaveAsync(ApplicationUser identityApplicationUser, string password);
         Task<IdentityResult> UpdateAsync(ApplicationUser identityApplicationUser);
         Task<ApplicationUser> FindByUserNameAsync(string userName);
+        Task<ApplicationUser> FindByEmailAsync(string email);
         Task<bool> CheckPasswordAsync(ApplicationUser applicationUser, string password);
         SignInViewModel GenerateToken(ApplicationUser identityApplicationUser);
         string GenerateRefreshToken();
         ClaimsPrincipal GetTokenPrincipal(string token);
-        Task<ApplicationUser> ActivateAccountAsync(ActgivationCodeInputModel model);
+        Task<ApplicationUser> ActivateAccountAsync(ActivationCodeInputModel model);
+        Task<string> GeneratePasswordResetTokenAsync(ApplicationUser identityUser);
+        Task<bool> UpdatePasswordAsync(ForgotPasswordInputModel model);
     }
 }

@@ -12,7 +12,7 @@ using TH.AuthMS.Infra;
 namespace TH.AuthMS.Infra.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20240728171330_Initial")]
+    [Migration("20240819143604_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -219,6 +219,9 @@ namespace TH.AuthMS.Infra.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ReferralId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 
@@ -234,9 +237,6 @@ namespace TH.AuthMS.Infra.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("UserTypeId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using TH.Common.Model;
 using TH.Common.Util;
 using TH.CompanyMS.Core;
+using TH.MongoRnDMS.Common;
 
 namespace TH.CompanyMS.App;
 
@@ -17,22 +18,26 @@ public partial class CompanyService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        //todo
-    }
-
-    private async Task ApplyOnSavedBlAsync(Company entity, DataFilter dataFilter)
-    {
-        if (entity == null) throw new ArgumentNullException(nameof(entity));
+        //branch
+        if (entity.Branches.Count <= 0) throw new CustomException($"{Lang.Find("validation_error")}: Branches");
+        foreach (var branch in entity.Branches)
+        {
+            branch.CompanyId = entity.Id;
+        }
 
         //todo
         var role = new Role();
+        role.Id = Util.TryGenerateGuid();
+        role.CreatedDate = entity.CreatedDate;
         role.SpaceId = entity.SpaceId;
         role.CompanyId = entity.Id;
         role.Name = "Super Admin";
 
-        role = await RoleService.SaveAsync(role, dataFilter);
+        entity.Roles.Add(role);
 
         var user = new User();
+        user.Id = Util.TryGenerateGuid();
+        user.CreatedDate=entity.CreatedDate;
         user.SpaceId = entity.SpaceId;
         user.CompanyId = entity.Id;
         user.Name = UserResolver.FullName;
@@ -40,15 +45,19 @@ public partial class CompanyService
         user.AccessTypeId = (int)AccessTypeEnum.TenantAccess;
         user.UserTypeId = (int)UserTypeEnum.TenantUser;
 
-        user = await UserService.SaveAsync(user, dataFilter);
+        entity.Users.Add(user);
 
         var userRole = new UserRole();
+        userRole.Id = Util.TryGenerateGuid();
+        userRole.CreatedDate = entity.CreatedDate;
         userRole.SpaceId = entity.SpaceId;
         userRole.CompanyId = entity.Id;
         userRole.RoleId = role.Id;
         userRole.UserId = user.Id;
 
-        userRole = await UserRoleService.SaveAsync(userRole, dataFilter);
+        role.UserRoles.Add(userRole);
+        user.UserRoles.Add(userRole);
+        entity.UserRoles.Add(userRole);
 
         //get modules
         var modules = await Repo.ModuleRepo.GetQueryableAsync(x => x.ParentId == null, i => i.InverseParent, o => o.OrderBy(m => m.Id), (int)PageEnum.PageIndex,
@@ -58,6 +67,10 @@ public partial class CompanyService
         {
             await AddPermissionRecursivelyAsync(entity, role, module, null, dataFilter);
         }
+    }
+
+    private async Task ApplyOnSavedBlAsync(Company entity, DataFilter dataFilter)
+    {
     }
 
     private async Task ApplyOnUpdatingBlAsync(Company existingEntity, DataFilter dataFilter)
@@ -140,6 +153,8 @@ public partial class CompanyService
 
             var permission = new Permission
             {
+                Id = Util.TryGenerateGuid(),
+                CreatedDate = company.CreatedDate,
                 SpaceId = role.SpaceId,
                 CompanyId = company.Id,
                 RoleId = role.Id,
@@ -152,7 +167,19 @@ public partial class CompanyService
                 MenuOrder = module.MenuOrder
             };
 
-            permission = await PermissionService.SaveAsync(permission, dataFilter);
+            if (parentPermission == null)
+            {
+                company.Permissions.Add(permission);
+            }
+            else
+            {
+                parentPermission.InverseParent.Add(permission);
+            }
+
+            //permission = await PermissionService.SaveAsync(permission, dataFilter);
+
+            role.Permissions.Add(permission);
+            module.Permissions.Add(permission);
 
             foreach (var childModule in module.InverseParent)
             {

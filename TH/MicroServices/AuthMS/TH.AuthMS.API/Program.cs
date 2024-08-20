@@ -1,9 +1,9 @@
-using System.Net;
 using System.Reflection;
+using MassTransit;
 using TH.AuthMS.API;
 using TH.AuthMS.App;
 using TH.AuthMS.Infra;
-using Microsoft.AspNetCore.Connections;
+using TH.EventBus.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,13 +18,27 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Tanvir
-builder.Services.AddAppDependencyInjection(builder.Configuration);
-builder.Services.AddInfraDependencyInjection(builder.Configuration);
-builder.Services.AddJwtTokenBasedAuthentication(builder.Configuration);
+builder.Services.AddAuthAppDependencyInjection(builder.Configuration);
+builder.Services.AddAuthInfraDependencyInjection(builder.Configuration);
+builder.Services.AddAuthJwtTokenBasedAuthentication(builder.Configuration);
 //builder.Services.AddCookieBasedAuthentication(builder.Configuration);
 
 //AutoMapper
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+//RabbitMQ Config
+builder.Services.AddMassTransit(config =>
+{
+    config.AddConsumer<UserCreateEventConsumer>();
+    config.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host(builder.Configuration.GetSection("EventBus:Host").Value);
+        cfg.ReceiveEndpoint(EventBus.UserCreateQueue, c =>
+        {
+            c.ConfigureConsumer<UserCreateEventConsumer>(ctx);
+        });
+    });
+});
 
 const string CorsPolicy = "_corsPolicy";
 
@@ -56,5 +70,9 @@ app.UseCors(CorsPolicy);//tanvir
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGrpcService<AuthGrpcServerService>();
+//app.MapGrpcService<CompanyGrpcServerService>();
+app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
 app.Run();

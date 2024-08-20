@@ -7,4 +7,5 @@ namespace TH.CompanyMS.App;
 
 public partial class CompanyInputModel
 {
+    public IList<BranchInputModel> Branches { get; set; } = new List<BranchInputModel>();
 }

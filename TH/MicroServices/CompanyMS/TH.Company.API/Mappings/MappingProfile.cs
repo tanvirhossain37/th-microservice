@@ -23,7 +23,9 @@ public class MappingProfile:Profile
         CreateMap<BranchUserViewModel, BranchUser>().ReverseMap();
         CreateMap<CompanyViewModel, Company>().ReverseMap();
         CreateMap<ModuleViewModel, Module>().ReverseMap();
-        CreateMap<PermissionViewModel, Permission>().ReverseMap();
+        CreateMap<PermissionViewModel, Permission>()
+            .ReverseMap()
+            .ForMember(dest=>dest.ControllerName, m=>m.MapFrom(src=>src.Module.ControllerName));
         CreateMap<RoleViewModel, Role>().ReverseMap();
         CreateMap<UserViewModel, User>().ReverseMap();
         CreateMap<UserRoleViewModel, UserRole>().ReverseMap();

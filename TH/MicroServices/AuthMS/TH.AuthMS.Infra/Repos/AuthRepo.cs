@@ -56,6 +56,11 @@ namespace TH.AuthMS.Infra
             return await _userManager.FindByNameAsync(userName);
         }
 
+        public async Task<ApplicationUser> FindByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
+
         public Task<bool> CheckPasswordAsync(ApplicationUser applicationUser, string password)
         {
             return _userManager.CheckPasswordAsync(applicationUser, password);
@@ -64,32 +69,36 @@ namespace TH.AuthMS.Infra
         public SignInViewModel GenerateToken(ApplicationUser identityApplicationUser)
         {
             var claims = new List<Claim>();
-            if (identityApplicationUser.UserTypeId == (int)UserTypeEnum.Owner)
+
+            //call permissions
+            claims = new List<Claim>
             {
-                //call permissions
-                claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, identityApplicationUser.UserName),
-                    new Claim(ClaimTypes.Email, identityApplicationUser.Email),
-                    new Claim("SpaceId", identityApplicationUser.Id),
-                    new Claim("FullName", identityApplicationUser.Name),
-                    new Claim("Test", 1.ToString()),
-                    //new Claim("Test", 2),
-                    new Claim("Test", 3.ToString()),
-                    new Claim("Test", 4.ToString()),
-                    new Claim("Company", TS.Permissions.Read),
-                    new Claim("Company", TS.Permissions.Write),
-                    new Claim("Company", TS.Permissions.Update),
-                    new Claim("Company", TS.Permissions.SoftDelete),
-                    new Claim("Company", TS.Permissions.Delete),
-                    new Claim("Shadow", TS.Permissions.Read),
-                    new Claim("Shadow", TS.Permissions.Write)
-                };
-            }
-            else
-            {
-                //grpc call with username
-            }
+                new Claim(ClaimTypes.Name, identityApplicationUser.UserName),
+                new Claim(ClaimTypes.Email, identityApplicationUser.Email),
+                new Claim("SpaceId", identityApplicationUser.Id),
+                new Claim("FullName", identityApplicationUser.Name),
+                new Claim(TS.Controllers.Company, TS.Permissions.Read),
+                new Claim(TS.Controllers.Company, TS.Permissions.Write),
+                new Claim(TS.Controllers.Company, TS.Permissions.Update),
+                new Claim(TS.Controllers.Company, TS.Permissions.SoftDelete),
+                new Claim(TS.Controllers.Company, TS.Permissions.Delete),
+                new Claim(TS.Controllers.Permission, TS.Permissions.Read),
+                new Claim(TS.Controllers.Permission, TS.Permissions.Write),
+                new Claim(TS.Controllers.Permission, TS.Permissions.Update),
+                new Claim(TS.Controllers.Permission, TS.Permissions.SoftDelete),
+                new Claim(TS.Controllers.Permission, TS.Permissions.Delete),
+                new Claim(TS.Controllers.Role, TS.Permissions.Read),
+                new Claim(TS.Controllers.Role, TS.Permissions.Write),
+                new Claim(TS.Controllers.Role, TS.Permissions.Update),
+                new Claim(TS.Controllers.Role, TS.Permissions.SoftDelete),
+                new Claim(TS.Controllers.Role, TS.Permissions.Delete),
+                new Claim(TS.Controllers.User, TS.Permissions.Read),
+                new Claim(TS.Controllers.User, TS.Permissions.Write),
+                new Claim(TS.Controllers.User, TS.Permissions.Update),
+                new Claim(TS.Controllers.User, TS.Permissions.SoftDelete),
+                new Claim(TS.Controllers.User, TS.Permissions.Delete)
+            };
+
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("Jwt:Key").Value));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
@@ -139,24 +148,59 @@ namespace TH.AuthMS.Infra
             return new JwtSecurityTokenHandler().ValidateToken(token, validation, out _);
         }
 
-        public async Task<ApplicationUser> ActivateAccountAsync(ActgivationCodeInputModel model)
+        public async Task<ApplicationUser> ActivateAccountAsync(ActivationCodeInputModel model)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            var identityUser = await _userManager.FindByNameAsync(model.UserName);
+            var identityUser = _userManager.Users.SingleOrDefault(x=>x.ActivationCode.Equals(model.ActivateCode));
             if (identityUser is null) throw new CustomException(Lang.Find("error_not_found"));
 
-            if (identityUser.ActivationCode.Equals(model.Code, StringComparison.InvariantCulture))
+            //time? util?
+            if (identityUser.CodeExpiryTime >= DateTime.Now)
             {
-                //time? util?
-                if (identityUser.CodeExpiryTime >= DateTime.Now)
-                {
-                    identityUser.EmailConfirmed = true;
-                    await _userManager.UpdateAsync(identityUser);
-                }
+                identityUser.EmailConfirmed = true;
+                await _userManager.UpdateAsync(identityUser);
+            }
+            else
+            {
+                throw new CustomException(Lang.Find("error_activae_code_expired"));
             }
 
             return identityUser;
+        }
+
+        public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser identityUser)
+        {
+            if (identityUser == null) throw new ArgumentNullException(nameof(identityUser));
+
+            return await _userManager.GeneratePasswordResetTokenAsync(identityUser);
+        }
+
+        public async Task<bool> UpdatePasswordAsync(ForgotPasswordInputModel model)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+
+            var identityUser = _userManager.Users.SingleOrDefault(x => x.ActivationCode.Equals(model.Token));
+            if (identityUser is null) throw new CustomException(Lang.Find("error_not_found"));
+
+            //time? util?
+            if (identityUser.CodeExpiryTime >= DateTime.Now)
+            {
+                identityUser.EmailConfirmed = true;
+                var result = await _userManager.ResetPasswordAsync(identityUser, model.Token, model.Password);
+
+                if (!result.Succeeded)
+                {
+                    var code = result?.Errors?.FirstOrDefault()?.Code;
+                    throw new CustomException(Lang.Find($"error_{code}"));
+                }
+
+                return result.Succeeded;
+            }
+            else
+            {
+                throw new CustomException(Lang.Find("error_activae_code_expired"));
+            }
         }
 
         public void Dispose()

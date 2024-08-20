@@ -20,7 +20,7 @@ namespace TH.AuthMS.Infra
 {
     public static class InfraDependencyInjection
     {
-        public static IServiceCollection AddInfraDependencyInjection(this IServiceCollection services,
+        public static IServiceCollection AddAuthInfraDependencyInjection(this IServiceCollection services,
             IConfiguration configuration)
         {
             services.AddDbContext<AuthDbContext>(options => { options.UseSqlServer(configuration.GetConnectionString("AuthDB")); });
@@ -52,7 +52,7 @@ namespace TH.AuthMS.Infra
             return services;
         }
 
-        public static IServiceCollection AddJwtTokenBasedAuthentication(this IServiceCollection services,
+        public static IServiceCollection AddAuthJwtTokenBasedAuthentication(this IServiceCollection services,
             IConfiguration configuration)
         {
             services.AddJwtAuthorizationPolicies(configuration);

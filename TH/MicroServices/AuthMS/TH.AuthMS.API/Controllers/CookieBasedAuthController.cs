@@ -31,23 +31,23 @@ namespace TH.AuthMS.API
         [AllowAnonymous]
         public async Task<IActionResult> SignUpAsync([FromBody] SignUpInputModel model)
         {
-            if (model.UserName.Equals("string") && model.Password.Equals("string"))
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name,"Tanvir"),
-                    new Claim(ClaimTypes.Role, "AdminRole"),
-                    new Claim("MyClaim 1", "Claim Value 1"),
-                    new Claim("MyClaim 2", "Claim Value 2")
-                };
+            //if (model.UserName.Equals("string") && model.Password.Equals("string"))
+            //{
+            //    var claims = new List<Claim>
+            //    {
+            //        new Claim(ClaimTypes.Name,"Tanvir"),
+            //        new Claim(ClaimTypes.Role, "AdminRole"),
+            //        new Claim("MyClaim 1", "Claim Value 1"),
+            //        new Claim("MyClaim 2", "Claim Value 2")
+            //    };
 
-                ClaimsIdentity identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                ClaimsPrincipal principal = new ClaimsPrincipal(identity);
+            //    ClaimsIdentity identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            //    ClaimsPrincipal principal = new ClaimsPrincipal(identity);
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            //    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-                return CustomResult(Lang.Find("success"), User);
-            }
+            //    return CustomResult(Lang.Find("success"), User);
+            //}
 
             return BadRequest();
         }

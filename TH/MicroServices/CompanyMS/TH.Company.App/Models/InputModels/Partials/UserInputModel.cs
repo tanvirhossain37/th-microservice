@@ -7,4 +7,5 @@ namespace TH.CompanyMS.App;
 
 public partial class UserInputModel
 {
+    public string Password { get; set; }
 }

@@ -10,7 +10,7 @@ namespace TH.CompanyMS.Infra;
 
 public static class InfraDependencyInjection
 {
-    public static IServiceCollection AddInfraDependencyInjection(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCompanyInfraDependencyInjection(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IBranchRepo, BranchRepo>();
         services.AddScoped<IBranchUserRepo, BranchUserRepo>();
@@ -41,7 +41,7 @@ public static class InfraDependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddJwtTokenBasedAuthentication(this IServiceCollection services,
+    public static IServiceCollection AddCompanyJwtTokenBasedAuthentication(this IServiceCollection services,
         IConfiguration configuration)
 
     {

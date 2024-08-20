@@ -64,6 +64,24 @@ namespace TH.Common.Util.Test
                 ;
             }
         }
+
+        [TestMethod]
+        public void TryGenerateUserName()
+        {
+            try
+            {
+                var email0 = Util.TryGenerateUserName("");
+                var email1 = Util.TryGenerateUserName("Md. Tanvir Hossain");
+                var email2 = Util.TryGenerateUserName("Tanvir Hossain Shiplu");
+                var email3 = Util.TryGenerateUserName("Milon Roy");
+                //var email3 = Util.TryIsValidDate(null);
+
+            }
+            catch (Exception e)
+            {
+                ;
+            }
+        }
     }
 
     public class Employee

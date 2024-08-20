@@ -6,7 +6,7 @@ using TH.CompanyMS.Core;
 namespace TH.CompanyMS.Test;
 
 [TestClass]
-public class RoleServiceUnitTest : BaseUnitTest
+public class RoleServiceUnitTest : CompanyBaseUnitTest
 {
     private IRoleService _service;
 
@@ -25,6 +25,9 @@ public class RoleServiceUnitTest : BaseUnitTest
         {
             var model = new RoleInputModel
             {
+                Name = "Executive",
+                SpaceId = "f0f01ad3-d0fc-4baa-9fae-547ecf6cc71d",
+                CompanyId = "be1cca01-ce7f-4512-8ece-fd05a43d12d3"
             };
 
             var entity = await _service.SaveAsync(Mapper.Map<RoleInputModel, Role>(model), DataFilter);
@@ -115,7 +118,7 @@ public class RoleServiceUnitTest : BaseUnitTest
             filter.PageSize = (int)PageEnum.All;
 
             var entity = await _service.GetAsync(filter, DataFilter);
-            var viewModel = Mapper.Map<List<Role>, List<RoleViewModel>>(entity.ToList());
+            var viewModels = Mapper.Map<List<Role>, List<RoleViewModel>>(entity.ToList());
         }
         catch (Exception e)
         {

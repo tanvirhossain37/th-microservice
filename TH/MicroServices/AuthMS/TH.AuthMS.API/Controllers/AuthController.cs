@@ -1,12 +1,9 @@
-﻿using CoreApiResponse;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using MassTransit;
 using Microsoft.Extensions.Options;
 using TH.AuthMS.App;
-using TH.AuthMS.App.GrpcServices;
 using TH.AuthMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
@@ -37,10 +34,13 @@ namespace TH.AuthMS.API
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SignUpAsync([FromBody] SignUpInputModel model)
         {
-            var viewModel = await _authService.SignUpAsync(model);
-            if (!viewModel) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
+            //override
+            model.UserName = "";
 
-            return CustomResult(Lang.Find("success"), viewModel);
+            var viewModel = await _authService.SignUpAsync(model);
+            if (viewModel is null) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
+
+            return CustomResult(Lang.Find("success"), true);
         }
 
         [HttpPost("SignInAsync")]
@@ -67,7 +67,7 @@ namespace TH.AuthMS.API
 
         [HttpPost("ActivateAccountAsync")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> ActivateAccountAsync([FromBody] ActgivationCodeInputModel model)
+        public async Task<IActionResult> ActivateAccountAsync([FromBody] ActivationCodeInputModel model)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
             
@@ -75,6 +75,28 @@ namespace TH.AuthMS.API
             if (!viewModel) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
 
             return CustomResult(Lang.Find("success"), viewModel);
+        }
+
+        [HttpPost("ForgotPasswordAsync")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ForgotPasswordAsync([FromBody] ForgotPasswordInputModel model)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+
+            await _authService.ForgotPasswordAsync(model);
+
+            return CustomResult(Lang.Find("success"));
+        }
+
+        [HttpPost("UpdatePasswordAsync")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> UpdatePasswordAsync([FromBody] ForgotPasswordInputModel model)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+
+            await _authService.ForgotPasswordAsync(model);
+
+            return CustomResult(Lang.Find("success"));
         }
 
         [Authorize]

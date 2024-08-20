@@ -6,16 +6,16 @@ using TH.CompanyMS.Core;
 namespace TH.CompanyMS.Test;
 
 [TestClass]
-public class UserRoleServiceUnitTest : BaseUnitTest
+public class BranchServiceUnitTest : CompanyBaseUnitTest
 {
-    private IUserRoleService _service;
+    private IBranchService _service;
 
 
     [TestInitialize]
     public override void Init()
     {
         base.Init();
-        _service = ServiceProvider.GetRequiredService<IUserRoleService>();
+        _service = ServiceProvider.GetRequiredService<IBranchService>();
     }
 
     [TestMethod]
@@ -23,12 +23,12 @@ public class UserRoleServiceUnitTest : BaseUnitTest
     {
         try
         {
-            var model = new UserRoleInputModel
+            var model = new BranchInputModel
             {
             };
 
-            var entity = await _service.SaveAsync(Mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
-            var viewModel = Mapper.Map<UserRole, UserRoleViewModel>(entity);
+            var entity = await _service.SaveAsync(Mapper.Map<BranchInputModel, Branch>(model), DataFilter);
+            var viewModel = Mapper.Map<Branch, BranchViewModel>(entity);
         }
         catch (Exception e)
         {
@@ -41,12 +41,12 @@ public class UserRoleServiceUnitTest : BaseUnitTest
     {
         try
         {
-            var model = new UserRoleInputModel
+            var model = new BranchInputModel
             {
             };
 
-            var entity = await _service.UpdateAsync(Mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
-            var viewModel = Mapper.Map<UserRole, UserRoleViewModel>(entity);
+            var entity = await _service.UpdateAsync(Mapper.Map<BranchInputModel, Branch>(model), DataFilter);
+            var viewModel = Mapper.Map<Branch, BranchViewModel>(entity);
         }
         catch (Exception e)
         {
@@ -59,12 +59,12 @@ public class UserRoleServiceUnitTest : BaseUnitTest
     {
         try
         {
-            var model = new UserRoleInputModel
+            var model = new BranchInputModel
             {
                 Id = "", //todo
             };
 
-            await _service.SoftDeleteAsync(Mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
+            await _service.SoftDeleteAsync(Mapper.Map<BranchInputModel, Branch>(model), DataFilter);
         }
         catch (Exception e)
         {
@@ -77,12 +77,12 @@ public class UserRoleServiceUnitTest : BaseUnitTest
     {
         try
         {
-            var model = new UserRoleInputModel
+            var model = new BranchInputModel
             {
                 Id = "" //todo
             };
 
-            await _service.DeleteAsync(Mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
+            await _service.DeleteAsync(Mapper.Map<BranchInputModel, Branch>(model), DataFilter);
         }
         catch (Exception e)
         {
@@ -95,10 +95,10 @@ public class UserRoleServiceUnitTest : BaseUnitTest
     {
         try
         {
-            var filter = new UserRoleFilterModel();
+            var filter = new BranchFilterModel();
 
             var entity = await _service.FindAsync(filter, DataFilter); //todo
-            var viewModel = Mapper.Map<UserRole, UserRoleViewModel>(entity);
+            var viewModel = Mapper.Map<Branch, BranchViewModel>(entity);
         }
         catch (Exception e)
         {
@@ -111,11 +111,11 @@ public class UserRoleServiceUnitTest : BaseUnitTest
     {
         try
         {
-            var filter = new UserRoleFilterModel();
+            var filter = new BranchFilterModel();
             filter.PageSize = (int)PageEnum.All;
 
             var entity = await _service.GetAsync(filter, DataFilter);
-            var viewModel = Mapper.Map<List<UserRole>, List<UserRoleViewModel>>(entity.ToList());
+            var viewModels = Mapper.Map<List<Branch>, List<BranchViewModel>>(entity.ToList());
         }
         catch (Exception e)
         {

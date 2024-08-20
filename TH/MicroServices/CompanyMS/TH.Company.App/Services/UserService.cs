@@ -14,13 +14,16 @@ public partial class UserService : BaseService, IUserService
     
 	protected readonly IBranchUserService BranchUserService;
 	protected readonly IUserRoleService UserRoleService;
-        
-    public UserService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IBranchUserService branchUserService, IUserRoleService userRoleService) : base(mapper,publishEndpoint)
+
+    private readonly AuthGrpcClientService _authGrpcClientService;
+
+    public UserService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IBranchUserService branchUserService, IUserRoleService userRoleService, AuthGrpcClientService authGrpcClientService) : base(mapper,publishEndpoint)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
         
 		BranchUserService = branchUserService ?? throw new ArgumentNullException(nameof(branchUserService));
 		UserRoleService = userRoleService ?? throw new ArgumentNullException(nameof(userRoleService));
+        _authGrpcClientService = authGrpcClientService ?? throw new ArgumentNullException(nameof(authGrpcClientService));
     }
 
     public async Task<User> SaveAsync(User entity, DataFilter dataFilter, bool commit = true)
@@ -304,9 +307,9 @@ public partial class UserService : BaseService, IUserService
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            
-		var existingEntityByName = await Repo.UserRepo.FindByNameAsync(entity.SpaceId, entity.CompanyId, entity.Name, dataFilter);
-		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
+
+            var existingEntityByName = await Repo.UserRepo.FindByNameAsync(entity.SpaceId, entity.CompanyId, entity.UserName, dataFilter);
+            if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: UserName");
         }
         catch (Exception)
         {
@@ -321,8 +324,8 @@ public partial class UserService : BaseService, IUserService
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
             
-		var existingEntityByName = await Repo.UserRepo.FindByNameExceptMeAsync(entity.Id, entity.SpaceId, entity.CompanyId, entity.Name, dataFilter);
-		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
+		var existingEntityByName = await Repo.UserRepo.FindByNameExceptMeAsync(entity.Id, entity.SpaceId, entity.CompanyId, entity.UserName, dataFilter);
+		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: UserName");
         }
         catch (Exception)
         {

@@ -1,9 +1,11 @@
 ﻿using Microsoft.VisualBasic;
 using System.Globalization;
 using System.Net.Mail;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
 using Pluralize.NET.Core;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Security.Cryptography;
 
 namespace TH.Common.Util
 {
@@ -173,6 +175,40 @@ namespace TH.Common.Util
             catch (Exception)
             {
                 return null;
+            }
+        }
+
+        public static string TryGenerateUserName(string name)
+        {
+            try
+            {
+                name = string.IsNullOrWhiteSpace(name) ? string.Empty : name.Trim();
+
+                if (string.IsNullOrWhiteSpace(name)) return string.Empty;
+
+                var words = name.Split(" ");
+                var userName = string.Empty;
+                bool isFirst = true;
+                foreach (var word in words)
+                {
+                    if (isFirst)
+                    {
+                        userName = string.Concat(userName, $"{word}");
+                        isFirst=false;
+                    }
+                    else
+                    {
+                        userName = string.Concat(userName, $".{word}");
+                    }
+                }
+
+                userName = string.Concat(userName, $".{TryGenerateCode()}");
+
+                return userName;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
             }
         }
     }

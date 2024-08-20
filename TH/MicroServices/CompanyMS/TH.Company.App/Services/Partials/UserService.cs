@@ -1,7 +1,9 @@
 using System.Linq.Expressions;
+using TH.AuthMS.API.Protos;
 using TH.Common.Model;
 using TH.Common.Util;
 using TH.CompanyMS.Core;
+using TH.EventBus.Messages;
 
 namespace TH.CompanyMS.App;
 
@@ -9,7 +11,7 @@ public partial class UserService
 {
     //Add additional services if any
 
-    //private UserService(IUow repo, IBranchUserService branchUserService, IUserRoleService userRoleService) : this()
+    //private UserService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IBranchUserService branchUserService, IUserRoleService userRoleService) : this(repo, publishEndpoint, mapper, branchUserService, userRoleService)
     //{
     //}
 
@@ -25,6 +27,32 @@ public partial class UserService
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
         //todo
+        //override
+        entity.UserTypeId = (int)UserTypeEnum.TenantUser;
+
+        var userCreateEvent = new UserCreateEvent
+        {
+            Name = UserResolver.FullName,
+            UserName = Util.TryGenerateUserName(entity.UserName.Split("@")[0]),
+            Email = entity.UserName,
+            Password = Util.TryGenerateCode(),
+            ReferralId = UserResolver.UserName
+        };
+
+        PublishEndpoint.Publish(userCreateEvent);
+
+        ////auth service call - grpc
+        //var request = new SignUpRequest
+        //{
+        //    Name = entity.Name,
+        //    Email = entity.UserName,
+        //    Password = Util.TryGenerateCode()
+        //};
+
+        //var reply = await _authGrpcClientService.SaveAuthUserAsync(request);
+
+        ////override username
+        entity.UserName = userCreateEvent.UserName;
     }
 
     private async Task ApplyOnUpdatingBlAsync(User existingEntity, DataFilter dataFilter)

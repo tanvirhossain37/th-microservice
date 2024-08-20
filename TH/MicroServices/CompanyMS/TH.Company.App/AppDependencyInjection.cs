@@ -1,6 +1,7 @@
-﻿using System.Security;
+﻿using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TH.AuthMS.API.Protos;
 using TH.Common.Model;
 using TH.CompanyMS.Core;
 
@@ -8,7 +9,7 @@ namespace TH.CompanyMS.App;
 
 public static class AppDependencyInjection
 {
-    public static IServiceCollection AddAppDependencyInjection(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCompanyAppDependencyInjection(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<Branch>();
         services.AddScoped<BranchUser>();
@@ -55,12 +56,20 @@ public static class AppDependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRoleService, UserRoleService>();
 
+        services.AddGrpc();
+        services.AddGrpcClient<AuthProtoService.AuthProtoServiceClient>(
+            options => options.Address = new Uri(configuration.GetValue<string>("GrpcSettings:GrpcUrl")));
+
+        services.AddScoped<AuthGrpcClientService>();
+
         return services;
     }
 
-    public static IServiceCollection AddAppEventBus(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCompanyAppEventBus(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddEventBus(configuration);
+        //services.AddEventBus(configuration);
+        //RabbitMQ Config
+        services.AddMassTransit(config => { config.UsingRabbitMq((ctx, cfg) => { cfg.Host(configuration.GetSection("EventBus:Host").Value); }); });
 
         return services;
     }

@@ -6,7 +6,7 @@ namespace TH.CompanyMS.App;
 
 public interface IUserRepo : IRepoSQL<User>
 {   
-	Task<User> FindByNameAsync(string spaceId, string companyId, string name, DataFilter dataFilter);
-	Task<User> FindByNameExceptMeAsync(string id, string spaceId, string companyId, string name, DataFilter dataFilter);
+	Task<User> FindByNameAsync(string spaceId, string companyId, string userName, DataFilter dataFilter);
+	Task<User> FindByNameExceptMeAsync(string id, string spaceId, string companyId, string userName, DataFilter dataFilter);
     
 }

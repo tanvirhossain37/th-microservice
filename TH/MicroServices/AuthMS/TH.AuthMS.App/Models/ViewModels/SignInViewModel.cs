@@ -9,7 +9,6 @@ namespace TH.AuthMS.App
     public class SignInViewModel
     {
         public string SpaceId { get; set; }
-        public string userName { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public int UserTypeId { get; set; }

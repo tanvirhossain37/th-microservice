@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Protos\auth.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
     <PackageReference Include="CoreApiResponse" Version="1.0.1" />
@@ -38,6 +42,10 @@
     <ProjectReference Include="..\TH.AuthMS.App\TH.AuthMS.App.csproj" />
     <ProjectReference Include="..\TH.AuthMS.Core\TH.AuthMS.Core.csproj" />
     <ProjectReference Include="..\TH.AuthMS.Infra\TH.AuthMS.Infra.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\auth.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>

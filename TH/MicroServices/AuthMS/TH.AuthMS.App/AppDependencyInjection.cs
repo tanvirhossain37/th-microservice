@@ -1,14 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using MassTransit;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TH.Common.Model;
-using TH.AuthMS.App.GrpcServices;
 using TH.Grpc.Protos;
+using TH.Grpc.Services;
 
 namespace TH.AuthMS.App
 {
     public static class AppDependencyInjection
     {
-        public static IServiceCollection AddAppDependencyInjection(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddAuthAppDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             //services.AddScoped<User>();
             //services.AddScoped<SignUpInputModel>();
@@ -24,11 +25,15 @@ namespace TH.AuthMS.App
             //    });
             //});
 
+            services.AddGrpc();
             services.AddGrpcClient<SpaceProtoService.SpaceProtoServiceClient>(
                 options => options.Address = new Uri(configuration.GetValue<string>("GrpcSettings:GrpcUrl")));
             services.AddScoped<CompanyGrpcClientService>();
+            services.AddScoped<AuthGrpcServerService>();
 
-            services.AddEventBus(configuration);
+            //services.AddEventBus(configuration);
+            ////RabbitMQ Config
+            //services.AddMassTransit(config => { config.UsingRabbitMq((ctx, cfg) => { cfg.Host(configuration.GetSection("EventBus:Host").Value); }); });
 
             return services;
         }

@@ -117,14 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="email_invitation" xml:space="preserve">
+    <value>Bonjour {0}, &lt;big /&gt;&lt;big /&gt;{1} 2 vous invite à rejoindre son entreprise. Veuillez cliquer pour accepter l'invitation.</value>
+  </data>
   <data name="email_new_user" xml:space="preserve">
-    <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;Votre compte a été créé avec succès. Veuillez cliquer sur le lien ci-dessous pour vérifier votre compte.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Merci,&lt;br /&gt;We Space.</value>
+    <value>Bonjour {0}, &lt;big /&gt;&lt;big /&gt;Votre compte a été créé avec succès. Veuillez utiliser ce code pour vérifier votre compte.</value>
   </data>
   <data name="error_duplicateusername" xml:space="preserve">
     <value>ব্যবহারকারী আগে থেকেই আছে।</value>
   </data>
   <data name="error_general" xml:space="preserve">
     <value>দুঃখিত, কিছু ভুল হয়েছে!</value>
+  </data>
+  <data name="error_user" xml:space="preserve">
+    <value>Il existe des dizaines d'utilisateurs.</value>
   </data>
   <data name="error_validation" xml:space="preserve">
     <value>বৈধতা ব্যর্থ।</value>

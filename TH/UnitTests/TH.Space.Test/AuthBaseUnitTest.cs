@@ -4,19 +4,16 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Protocols;
+using TH.AuthMS.API;
 using TH.Common.Model;
-using TH.CompanyMS.API;
-using TH.CompanyMS.App;
-using TH.CompanyMS.Infra;
-using Microsoft.Extensions.Configuration;
-using MassTransit;
-using Microsoft.EntityFrameworkCore;
+using TH.AuthMS.App;
+using TH.AuthMS.Infra;
+using System.Configuration;
 
 namespace TH.CompanyMS.Test
 {
     [TestClass]
-    public class BaseUnitTest
+    public class AuthBaseUnitTest
     {
         protected ServiceProvider ServiceProvider;
         protected DataFilter DataFilter;
@@ -28,21 +25,23 @@ namespace TH.CompanyMS.Test
             var builder = WebApplication.CreateBuilder();
 
             var serviceCollection = new ServiceCollection();
-            builder.Configuration.AddJsonFile("appsettings.json", true);
+            //builder.Configuration.AddJsonFile("appsettings.json", true);
 
+            //var configurationRoot = builder.Configuration.AddJsonFile("appsettings.json").Build();
+            IConfiguration Configuration =
+                new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", false, true)
+                    .AddEnvironmentVariables()
+                    .Build();
 
-            serviceCollection.AddAppDependencyInjection(builder.Configuration);
-            serviceCollection.AddInfraDependencyInjection(builder.Configuration);
-
-            serviceCollection.AddDbContext<CompanyDbContext>(options =>
-            {
-                options.UseSqlServer(
-                    "Data Source=localhost;Initial Catalog=CompanyDB;User ID=sa;Password=admin123##;Trust Server Certificate=True");
-            });
+        serviceCollection.AddAuthAppDependencyInjection(builder.Configuration);
+            serviceCollection.AddAuthInfraDependencyInjection(builder.Configuration);
+            serviceCollection.AddAuthJwtTokenBasedAuthentication(builder.Configuration);
 
             //RabbitMQ Config
             serviceCollection.AddMassTransit(config => { config.UsingRabbitMq((ctx, cfg) => { cfg.Host("amqp://guest:guest@localhost:5672"); }); });
 
+            var builderConfiguration = builder.Configuration;
 
             serviceCollection.AddScoped<IConfiguration, ConfigurationManager>();
             serviceCollection.AddLogging();
@@ -59,13 +58,12 @@ namespace TH.CompanyMS.Test
             {
                 IncludeInactive = true
             };
-
         }
 
         public void LoginAsOwner(IBaseService service)
         {
             var userResolver = new UserResolver();
-            userResolver.UserName = "tanvirhossain";
+            userResolver.UserName = "tanvir";
             userResolver.SpaceId = "f0f01ad3-d0fc-4baa-9fae-547ecf6cc71d";
             userResolver.FullName = "Tanvir Hossain";
 

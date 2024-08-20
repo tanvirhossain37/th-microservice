@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -26,6 +26,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\CommonServices\TH.Common.Model\TH.Common.Model.csproj" />
+    <ProjectReference Include="..\..\MicroServices\AuthMS\TH.AuthMS.API\TH.AuthMS.API.csproj" />
+    <ProjectReference Include="..\..\MicroServices\AuthMS\TH.AuthMS.App\TH.AuthMS.App.csproj" />
+    <ProjectReference Include="..\..\MicroServices\AuthMS\TH.AuthMS.Core\TH.AuthMS.Core.csproj" />
+    <ProjectReference Include="..\..\MicroServices\AuthMS\TH.AuthMS.Infra\TH.AuthMS.Infra.csproj" />
     <ProjectReference Include="..\..\MicroServices\CompanyMS\TH.Company.API\TH.CompanyMS.API.csproj" />
     <ProjectReference Include="..\..\MicroServices\CompanyMS\TH.Company.App\TH.CompanyMS.App.csproj" />
     <ProjectReference Include="..\..\MicroServices\CompanyMS\TH.Company.Core\TH.CompanyMS.Core.csproj" />
@@ -34,6 +38,7 @@
 
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+    <Content Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

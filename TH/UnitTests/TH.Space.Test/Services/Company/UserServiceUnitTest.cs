@@ -6,17 +6,16 @@ using TH.CompanyMS.Core;
 namespace TH.CompanyMS.Test;
 
 [TestClass]
-public class CompanyServiceUnitTest : BaseUnitTest
+public class UserServiceUnitTest : CompanyBaseUnitTest
 {
-    private ICompanyService _service;
+    private IUserService _service;
 
 
     [TestInitialize]
     public override void Init()
     {
         base.Init();
-        _service = ServiceProvider.GetRequiredService<ICompanyService>();
-        base.LoginAsOwner(_service);
+        _service = ServiceProvider.GetRequiredService<IUserService>();
     }
 
     [TestMethod]
@@ -24,14 +23,18 @@ public class CompanyServiceUnitTest : BaseUnitTest
     {
         try
         {
-            var model = new CompanyInputModel
+            var model = new UserInputModel
             {
-                SpaceId = "f0f01ad3-d0fc-4baa-9fae-547ecf6cc71d",
-                Name = "Demo Tenant"
+                SpaceId = "8dd667b5-1080-4f4f-9f24-48aaad6cb8b2",
+                CompanyId = "a7255642-384a-4919-a133-4b0eedd450b8",
+                Name = "milon.roy@rite.com.bd",
+                UserName = "milon.roy@rite.com.bd",
+                AccessTypeId = (int)AccessTypeEnum.TenantAccess,
+                UserTypeId = (int)UserTypeEnum.TenantUser
             };
 
-            var entity = await _service.SaveAsync(Mapper.Map<CompanyInputModel, Company>(model), DataFilter);
-            var viewModel = Mapper.Map<Company, CompanyViewModel>(entity);
+            var entity = await _service.SaveAsync(Mapper.Map<UserInputModel, User>(model), DataFilter);
+            var viewModel = Mapper.Map<User, UserViewModel>(entity);
         }
         catch (Exception e)
         {
@@ -44,12 +47,12 @@ public class CompanyServiceUnitTest : BaseUnitTest
     {
         try
         {
-            var model = new CompanyInputModel
+            var model = new UserInputModel
             {
             };
 
-            var entity = await _service.UpdateAsync(Mapper.Map<CompanyInputModel, Company>(model), DataFilter);
-            var viewModel = Mapper.Map<Company, CompanyViewModel>(entity);
+            var entity = await _service.UpdateAsync(Mapper.Map<UserInputModel, User>(model), DataFilter);
+            var viewModel = Mapper.Map<User, UserViewModel>(entity);
         }
         catch (Exception e)
         {
@@ -62,12 +65,12 @@ public class CompanyServiceUnitTest : BaseUnitTest
     {
         try
         {
-            var model = new CompanyInputModel
+            var model = new UserInputModel
             {
                 Id = "", //todo
             };
 
-            await _service.SoftDeleteAsync(Mapper.Map<CompanyInputModel, Company>(model), DataFilter);
+            await _service.SoftDeleteAsync(Mapper.Map<UserInputModel, User>(model), DataFilter);
         }
         catch (Exception e)
         {
@@ -80,12 +83,12 @@ public class CompanyServiceUnitTest : BaseUnitTest
     {
         try
         {
-            var model = new CompanyInputModel
+            var model = new UserInputModel
             {
                 Id = "" //todo
             };
 
-            await _service.DeleteAsync(Mapper.Map<CompanyInputModel, Company>(model), DataFilter);
+            await _service.DeleteAsync(Mapper.Map<UserInputModel, User>(model), DataFilter);
         }
         catch (Exception e)
         {
@@ -98,10 +101,10 @@ public class CompanyServiceUnitTest : BaseUnitTest
     {
         try
         {
-            var filter = new CompanyFilterModel();
+            var filter = new UserFilterModel();
 
             var entity = await _service.FindAsync(filter, DataFilter); //todo
-            var viewModel = Mapper.Map<Company, CompanyViewModel>(entity);
+            var viewModel = Mapper.Map<User, UserViewModel>(entity);
         }
         catch (Exception e)
         {
@@ -114,11 +117,11 @@ public class CompanyServiceUnitTest : BaseUnitTest
     {
         try
         {
-            var filter = new CompanyFilterModel();
+            var filter = new UserFilterModel();
             filter.PageSize = (int)PageEnum.All;
 
             var entity = await _service.GetAsync(filter, DataFilter);
-            var viewModel = Mapper.Map<List<Company>, List<CompanyViewModel>>(entity.ToList());
+            var viewModels = Mapper.Map<List<User>, List<UserViewModel>>(entity.ToList());
         }
         catch (Exception e)
         {

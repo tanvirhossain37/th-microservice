@@ -18,11 +18,11 @@ namespace TH.CompanyMS.API
             builder.Services.AddControllers(c => c.Filters.Add(new CommonCustomExceptionFilter()));
 
             //Tanvir
-            builder.Services.AddAppDependencyInjection(builder.Configuration);
-            builder.Services.AddAppEventBus(builder.Configuration);
-            builder.Services.AddInfraDependencyInjection(builder.Configuration);
+            builder.Services.AddCompanyAppDependencyInjection(builder.Configuration);
+            builder.Services.AddCompanyAppEventBus(builder.Configuration);
+            builder.Services.AddCompanyInfraDependencyInjection(builder.Configuration);
             builder.Services.AddDbContext(builder.Configuration);
-            builder.Services.AddJwtTokenBasedAuthentication(builder.Configuration);
+            builder.Services.AddCompanyJwtTokenBasedAuthentication(builder.Configuration);
 
             builder.Services.AddSignalR();
 

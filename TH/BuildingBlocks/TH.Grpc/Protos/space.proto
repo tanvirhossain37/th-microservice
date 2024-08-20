@@ -7,6 +7,19 @@ option csharp_namespace = "TH.Grpc.Protos";
 
 service SpaceProtoService{
 	rpc GetPermissions(PermissionFilterRequest) returns (ListPermissionViewReplies);
+	rpc SaveAuthUser(SignUpRequest) returns (SignUpReply);
+}
+
+message SignUpRequest {
+	string name = 1;
+	string password = 2;
+	string Email = 3;
+}
+
+message SignUpReply {
+	string name = 1;
+	string user_name = 2;
+	string Email = 3;
 }
 
 message BranchInputRequest {	

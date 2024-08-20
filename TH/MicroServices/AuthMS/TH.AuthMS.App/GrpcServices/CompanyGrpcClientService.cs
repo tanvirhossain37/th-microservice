@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using TH.Grpc.Protos;
 
-namespace TH.AuthMS.App.GrpcServices;
+namespace TH.AuthMS.App;
 
 public class CompanyGrpcClientService
 {
@@ -14,7 +14,7 @@ public class CompanyGrpcClientService
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<ListPermissionViewReplies> GetPermissions(PermissionFilterRequest request)
+    public async Task<ListPermissionViewReplies> GetPermissionsAsync(PermissionFilterRequest request)
     {
         return await _grpcClient.GetPermissionsAsync(request);
     }

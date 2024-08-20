@@ -115,7 +115,7 @@ public class $WE$ServiceUnitTest : BaseUnitTest
             filter.PageSize = (int)PageEnum.All;
 
             var entity = await _service.GetAsync(filter, DataFilter);
-            var viewModel = Mapper.Map<List<$WE$>, List<$WE$ViewModel>>(entity.ToList());
+            var viewModels = Mapper.Map<List<$WE$>, List<$WE$ViewModel>>(entity.ToList());
         }
         catch (Exception e)
         {

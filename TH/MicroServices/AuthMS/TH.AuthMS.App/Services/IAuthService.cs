@@ -1,16 +1,18 @@
 ﻿
 using System.Net;
-using TH.AddressMS.App;
-using TH.AuthMS.App.GrpcServices;
+using TH.AuthMS.App;
+using TH.Common.Model;
 
 namespace TH.AuthMS.App
 {
-    public interface IAuthService : IDisposable
+    public interface IAuthService :IBaseService, IDisposable
     {
         public CompanyGrpcClientService GrpcClientService { get; set; }
-        Task<bool> SignUpAsync(SignUpInputModel entity);
+        Task<SignUpViewModel> SignUpAsync(SignUpInputModel entity);
         Task<SignInViewModel> SignInAsync(SignInInputModel entity);
         Task<SignInViewModel> RefreshToken(RefreshTokenInputModel model);
-        Task<bool> ActivateAccountAsync(ActgivationCodeInputModel model);
+        Task<bool> ActivateAccountAsync(ActivationCodeInputModel model);
+        Task ForgotPasswordAsync(ForgotPasswordInputModel model);
+        Task<bool> UpdatePasswordAsync(ForgotPasswordInputModel model);
     }
 }

@@ -105,7 +105,7 @@ public partial class ModuleService
         {
             ParentId = null,
             Name = "m_company_dashboard",
-            ControllerName = "",
+            ControllerName = TS.Controllers.Company,
             Route = "company/dasboard",
             Icon = "group",
             MenuOrder = 1
@@ -125,7 +125,7 @@ public partial class ModuleService
         {
             ParentId = admin.Id,
             Name = "m_company_role",
-            ControllerName = "",
+            ControllerName = TS.Controllers.Role,
             Route = "company/roles",
             Icon = "group",
             MenuOrder = 1
@@ -135,7 +135,7 @@ public partial class ModuleService
         {
             ParentId = admin.Id,
             Name = "m_company_user",
-            ControllerName = "",
+            ControllerName = TS.Controllers.User,
             Route = "company/users",
             Icon = "group",
             MenuOrder = 2
@@ -145,7 +145,7 @@ public partial class ModuleService
         {
             ParentId = admin.Id,
             Name = "m_company_permission",
-            ControllerName = "",
+            ControllerName = TS.Controllers.Permission,
             Route = "company/permissions",
             Icon = "group",
             MenuOrder = 3

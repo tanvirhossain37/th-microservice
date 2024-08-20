@@ -6,7 +6,7 @@ using TH.CompanyMS.Core;
 namespace TH.CompanyMS.Test;
 
 [TestClass]
-public class ModuleServiceUnitTest : BaseUnitTest
+public class ModuleServiceUnitTest : CompanyBaseUnitTest
 {
     private IModuleService _service;
 
@@ -16,23 +16,6 @@ public class ModuleServiceUnitTest : BaseUnitTest
     {
         base.Init();
         _service = ServiceProvider.GetRequiredService<IModuleService>();
-    }
-
-    [TestMethod]
-    public async Task InitUnitTest()
-    {
-        try
-        {
-            var model = new ModuleInputModel
-            {
-            };
-
-            await _service.InitAsync(DataFilter);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
     }
 
     [TestMethod]
@@ -130,10 +113,9 @@ public class ModuleServiceUnitTest : BaseUnitTest
         {
             var filter = new ModuleFilterModel();
             filter.PageSize = (int)PageEnum.All;
-            filter.ByTree = true;
 
             var entity = await _service.GetAsync(filter, DataFilter);
-            var viewModel = Mapper.Map<List<Module>, List<ModuleViewModel>>(entity.ToList());
+            var viewModels = Mapper.Map<List<Module>, List<ModuleViewModel>>(entity.ToList());
         }
         catch (Exception e)
         {
@@ -142,7 +124,7 @@ public class ModuleServiceUnitTest : BaseUnitTest
     }
 
     [TestMethod]
-    public async Task InitAsync()
+    public async Task InitAsyncUnitTest()
     {
         try
         {
