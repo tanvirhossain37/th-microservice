@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="change_password" xml:space="preserve">
+    <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;Vous avez demandé à modifier le mot de passe. Veuillez cliquer sur le lien ci-dessous pour continuer. Ce n'est pas vous, s'il vous plaît, ignorez-le. Votre compte est en sécurité.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Merci,&lt;br /&gt;We Space.</value>
+  </data>
   <data name="email_invitation" xml:space="preserve">
     <value>Bonjour {0}, &lt;big /&gt;&lt;big /&gt;{1} 2 vous invite à rejoindre son entreprise. Veuillez cliquer pour accepter l'invitation.</value>
   </data>

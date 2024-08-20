@@ -34,26 +34,35 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
             //    Email = "tanvir.hossain37@gmail.com",
             //};
 
+            ////self
+            //var model = new SignUpInputModel
+            //{
+            //    Name = "Rizwan Abedin",
+            //    UserName = "",
+            //    Password = "admin123##",
+            //    Email = "rizwan.abedin@rite.com.bd",
+            //};
+
             ////invitation
             //var email = "milon.roy@rite.com.bd";
             //var model = new SignUpInputModel
             //{
-            //    Name = "Tanvir Hossain",
+            //    Name = email,
             //    UserName = Util.TryGenerateUserName(email.Split("@")[0]),
             //    Password = Util.TryGenerateCode(),
             //    Email = email,
-            //    ReferralId = "Tanvir.Hossain.343c2cdfb836"
+            //    ReferralId = "Tanvir.Hossain.dc00dbb85a13"
             //};
 
             //invitation
             var email = "milon.roy@rite.com.bd";
             var model = new SignUpInputModel
             {
-                Name = "Rizu Bhai",
+                Name = email,
                 UserName = Util.TryGenerateUserName(email.Split("@")[0]),
                 Password = Util.TryGenerateCode(),
                 Email = email,
-                ReferralId = "Rizu.Bhai.343c2cdfb836"
+                ReferralId = "Rizwan.Abedin.1bb6291c3054"
             };
 
             var entity = await _service.SignUpAsync(model);
@@ -72,8 +81,14 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
             var model = new SignInInputModel
             {
                 Email = "tanvir.hossain37@gmail.com",
-                Password = "admin123##"
+                Password = "T@nv!r.2020"//admin123##
             };
+
+            //var model = new SignInInputModel
+            //{
+            //    Email = "milon.roy@rite.com.bd",
+            //    Password = "admin123##"
+            //};
 
             var entity = await _service.SignInAsync(model);
         }
@@ -109,7 +124,7 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
             var model = new ForgotPasswordInputModel
             {
                 Email = "tanvir.hossain37@gmail.com",
-                Token = "CfDJ8OpASa8Zst5Nh5yOH2tPx1YuHI8Bm6hV28QBAAB1uqIU1BLVURK/1EfTpAL2D7ivu8wGcvjkF/KfxAqH/OE4tg/TAFXp4blapHYB8a27CEq2lfIj9+tPriQ7eU7xVW919EeE2xOMLbG32aOqLzEaAiRpfXRHe/ev694qzqALt9yGLmuDOAE2gd0LxMm4krzw1E4rd13w7DKyTwdlDfl9zsMw/wpc9x3nLSit9hDuEtEG",
+                Token = "CfDJ8OpASa8Zst5Nh5yOH2tPx1ap04b6lYdAoixFI7H8VovFnuaD8slqUobZriZx9EekB+dZClFkG9rZjMeE4pBBmUQ3NaI+na0MSqpE/WtZkW+mRkPkQjX58aq+knHFYj+ylhuy6XO07EM/QZbASNkVdIGdVVqKuBHnf8YsvVTLcerNwtNXfI2JD3mjdsPq9PSN9F0hMJ9WUIBggCU4iMBPxgCwKvscHboKj3hAUNNCkCkn",
                 Password = "T@nv!r.2020"
             };
 

@@ -32,7 +32,7 @@ public partial class UserService
 
         var userCreateEvent = new UserCreateEvent
         {
-            Name = UserResolver.FullName,
+            Name = entity.Name,
             UserName = Util.TryGenerateUserName(entity.UserName.Split("@")[0]),
             Email = entity.UserName,
             Password = Util.TryGenerateCode(),

@@ -186,7 +186,6 @@ namespace TH.AuthMS.Infra
             //time? util?
             if (identityUser.CodeExpiryTime >= DateTime.Now)
             {
-                identityUser.EmailConfirmed = true;
                 var result = await _userManager.ResetPasswordAsync(identityUser, model.Token, model.Password);
 
                 if (!result.Succeeded)
