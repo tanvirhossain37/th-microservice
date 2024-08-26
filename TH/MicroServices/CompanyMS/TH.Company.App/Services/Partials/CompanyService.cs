@@ -20,9 +20,11 @@ public partial class CompanyService
 
         //branch
         if (entity.Branches.Count <= 0) throw new CustomException($"{Lang.Find("validation_error")}: Branches");
+
         foreach (var branch in entity.Branches)
         {
             branch.CompanyId = entity.Id;
+            branch.SpaceId = entity.SpaceId;
         }
 
         //todo
@@ -59,14 +61,14 @@ public partial class CompanyService
         user.UserRoles.Add(userRole);
         entity.UserRoles.Add(userRole);
 
-        //get modules
-        var modules = await Repo.ModuleRepo.GetQueryableAsync(x => x.ParentId == null, i => i.InverseParent, o => o.OrderBy(m => m.Id), (int)PageEnum.PageIndex,
-            (int)PageEnum.All, dataFilter);
+        ////get modules
+        //var modules = await Repo.ModuleRepo.GetQueryableAsync(x => x.ParentId == null, i => i.InverseParent, o => o.OrderBy(m => m.Id), (int)PageEnum.PageIndex,
+        //    (int)PageEnum.All, dataFilter);
 
-        foreach (var module in modules)
-        {
-            await AddPermissionRecursivelyAsync(entity, role, module, null, dataFilter);
-        }
+        //foreach (var module in modules)
+        //{
+        //    await AddPermissionRecursivelyAsync(entity, role, module, null, dataFilter);
+        //}
     }
 
     private async Task ApplyOnSavedBlAsync(Company entity, DataFilter dataFilter)

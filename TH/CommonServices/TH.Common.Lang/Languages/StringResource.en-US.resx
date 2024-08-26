@@ -136,9 +136,15 @@
     <value>The user doesn't exist.</value>
   </data>
   <data name="email_invitation" xml:space="preserve">
-    <value>Hello {0},&lt;br /&gt;&lt;br /&gt;{1} is inviting you to join his company. Please click to accept the invitation.&lt;br /&gt;&lt;br /&gt;{2}&lt;br /&gt;&lt;br /&gt;Thanks,&lt;br /&gt;We Space.</value>
+    <value>Hello {0},&lt;br /&gt;&lt;br /&gt;{1} is inviting you to join "{2}". Please click to accept the invitation.&lt;br /&gt;&lt;br /&gt;{3}&lt;br /&gt;&lt;br /&gt;Thanks,&lt;br /&gt;We Space.</value>
   </data>
   <data name="change_password" xml:space="preserve">
-    <value>Hello {0},&lt;br /&gt;&lt;br /&gt;You have requested to change the password. Please click the below link to continue. It it's not you, please ignore it. You account is safe.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Thanks,&lt;br /&gt;We Space.</value>
+    <value>Hello {0},&lt;br /&gt;&lt;br /&gt;You have requested to reset the password. Please use this code to change your password.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Thanks,&lt;br /&gt;We Space.</value>
+  </data>
+  <data name="update_password" xml:space="preserve">
+    <value>Hello {0},&lt;br /&gt;&lt;br /&gt;Your password has been changed. If it's not you, please contact us.&lt;br /&gt;&lt;br /&gt;Thanks,&lt;br /&gt;We Space.</value>
+  </data>
+  <data name="inactive_login" xml:space="preserve">
+    <value>Hello {0},&lt;br /&gt;&lt;br /&gt;Welcome back!&lt;br /&gt;Please use this code to verify your account.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Thanks,&lt;br /&gt;We Space.</value>
   </data>
 </root>

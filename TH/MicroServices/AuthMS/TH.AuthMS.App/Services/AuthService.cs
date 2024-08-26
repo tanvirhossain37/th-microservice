@@ -6,6 +6,7 @@ using TH.EventBus.Messages;
 using TH.Common.Model;
 using TH.Common.Util;
 using MongoDB.Driver;
+using Microsoft.AspNetCore.Identity;
 
 namespace TH.AuthMS.App
 {
@@ -28,14 +29,14 @@ namespace TH.AuthMS.App
 
         public async Task<SignUpViewModel> SignUpAsync(SignUpInputModel entity)
         {
-            entity.UserName = string.IsNullOrWhiteSpace(entity.UserName) ? Util.TryGenerateUserName(entity.Name) : entity.UserName.Trim();
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
 
             ApplyValidationBl(entity);
 
             var identityUser = new ApplicationUser
             {
                 Name = entity.Name,
-                UserName = entity.UserName,
+                UserName = entity.IsAutoUserName? Util.TryGenerateUserName(entity.Name):entity.UserName,
                 Email = entity.Email,
                 CreatedDate = DateTime.Now,
                 ActivationCode = Util.TryGenerateCode(),
@@ -51,13 +52,19 @@ namespace TH.AuthMS.App
                 if (existingEntity is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Email");
 
                 await _authRepo.SaveAsync(identityUser, entity.Password);
-                await EmailCodeAsync(identityUser);
+                //publish
+                var emailEventAgain = new EmailEvent();
+                emailEventAgain.To.Add(identityUser.Email);
+                emailEventAgain.Subject = "Activate account please!";
+                emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
+
+                await _publishEndpoint.Publish(emailEventAgain);
             }
             else
             {
                 //invitation
-                var referallUser = await _authRepo.FindByUserNameAsync(entity.ReferralId);
-                if (referallUser == null) throw new CustomException(Lang.Find("data_notfound"));
+                var referralUser = await _authRepo.FindByUserNameAsync(entity.ReferralId);
+                if (referralUser == null) throw new CustomException(Lang.Find("data_notfound"));
 
                 //duplicate check
                 var existingEntity = await _authRepo.FindByEmailAsync(identityUser.Email);
@@ -71,7 +78,13 @@ namespace TH.AuthMS.App
                     identityUser.ReferralId = entity.ReferralId;
 
                     await _authRepo.SaveAsync(identityUser, entity.Password);
-                    await EmailLinkAsync(identityUser, referallUser.Name, verifyUrl);
+                    //publish
+                    var emailEvent = new EmailEvent();
+                    emailEvent.To.Add(identityUser.Email);
+                    emailEvent.Subject = "Invitation from We Space Inc.";
+                    emailEvent.Content = string.Format(Lang.Find("email_invitation"), identityUser.Email, referralUser.Name, entity.CompanyName, verifyUrl);
+
+                    await _publishEndpoint.Publish(emailEvent);
                 }
                 else
                 {
@@ -81,11 +94,16 @@ namespace TH.AuthMS.App
 
                     var encodedCode = System.Web.HttpUtility.UrlEncode(existingEntity.ActivationCode);
                     var verifyUrl = $"{_config.GetSection("GlobalConfigs:BaseUrl").Value}/signin?code={encodedCode}";
-
-                    
                     
                     await _authRepo.UpdateAsync(existingEntity);
-                    await EmailLinkAsync(existingEntity, referallUser.Name, verifyUrl);
+
+                    //publish
+                    var emailEvent = new EmailEvent();
+                    emailEvent.To.Add(identityUser.Email);
+                    emailEvent.Subject = "Invitation from We Space Inc.";
+                    emailEvent.Content = string.Format(Lang.Find("email_invitation"), existingEntity.Name, referralUser.Name, entity.CompanyName, verifyUrl);
+
+                    await _publishEndpoint.Publish(emailEvent);
                 }
             }
 
@@ -118,16 +136,22 @@ namespace TH.AuthMS.App
                 {
                     //send code
                     //publish to eventbus
-                    await EmailCodeAsync(identityUser);
+                    var emailEventAgain = new EmailEvent();
+                    emailEventAgain.To.Add(identityUser.Email);
+                    emailEventAgain.Subject = "Activate account please!";
+                    emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
+
+                    await _publishEndpoint.Publish(emailEventAgain);
                 }
                 else
                 {
-                    //send link
-                    var encodedCode = System.Web.HttpUtility.UrlEncode(identityUser.ActivationCode);
-                    var verifyUrl = $"{_config.GetSection("GlobalConfigs:BaseUrl").Value}/invitation?code={encodedCode}";
-
                     //publish to eventbus
-                    await EmailLinkAsync(identityUser, "",verifyUrl);
+                    var emailEventAgain = new EmailEvent();
+                    emailEventAgain.To.Add(identityUser.Email);
+                    emailEventAgain.Subject = "Activate account please!";
+                    emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
+
+                    await _publishEndpoint.Publish(emailEventAgain);
                 }
 
                 throw new InactiveUserException(Lang.Find("error_emailnotconfirmed"));
@@ -136,17 +160,12 @@ namespace TH.AuthMS.App
             var signInViewModel = _authRepo.GenerateToken(identityUser);
             signInViewModel.RefreshToken = _authRepo.GenerateRefreshToken();
 
+            signInViewModel.SpaceId = identityUser.Id;
             signInViewModel.Name = identityUser.Name;
             signInViewModel.Email = identityUser.Email;
             signInViewModel.EmailConfirmed = identityUser.EmailConfirmed;
-            //signInViewModel.UserTypeId = identityUser.UserTypeId;
             signInViewModel.CreatedDate = identityUser.CreatedDate;
             signInViewModel.ModifiedDate = identityUser.ModifiedDate;
-
-            //if (identityUser.UserTypeId == (int)UserTypeEnum.Owner)
-            //{
-            //    signInViewModel.SpaceId = identityUser.Id;
-            //}
 
             //update db
             identityUser.RefreshToken = signInViewModel.RefreshToken;
@@ -189,7 +208,7 @@ namespace TH.AuthMS.App
             var emailEventAgain = new EmailEvent();
             emailEventAgain.To.Add(identityUser.Email);
             emailEventAgain.Subject = "Activate account please!";
-            emailEventAgain.Content = string.Format(Lang.Find("email_new_user"), identityUser.Name, identityUser.ActivationCode);
+            emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
 
             await _publishEndpoint.Publish(emailEventAgain);
         }
@@ -251,7 +270,8 @@ namespace TH.AuthMS.App
             if (identityUser is null) throw new CustomException(Lang.Find("error_not_found"));
 
             //update user
-            identityUser.ActivationCode = await _authRepo.GeneratePasswordResetTokenAsync(identityUser);
+            identityUser.ResetPasswordToken = await _authRepo.GeneratePasswordResetTokenAsync(identityUser);
+            identityUser.ActivationCode = Util.TryGenerateCode();
             identityUser.CodeExpiryTime = DateTime.Now.AddDays(Convert.ToDouble(_config.GetSection("ActivationCodeExpiryTime").Value)); //1 day
 
             var updateResult = await _authRepo.UpdateAsync(identityUser);
@@ -264,55 +284,51 @@ namespace TH.AuthMS.App
             if (string.IsNullOrWhiteSpace(identityUser.ReferralId))
             {
                 //send link with token
-                var encodedCode = System.Web.HttpUtility.UrlEncode(identityUser.ActivationCode);
-                var verifyUrl = $"{_config.GetSection("GlobalConfigs:BaseUrl").Value}/changepassword?token={encodedCode}";
+                //var verifyUrl = $"{_config.GetSection("GlobalConfigs:BaseUrl").Value}/resetpassword?code={identityUser.ActivationCode}";
 
                 //publish to eventbus
                 var emailEvent = new EmailEvent();
                 emailEvent.To.Add(identityUser.Email);
-                emailEvent.Subject = "Change Password Request";
-                emailEvent.Content = string.Format(Lang.Find("change_password"), identityUser.Name, verifyUrl);
+                emailEvent.Subject = "Reset Password Request";
+                emailEvent.Content = string.Format(Lang.Find("change_password"), identityUser.Name, identityUser.ActivationCode);
 
                 await _publishEndpoint.Publish(emailEvent);
             }
             else
             {
-                if (identityUser.EmailConfirmed)
-                {
-                    //send code
-                    //publish to eventbus
-                    await EmailCodeAsync(identityUser);
-                }
-                else
-                {
-                    //send link
-                    var encodedCode = System.Web.HttpUtility.UrlEncode(identityUser.ActivationCode);
-                    var verifyUrl = $"{_config.GetSection("GlobalConfigs:BaseUrl").Value}/invitation?code={encodedCode}";
+                //send link with token
+                //var encodedCode = System.Web.HttpUtility.UrlEncode(identityUser.ActivationCode);
+                //var verifyUrl = $"{_config.GetSection("GlobalConfigs:BaseUrl").Value}/changepassword?token={encodedCode}";
 
-                    //publish to eventbus
-                    await EmailLinkAsync(identityUser,"", verifyUrl);
-                }
+                //publish to eventbus
+                var emailEvent = new EmailEvent();
+                emailEvent.To.Add(identityUser.Email);
+                emailEvent.Subject = "Change Password Request";
+                emailEvent.Content = string.Format(Lang.Find("change_password"), identityUser.Name, identityUser.ActivationCode);
+
+                await _publishEndpoint.Publish(emailEvent);
             }
         }
 
-        public async Task<bool> UpdatePasswordAsync(ForgotPasswordInputModel model)
+        public async Task<bool> ResetPasswordAsync(ForgotPasswordInputModel model)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            var succeed = await _authRepo.UpdatePasswordAsync(model);
+            //model.ActivationCode = System.Web.HttpUtility.UrlDecode(model.ActivationCode);
+
+            var succeed = await _authRepo.ResetPasswordAsync(model);
 
             //update email confirmed
             if (succeed)
             {
-                var identityUser = await _authRepo.FindByEmailAsync(model.Email);
-                identityUser.EmailConfirmed = true;
+                var identityUser = await _authRepo.ActivateAccountAsync(new ActivationCodeInputModel{ ActivateCode = model.ActivationCode});
 
-                var result = await _authRepo.UpdateAsync(identityUser);
-                if (!result.Succeeded)
-                {
-                    var code = result?.Errors?.FirstOrDefault()?.Code;
-                    throw new CustomException(Lang.Find($"error_{code}"));
-                }
+                var emailEvent = new EmailEvent();
+                emailEvent.To.Add(identityUser.Email);
+                emailEvent.Subject = "Your password has been changed.";
+                emailEvent.Content = string.Format(Lang.Find("update_password"), identityUser.Name);
+
+                await _publishEndpoint.Publish(emailEvent);
             }
 
             return true;

@@ -29,40 +29,46 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
             //var model = new SignUpInputModel
             //{
             //    Name = "Tanvir Hossain",
-            //    UserName = "",
+            //    UserName = "tanvir.hossain37@gmail.com",
             //    Password = "admin123##",
             //    Email = "tanvir.hossain37@gmail.com",
+            //    IsAutoUserName = true
             //};
 
             ////self
             //var model = new SignUpInputModel
             //{
             //    Name = "Rizwan Abedin",
-            //    UserName = "",
+            //    UserName = "rizwan.abedin@rite.com.bd",
             //    Password = "admin123##",
             //    Email = "rizwan.abedin@rite.com.bd",
+            //    IsAutoUserName = true
             //};
 
             ////invitation
-            //var email = "milon.roy@rite.com.bd";
+            //var email = "shiplu.drive7@gmail.com";
             //var model = new SignUpInputModel
             //{
             //    Name = email,
-            //    UserName = Util.TryGenerateUserName(email.Split("@")[0]),
+            //    UserName = Util.TryGenerateUserName(email),
             //    Password = Util.TryGenerateCode(),
             //    Email = email,
-            //    ReferralId = "Tanvir.Hossain.dc00dbb85a13"
+            //    ReferralId = "Tanvir.Hossain.9649399938c0",
+            //    CompanyName = "Tesla Inc.",
+            //    IsAutoUserName = false
             //};
 
             //invitation
-            var email = "milon.roy@rite.com.bd";
+            var email = "shiplu.drive7@gmail.com";
             var model = new SignUpInputModel
             {
                 Name = email,
                 UserName = Util.TryGenerateUserName(email.Split("@")[0]),
                 Password = Util.TryGenerateCode(),
                 Email = email,
-                ReferralId = "Rizwan.Abedin.1bb6291c3054"
+                ReferralId = "Rizwan.Abedin.ed6027e94259",
+                CompanyName = "Google Inc.",
+                IsAutoUserName = false
             };
 
             var entity = await _service.SignUpAsync(model);
@@ -78,17 +84,17 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
     {
         try
         {
-            var model = new SignInInputModel
-            {
-                Email = "tanvir.hossain37@gmail.com",
-                Password = "T@nv!r.2020"//admin123##
-            };
-
             //var model = new SignInInputModel
             //{
-            //    Email = "milon.roy@rite.com.bd",
-            //    Password = "admin123##"
+            //    Email = "tanvir.hossain37@gmail.com",
+            //    Password = "admin123##"//
             //};
+
+            var model = new SignInInputModel
+            {
+                Email = "milon.roy@rite.com.bd",
+                Password = "admin123##"
+            };
 
             var entity = await _service.SignInAsync(model);
         }
@@ -108,6 +114,11 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
                 Email = "tanvir.hossain37@gmail.com"
             };
 
+            //var model = new ForgotPasswordInputModel
+            //{
+            //    Email = "milon.roy@rite.com.bd"
+            //};
+
             await _service.ForgotPasswordAsync(model);
         }
         catch (Exception e)
@@ -117,18 +128,18 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
     }
 
     [TestMethod]
-    public async Task UpdatePasswordAsyncUnitTest()
+    public async Task ResetPasswordAsyncUnitTest()
     {
         try
         {
             var model = new ForgotPasswordInputModel
             {
-                Email = "tanvir.hossain37@gmail.com",
-                Token = "CfDJ8OpASa8Zst5Nh5yOH2tPx1ap04b6lYdAoixFI7H8VovFnuaD8slqUobZriZx9EekB+dZClFkG9rZjMeE4pBBmUQ3NaI+na0MSqpE/WtZkW+mRkPkQjX58aq+knHFYj+ylhuy6XO07EM/QZbASNkVdIGdVVqKuBHnf8YsvVTLcerNwtNXfI2JD3mjdsPq9PSN9F0hMJ9WUIBggCU4iMBPxgCwKvscHboKj3hAUNNCkCkn",
+                //Email = "tanvir.hossain37@gmail.com",
+                ActivationCode = "CfDJ8OpASa8Zst5Nh5yOH2tPx1YGmTnHx6LfZaP4SDspFTRT0S2ucn1vVDwSJVXAseK4rfWbKG9xWvsIvckibZ34vzHevrYJjEgiPbkx7KT5uZjcpRzEfp2vY44tm0cXSRdJ3x9NIfq2ZEY5HQk%2bEFV7ZtYUXOPlYH0W4GfEQ%2bj1Hz0begqlO5tizwKY8Im1miECHEzRsl36xOdUzcD05o2XZUpx66T%2fUIF8gxXPNwlUvmQw",
                 Password = "T@nv!r.2020"
             };
 
-            await _service.UpdatePasswordAsync(model);
+            await _service.ResetPasswordAsync(model);
         }
         catch (Exception e)
         {

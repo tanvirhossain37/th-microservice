@@ -21,6 +21,6 @@ namespace TH.AuthMS.App
         ClaimsPrincipal GetTokenPrincipal(string token);
         Task<ApplicationUser> ActivateAccountAsync(ActivationCodeInputModel model);
         Task<string> GeneratePasswordResetTokenAsync(ApplicationUser identityUser);
-        Task<bool> UpdatePasswordAsync(ForgotPasswordInputModel model);
+        Task<bool> ResetPasswordAsync(ForgotPasswordInputModel model);
     }
 }

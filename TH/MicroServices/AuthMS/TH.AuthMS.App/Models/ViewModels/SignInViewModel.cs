@@ -11,7 +11,6 @@ namespace TH.AuthMS.App
         public string SpaceId { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public int UserTypeId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string Token { get; set; }

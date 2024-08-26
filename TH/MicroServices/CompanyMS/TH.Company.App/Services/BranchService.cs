@@ -28,7 +28,7 @@ public partial class BranchService : BaseService, IBranchService
         entity.Id = Util.TryGenerateGuid();
         entity.CreatedDate = DateTime.Now;
 
-        ApplyValidationBl(entity, commit);
+        ApplyValidationBl(entity);
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here

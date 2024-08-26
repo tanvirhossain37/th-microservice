@@ -12,7 +12,7 @@ using TH.AuthMS.Infra;
 namespace TH.AuthMS.Infra.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20240819143604_Initial")]
+    [Migration("20240824111321_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -227,6 +227,9 @@ namespace TH.AuthMS.Infra.Migrations
 
                     b.Property<DateTime?>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ResetPasswordToken")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

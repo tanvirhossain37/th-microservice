@@ -74,7 +74,7 @@ namespace TH.Common.Util.Test
                 var email1 = Util.TryGenerateUserName("Md. Tanvir Hossain");
                 var email2 = Util.TryGenerateUserName("Tanvir Hossain Shiplu");
                 var email3 = Util.TryGenerateUserName("Milon Roy");
-                //var email3 = Util.TryIsValidDate(null);
+                var email4 = Util.TryGenerateUserName("milon.roy@rite.com.bd");
 
             }
             catch (Exception e)

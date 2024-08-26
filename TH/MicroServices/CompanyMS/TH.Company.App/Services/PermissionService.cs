@@ -27,14 +27,17 @@ public partial class PermissionService : BaseService, IPermissionService
         entity.Id = Util.TryGenerateGuid();
         entity.CreatedDate = DateTime.Now;
 
-        ApplyValidationBl(entity, commit);
+        ApplyValidationBl(entity);
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
         await ApplyOnSavingBlAsync(entity, dataFilter);
 
         //Chain effect
-        
+        foreach (var child in entity.InverseParent)
+        {
+            await SaveAsync(child, dataFilter, commit);
+        }
                 
         await Repo.PermissionRepo.SaveAsync(entity);
 

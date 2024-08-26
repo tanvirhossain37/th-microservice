@@ -30,13 +30,17 @@ public partial class UserService
         //override
         entity.UserTypeId = (int)UserTypeEnum.TenantUser;
 
+        var company = await Repo.CompanyRepo.SingleOrDefaultQueryableAsync(x=>x.Id==entity.CompanyId);
+
         var userCreateEvent = new UserCreateEvent
         {
             Name = entity.Name,
             UserName = Util.TryGenerateUserName(entity.UserName.Split("@")[0]),
             Email = entity.UserName,
             Password = Util.TryGenerateCode(),
-            ReferralId = UserResolver.UserName
+            ReferralId = UserResolver.UserName,
+            CompanyName = company.Name,
+            IsAutoUserName = false
         };
 
         PublishEndpoint.Publish(userCreateEvent);

@@ -178,27 +178,37 @@ namespace TH.Common.Util
             }
         }
 
-        public static string TryGenerateUserName(string name)
+        public static string TryGenerateUserName(string nameOrEmail)
         {
             try
             {
-                name = string.IsNullOrWhiteSpace(name) ? string.Empty : name.Trim();
+                nameOrEmail = string.IsNullOrWhiteSpace(nameOrEmail) ? string.Empty : nameOrEmail.Trim();
 
-                if (string.IsNullOrWhiteSpace(name)) return string.Empty;
+                if (string.IsNullOrWhiteSpace(nameOrEmail)) return string.Empty;
 
-                var words = name.Split(" ");
+                var isValidEmail = TryIsValidEmail(nameOrEmail);
                 var userName = string.Empty;
-                bool isFirst = true;
-                foreach (var word in words)
+
+                if (isValidEmail)
                 {
-                    if (isFirst)
+                    var words = nameOrEmail.Split("@")[0];
+                    userName = string.Concat(userName, $"{words}");
+                }
+                else
+                {
+                    var words = nameOrEmail.Split(" ");
+                    bool isFirst = true;
+                    foreach (var word in words)
                     {
-                        userName = string.Concat(userName, $"{word}");
-                        isFirst=false;
-                    }
-                    else
-                    {
-                        userName = string.Concat(userName, $".{word}");
+                        if (isFirst)
+                        {
+                            userName = string.Concat(userName, $"{word.Replace(".", "")}");
+                            isFirst = false;
+                        }
+                        else
+                        {
+                            userName = string.Concat(userName, $".{word.Replace(".", "")}");
+                        }
                     }
                 }
 

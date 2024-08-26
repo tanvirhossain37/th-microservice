@@ -35,7 +35,7 @@ namespace TH.AuthMS.API
         public async Task<IActionResult> SignUpAsync([FromBody] SignUpInputModel model)
         {
             //override
-            model.UserName = "";
+            model.IsAutoUserName = true;
 
             var viewModel = await _authService.SignUpAsync(model);
             if (viewModel is null) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
@@ -70,7 +70,7 @@ namespace TH.AuthMS.API
         public async Task<IActionResult> ActivateAccountAsync([FromBody] ActivationCodeInputModel model)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
-            
+
             var viewModel = await _authService.ActivateAccountAsync(model);
             if (!viewModel) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
 
@@ -88,24 +88,13 @@ namespace TH.AuthMS.API
             return CustomResult(Lang.Find("success"));
         }
 
-        [HttpPost("UpdatePasswordAsync")]
+        [HttpPost("ResetPasswordAsync")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> UpdatePasswordAsync([FromBody] ForgotPasswordInputModel model)
+        public async Task<IActionResult> ResetPasswordAsync([FromBody] ForgotPasswordInputModel model)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            await _authService.ForgotPasswordAsync(model);
-
-            return CustomResult(Lang.Find("success"));
-        }
-
-        [Authorize]
-        [HttpPost("TestAsync")]
-        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> TestAsync()
-        {
-            var claimsIdentities = User.Identities;
-            var userIdentity = User.Identity;
+            await _authService.ResetPasswordAsync(model);
 
             return CustomResult(Lang.Find("success"));
         }

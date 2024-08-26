@@ -36,6 +36,7 @@ namespace TH.AuthMS.Infra.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ResetPasswordToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ActivationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CodeExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReferralId = table.Column<string>(type: "nvarchar(max)", nullable: true),

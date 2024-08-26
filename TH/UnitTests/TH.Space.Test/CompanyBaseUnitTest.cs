@@ -29,9 +29,7 @@ namespace TH.CompanyMS.Test
             var builder = WebApplication.CreateBuilder();
 
             var serviceCollection = new ServiceCollection();
-            builder.Configuration.AddJsonFile("appsettings.json", true);
-
-            
+            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             serviceCollection.AddCompanyAppDependencyInjection(builder.Configuration);
             serviceCollection.AddCompanyInfraDependencyInjection(builder.Configuration);
@@ -46,11 +44,12 @@ namespace TH.CompanyMS.Test
             serviceCollection.AddMassTransit(config => { config.UsingRabbitMq((ctx, cfg) => { cfg.Host("amqp://guest:guest@localhost:5672"); }); });
 
 
-            serviceCollection.AddScoped<IConfiguration, ConfigurationManager>();
+            //serviceCollection.AddScoped<IConfiguration, ConfigurationManager>();
             serviceCollection.AddLogging();
 
             //AutoMapper
             serviceCollection.AddAutoMapper(Assembly.GetExecutingAssembly());
+            serviceCollection.AddSingleton<IConfiguration>(configuration);
             ServiceProvider = serviceCollection.BuildServiceProvider();
             var config = new MapperConfiguration(cfg =>
                 cfg.AddProfile<MappingProfile>());

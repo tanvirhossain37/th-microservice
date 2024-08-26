@@ -9,6 +9,9 @@ using TH.Common.Model;
 using TH.AuthMS.App;
 using TH.AuthMS.Infra;
 using System.Configuration;
+using Castle.Core.Configuration;
+using Google.Api;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace TH.CompanyMS.Test
 {
@@ -28,22 +31,23 @@ namespace TH.CompanyMS.Test
             //builder.Configuration.AddJsonFile("appsettings.json", true);
 
             //var configurationRoot = builder.Configuration.AddJsonFile("appsettings.json").Build();
-            IConfiguration Configuration =
-                new ConfigurationBuilder()
-                    .AddJsonFile("appsettings.json", false, true)
-                    .AddEnvironmentVariables()
-                    .Build();
+            //IConfiguration Configuration =
+            //    new ConfigurationBuilder()
+            //        .SetBasePath(Environment.CurrentDirectory)
+            //        .AddJsonFile("appsettings.json", true, true)
+            //        .AddEnvironmentVariables()
+            //        .Build();
+            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-        serviceCollection.AddAuthAppDependencyInjection(builder.Configuration);
+            serviceCollection.AddAuthAppDependencyInjection(builder.Configuration);
             serviceCollection.AddAuthInfraDependencyInjection(builder.Configuration);
             serviceCollection.AddAuthJwtTokenBasedAuthentication(builder.Configuration);
 
             //RabbitMQ Config
             serviceCollection.AddMassTransit(config => { config.UsingRabbitMq((ctx, cfg) => { cfg.Host("amqp://guest:guest@localhost:5672"); }); });
 
-            var builderConfiguration = builder.Configuration;
-
-            serviceCollection.AddScoped<IConfiguration, ConfigurationManager>();
+            //serviceCollection.AddScoped<IConfiguration, ConfigurationManager>();
+            serviceCollection.AddSingleton<IConfiguration>(configuration);
             serviceCollection.AddLogging();
 
             //AutoMapper

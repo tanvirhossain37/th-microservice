@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="change_password" xml:space="preserve">
-    <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;Vous avez demandé à modifier le mot de passe. Veuillez cliquer sur le lien ci-dessous pour continuer. Ce n'est pas vous, s'il vous plaît, ignorez-le. Votre compte est en sécurité.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Merci,&lt;br /&gt;We Space.</value>
+    <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;Vous avez demandé la réinitialisation du mot de passe. Veuillez utiliser ce code pour modifier votre mot de passe.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Merci,&lt;br /&gt;We Space.</value>
   </data>
   <data name="email_invitation" xml:space="preserve">
-    <value>Bonjour {0}, &lt;big /&gt;&lt;big /&gt;{1} 2 vous invite à rejoindre son entreprise. Veuillez cliquer pour accepter l'invitation.</value>
+    <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;{1} vous invite à rejoindre "{2}". Veuillez cliquer pour accepter l'invitation.&lt;br /&gt;&lt;br /&gt;{3}&lt;br /&gt;&lt;br /&gt;Merci,&lt;br /&gt;We Space.</value>
   </data>
   <data name="email_new_user" xml:space="preserve">
     <value>Bonjour {0}, &lt;big /&gt;&lt;big /&gt;Votre compte a été créé avec succès. Veuillez utiliser ce code pour vérifier votre compte.</value>
@@ -138,7 +138,13 @@
   <data name="error_validation" xml:space="preserve">
     <value>বৈধতা ব্যর্থ।</value>
   </data>
+  <data name="inactive_login" xml:space="preserve">
+    <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;Bienvenue à nouveau !&lt;br /&gt;Veuillez utiliser ce code pour vérifier votre compte.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Merci, &lt;br /&gt;Nous espaçons.</value>
+  </data>
   <data name="title" xml:space="preserve">
     <value>ওপেন স্পেস</value>
+  </data>
+  <data name="update_password" xml:space="preserve">
+    <value>Bonjour {0}, &lt;big /&gt;&lt;big /&gt;Votre mot de passe a été modifié. Si ce n'est pas vous, veuillez nous contacter.</value>
   </data>
 </root>

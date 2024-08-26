@@ -26,13 +26,12 @@ public class CompanyServiceUnitTest : CompanyBaseUnitTest
         {
             var model = new CompanyInputModel
             {
-                Name = "Tesla Inc.",
-                SpaceId = "8dd667b5-1080-4f4f-9f24-48aaad6cb8b2"
+                Name = "Google Inc.",
+                SpaceId = "482a7084-3278-46d3-be3f-8f5ced154c34"
             };
             model.Branches.Add(new BranchInputModel
             {
-                SpaceId = "8dd667b5-1080-4f4f-9f24-48aaad6cb8b2",
-                Name = "Main Branch",
+                Name = "LA Branch",
                 IsDefault = true
             });
 

@@ -176,17 +176,17 @@ namespace TH.AuthMS.Infra
             return await _userManager.GeneratePasswordResetTokenAsync(identityUser);
         }
 
-        public async Task<bool> UpdatePasswordAsync(ForgotPasswordInputModel model)
+        public async Task<bool> ResetPasswordAsync(ForgotPasswordInputModel model)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            var identityUser = _userManager.Users.SingleOrDefault(x => x.ActivationCode.Equals(model.Token));
+            var identityUser = _userManager.Users.SingleOrDefault(x => x.ActivationCode.Equals(model.ActivationCode));
             if (identityUser is null) throw new CustomException(Lang.Find("error_not_found"));
 
             //time? util?
             if (identityUser.CodeExpiryTime >= DateTime.Now)
             {
-                var result = await _userManager.ResetPasswordAsync(identityUser, model.Token, model.Password);
+                var result = await _userManager.ResetPasswordAsync(identityUser, identityUser.ResetPasswordToken, model.Password);
 
                 if (!result.Succeeded)
                 {

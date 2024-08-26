@@ -13,6 +13,6 @@ namespace TH.AuthMS.App
         Task<SignInViewModel> RefreshToken(RefreshTokenInputModel model);
         Task<bool> ActivateAccountAsync(ActivationCodeInputModel model);
         Task ForgotPasswordAsync(ForgotPasswordInputModel model);
-        Task<bool> UpdatePasswordAsync(ForgotPasswordInputModel model);
+        Task<bool> ResetPasswordAsync(ForgotPasswordInputModel model);
     }
 }

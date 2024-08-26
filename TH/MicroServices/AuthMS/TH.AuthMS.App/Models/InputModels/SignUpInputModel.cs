@@ -13,5 +13,7 @@ namespace TH.AuthMS.App
         public string Password { get; set; }
         public string Email { get; set; }
         public string ReferralId { get; set; }
+        public string CompanyName { get; set; }
+        public bool IsAutoUserName { get; set; }
     }
 }

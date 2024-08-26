@@ -30,11 +30,11 @@ public partial class RoleService : BaseService, IRoleService
         entity.Id = Util.TryGenerateGuid();
         entity.CreatedDate = DateTime.Now;
 
-        ApplyValidationBl(entity, commit);
+        ApplyValidationBl(entity);
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
-        //await ApplyOnSavingBlAsync(entity, dataFilter);
+        await ApplyOnSavingBlAsync(entity, dataFilter);
 
         //Chain effect
         
