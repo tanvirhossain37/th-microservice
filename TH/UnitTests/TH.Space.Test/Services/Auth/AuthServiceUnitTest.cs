@@ -45,33 +45,52 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
             //    IsAutoUserName = true
             //};
 
+            //invitation
+            var email = "milon.roy@rite.com.bd";
+            var model = new SignUpInputModel
+            {
+                Name = email,
+                UserName = Util.TryGenerateUserName(email),
+                Password = Util.TryGenerateCode(),
+                Email = email,
+                ReferralId = "Tanvir.Hossain.05d571270582",//milon.roy.481352d59395
+                CompanyName = "Tesla Inc.",
+                IsAutoUserName = false
+            };
+
             ////invitation
             //var email = "shiplu.drive7@gmail.com";
             //var model = new SignUpInputModel
             //{
             //    Name = email,
-            //    UserName = Util.TryGenerateUserName(email),
+            //    UserName = Util.TryGenerateUserName(email.Split("@")[0]),
             //    Password = Util.TryGenerateCode(),
             //    Email = email,
-            //    ReferralId = "Tanvir.Hossain.9649399938c0",
-            //    CompanyName = "Tesla Inc.",
+            //    ReferralId = "Rizwan.Abedin.ed6027e94259",
+            //    CompanyName = "Google Inc.",
             //    IsAutoUserName = false
             //};
 
-            //invitation
-            var email = "shiplu.drive7@gmail.com";
-            var model = new SignUpInputModel
+            var entity = await _service.SignUpAsync(model, DataFilter);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    [TestMethod]
+    public async Task ActivateAccountAsyncUnitTest()
+    {
+        try
+        {
+            //self
+            var model = new ActivationCodeInputModel
             {
-                Name = email,
-                UserName = Util.TryGenerateUserName(email.Split("@")[0]),
-                Password = Util.TryGenerateCode(),
-                Email = email,
-                ReferralId = "Rizwan.Abedin.ed6027e94259",
-                CompanyName = "Google Inc.",
-                IsAutoUserName = false
+                ActivateCode = "1d3a69476f7c"
             };
 
-            var entity = await _service.SignUpAsync(model);
+            var entity = await _service.ActivateAccountAsync(model, DataFilter);
         }
         catch (Exception e)
         {
@@ -84,19 +103,19 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
     {
         try
         {
-            //var model = new SignInInputModel
-            //{
-            //    Email = "tanvir.hossain37@gmail.com",
-            //    Password = "admin123##"//
-            //};
-
             var model = new SignInInputModel
             {
-                Email = "milon.roy@rite.com.bd",
-                Password = "admin123##"
+                Email = "tanvir.hossain37@gmail.com",
+                Password = "admin123##"//
             };
 
-            var entity = await _service.SignInAsync(model);
+            //var model = new SignInInputModel
+            //{
+            //    Email = "milon.roy@rite.com.bd",
+            //    Password = "admin123##"
+            //};
+
+            var entity = await _service.SignInAsync(model, DataFilter);
         }
         catch (Exception e)
         {
@@ -119,7 +138,7 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
             //    Email = "milon.roy@rite.com.bd"
             //};
 
-            await _service.ForgotPasswordAsync(model);
+            await _service.ForgotPasswordAsync(model, DataFilter);
         }
         catch (Exception e)
         {
@@ -139,7 +158,26 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
                 Password = "T@nv!r.2020"
             };
 
-            await _service.ResetPasswordAsync(model);
+            await _service.ResetPasswordAsync(model, DataFilter);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    [TestMethod]
+    public async Task FindByEmailAsync()
+    {
+        try
+        {
+            var model = new ApplicationUserFilterModel
+            {
+                Email = "tanvir.hossain37@gmail.com"
+            };
+
+            var applicationUser = await _service.FindByEmailAsync(model, DataFilter);
+            var viewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(applicationUser);
         }
         catch (Exception e)
         {

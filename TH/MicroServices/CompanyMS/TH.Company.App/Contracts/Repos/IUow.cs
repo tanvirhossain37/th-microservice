@@ -11,6 +11,7 @@ public interface IUow : IDisposable
 	IPermissionRepo PermissionRepo { get; set; }
 	IRoleRepo RoleRepo { get; set; }
 	IUserRepo UserRepo { get; set; }
+	IUserCompanyRepo UserCompanyRepo { get; set; }
 	IUserRoleRepo UserRoleRepo { get; set; }
 
     Task<int> SaveChangesAsync();

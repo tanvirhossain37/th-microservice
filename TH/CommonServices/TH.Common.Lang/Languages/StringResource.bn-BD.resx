@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="change_password" xml:space="preserve">
-    <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;Vous avez demandé la réinitialisation du mot de passe. Veuillez utiliser ce code pour modifier votre mot de passe.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Merci,&lt;br /&gt;We Space.</value>
-  </data>
   <data name="email_invitation" xml:space="preserve">
     <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;{1} vous invite à rejoindre "{2}". Veuillez cliquer pour accepter l'invitation.&lt;br /&gt;&lt;br /&gt;{3}&lt;br /&gt;&lt;br /&gt;Merci,&lt;br /&gt;We Space.</value>
   </data>
@@ -140,6 +137,9 @@
   </data>
   <data name="inactive_login" xml:space="preserve">
     <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;Bienvenue à nouveau !&lt;br /&gt;Veuillez utiliser ce code pour vérifier votre compte.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Merci, &lt;br /&gt;Nous espaçons.</value>
+  </data>
+  <data name="reset_password" xml:space="preserve">
+    <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;Vous avez demandé la réinitialisation du mot de passe. Veuillez utiliser ce code pour réinitialiser votre mot de passe. Si ce n'est pas vous, ignorez-le.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Merci,&lt;br /&gt;We Space.</value>
   </data>
   <data name="title" xml:space="preserve">
     <value>ওপেন স্পেস</value>

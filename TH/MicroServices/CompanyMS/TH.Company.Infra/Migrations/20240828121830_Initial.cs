@@ -207,6 +207,35 @@ namespace TH.CompanyMS.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserCompanies",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SpaceId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    CompanyId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    TypeId = table.Column<int>(type: "int", nullable: false),
+                    StatusId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Active = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserCompanies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserCompanies_Companies",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserCompanies_Users",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRoles",
                 columns: table => new
                 {
@@ -290,6 +319,16 @@ namespace TH.CompanyMS.Infra.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserCompanies_CompanyId",
+                table: "UserCompanies",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserCompanies_UserId",
+                table: "UserCompanies",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_CompanyId",
                 table: "UserRoles",
                 column: "CompanyId");
@@ -318,6 +357,9 @@ namespace TH.CompanyMS.Infra.Migrations
 
             migrationBuilder.DropTable(
                 name: "Permissions");
+
+            migrationBuilder.DropTable(
+                name: "UserCompanies");
 
             migrationBuilder.DropTable(
                 name: "UserRoles");

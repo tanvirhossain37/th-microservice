@@ -13,6 +13,8 @@ public interface IRepoSQL<TEntity> where TEntity : class
 
     Task<TEntity> SingleOrDefaultQueryableAsync(Expression<Func<TEntity, bool>> predicate, DataFilter dataFilter = new DataFilter());
 
+    Task<TEntity> FindByIdAsync(string id, DataFilter dataFilter = new DataFilter());
+
     void Delete(TEntity entity, DataFilter dataFilter = new DataFilter());
     void DeleteRange(IEnumerable<TEntity> entities, DataFilter dataFilter = new DataFilter());
 

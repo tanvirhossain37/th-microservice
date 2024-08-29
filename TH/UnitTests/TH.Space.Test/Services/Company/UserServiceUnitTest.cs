@@ -16,6 +16,7 @@ public class UserServiceUnitTest : CompanyBaseUnitTest
     {
         base.Init();
         _service = ServiceProvider.GetRequiredService<IUserService>();
+        base.LoginAsOwner(_service);
     }
 
     [TestMethod]
@@ -25,15 +26,15 @@ public class UserServiceUnitTest : CompanyBaseUnitTest
         {
             var model = new UserInputModel
             {
-                SpaceId = "8dd667b5-1080-4f4f-9f24-48aaad6cb8b2",
-                CompanyId = "a7255642-384a-4919-a133-4b0eedd450b8",
+                SpaceId = "34e57033-58a7-40b8-a410-a1f47458ab98",
+                CompanyId = "5b64c474-c813-4b8e-a471-ed0b04cf87eb",
                 Name = "milon.roy@rite.com.bd",
                 UserName = "milon.roy@rite.com.bd",
                 AccessTypeId = (int)AccessTypeEnum.TenantAccess,
                 UserTypeId = (int)UserTypeEnum.TenantUser
             };
 
-            var entity = await _service.SaveAsync(Mapper.Map<UserInputModel, User>(model), DataFilter);
+            var entity = await _service.SaveAsync(Mapper.Map<UserInputModel, User>(model),true, DataFilter);
             var viewModel = Mapper.Map<User, UserViewModel>(entity);
         }
         catch (Exception e)
@@ -103,7 +104,7 @@ public class UserServiceUnitTest : CompanyBaseUnitTest
         {
             var filter = new UserFilterModel();
 
-            var entity = await _service.FindAsync(filter, DataFilter); //todo
+            var entity = await _service.FindByIdAsync(filter, DataFilter); //todo
             var viewModel = Mapper.Map<User, UserViewModel>(entity);
         }
         catch (Exception e)

@@ -40,7 +40,7 @@ public class ModuleController : CustomBaseController
         {
             var filter = _mapper.Map<Module, ModuleFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IModuleService>();
-            var viewModel = _mapper.Map<Module, ModuleViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<Module, ModuleViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnSaveModuleAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -59,7 +59,7 @@ public class ModuleController : CustomBaseController
         {
             var filter = _mapper.Map<Module, ModuleFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IModuleService>();
-            var viewModel = _mapper.Map<Module, ModuleViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<Module, ModuleViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnUpdateModuleAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -93,7 +93,7 @@ public class ModuleController : CustomBaseController
     [Authorize(Policy = "ModuleReadPolicy")]
     public async Task<IActionResult> FindModuleAsync([FromBody] ModuleFilterModel filter)
     {
-        var entity = await _moduleService.FindAsync(filter, DataFilter);
+        var entity = await _moduleService.FindByIdAsync(filter, DataFilter);
         if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
 
         return CustomResult(Lang.Find("success"), _mapper.Map<Module, ModuleViewModel>(entity));

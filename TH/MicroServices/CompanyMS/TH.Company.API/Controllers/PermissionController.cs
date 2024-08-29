@@ -40,7 +40,7 @@ public class PermissionController : CustomBaseController
         {
             var filter = _mapper.Map<Permission, PermissionFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IPermissionService>();
-            var viewModel = _mapper.Map<Permission, PermissionViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<Permission, PermissionViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnSavePermissionAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -59,7 +59,7 @@ public class PermissionController : CustomBaseController
         {
             var filter = _mapper.Map<Permission, PermissionFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IPermissionService>();
-            var viewModel = _mapper.Map<Permission, PermissionViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<Permission, PermissionViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnUpdatePermissionAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -93,7 +93,7 @@ public class PermissionController : CustomBaseController
     [Authorize(Policy = "PermissionReadPolicy")]
     public async Task<IActionResult> FindPermissionAsync([FromBody] PermissionFilterModel filter)
     {
-        var entity = await _permissionService.FindAsync(filter, DataFilter);
+        var entity = await _permissionService.FindByIdAsync(filter, DataFilter);
         if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
 
         return CustomResult(Lang.Find("success"), _mapper.Map<Permission, PermissionViewModel>(entity));

@@ -18,16 +18,6 @@ public partial class BranchService
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
         //todo
-        if (entity.IsDefault)
-        {
-            var existingEntity = await Repo.BranchRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId == entity.SpaceId) &&
-                                                                                          (x.CompanyId == entity.CompanyId) &&
-                                                                                          (x.IsDefault == true));
-            if (existingEntity != null)
-            {
-                existingEntity.IsDefault = false;
-            }
-        }
     }
 
     private async Task ApplyOnSavedBlAsync(Branch entity, DataFilter dataFilter)

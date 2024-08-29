@@ -59,7 +59,7 @@ public partial class BranchService : BaseService, IBranchService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.BranchRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(entity.SpaceId)) && (x.CompanyId.Equals(entity.CompanyId)) && (x.Id.Equals(entity.Id)));
+        var existingEntity = await Repo.BranchRepo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         existingEntity.ModifiedDate = DateTime.Now;
@@ -97,7 +97,7 @@ public partial class BranchService : BaseService, IBranchService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.BranchRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(entity.SpaceId)) && (x.CompanyId.Equals(entity.CompanyId)) && (x.Id.Equals(entity.Id)));
+        var existingEntity = await Repo.BranchRepo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         existingEntity.ModifiedDate = DateTime.Now;
@@ -129,7 +129,7 @@ public partial class BranchService : BaseService, IBranchService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.BranchRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(entity.SpaceId)) && (x.CompanyId.Equals(entity.CompanyId)) && (x.Id.Equals(entity.Id)));
+        var existingEntity = await Repo.BranchRepo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         //Add your business logic here
@@ -156,13 +156,13 @@ public partial class BranchService : BaseService, IBranchService
         return true;
     }
 
-    public async Task<Branch> FindAsync(BranchFilterModel filter, DataFilter dataFilter)
+    public async Task<Branch> FindByIdAsync(BranchFilterModel filter, DataFilter dataFilter)
     {
         try
         {
             if (filter == null) throw new ArgumentNullException(nameof(filter));
 
-            var entity = await Repo.BranchRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(filter.SpaceId)) && (x.CompanyId.Equals(filter.CompanyId)) && (x.Id.Equals(filter.Id)));
+            var entity = await Repo.BranchRepo.FindByIdAsync(filter.Id, dataFilter);
             if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
 
             //Add your business logic here
@@ -246,17 +246,17 @@ public partial class BranchService : BaseService, IBranchService
 
     #region Business logic
 
-    private void ApplyValidationBl(Branch entity, bool check = true)
+    private void ApplyValidationBl(Branch entity)
     {
         try
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             
-			if (check) entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
+			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
 			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException($"{Lang.Find("validation_error")}: CreatedDate");
 			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate"); }
-			if (check) entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
-			if (check) entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException($"{Lang.Find("validation_error")}: CompanyId") : entity.CompanyId.Trim();
+			entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
+			entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException($"{Lang.Find("validation_error")}: CompanyId") : entity.CompanyId.Trim();
 			entity.Code = string.IsNullOrWhiteSpace(entity.Code) ? Util.TryGenerateCode() : entity.Code.Trim();
 			entity.Name = string.IsNullOrWhiteSpace(entity.Name) ? throw new CustomException($"{Lang.Find("validation_error")}: Name") : entity.Name.Trim();
             
@@ -275,10 +275,10 @@ public partial class BranchService : BaseService, IBranchService
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
             
-		var existingEntityByName = await Repo.BranchRepo.FindByNameAsync(entity.SpaceId, entity.CompanyId, entity.Name, dataFilter);
-		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
-		var existingEntityByCode = await Repo.BranchRepo.FindByCodeAsync(entity.SpaceId, entity.CompanyId, entity.Code, dataFilter);
-		if (existingEntityByCode is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Code");
+			var existingEntityByName = await Repo.BranchRepo.FindByNameAsync(entity.SpaceId, entity.CompanyId, entity.Name, dataFilter);
+			if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
+			var existingEntityByCode = await Repo.BranchRepo.FindByCodeAsync(entity.SpaceId, entity.CompanyId, entity.Code, dataFilter);
+			if (existingEntityByCode is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Code");
         }
         catch (Exception)
         {

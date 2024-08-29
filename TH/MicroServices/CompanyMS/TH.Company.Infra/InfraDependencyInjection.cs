@@ -19,8 +19,10 @@ public static class InfraDependencyInjection
         services.AddScoped<IPermissionRepo, PermissionRepo>();
         services.AddScoped<IRoleRepo, RoleRepo>();
         services.AddScoped<IUserRepo, UserRepo>();
+        services.AddScoped<IUserCompanyRepo, UserCompanyRepo>();
         services.AddScoped<IUserRoleRepo, UserRoleRepo>();
         services.AddScoped<IUow, Uow>();
+
 
         services.AddScoped<CompanyDbContext>();
         services.AddScoped<ICustomSort, CustomSort>();

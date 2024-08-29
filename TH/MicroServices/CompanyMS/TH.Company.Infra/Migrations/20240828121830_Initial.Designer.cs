@@ -12,7 +12,7 @@ using TH.CompanyMS.Infra;
 namespace TH.CompanyMS.Infra.Migrations
 {
     [DbContext(typeof(CompanyDbContext))]
-    [Migration("20240709132945_Initial")]
+    [Migration("20240828121830_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,10 @@ namespace TH.CompanyMS.Infra.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -169,7 +172,7 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Code")
+                    b.Property<string>("ControllerName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -180,7 +183,7 @@ namespace TH.CompanyMS.Infra.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int>("Level")
+                    b.Property<int>("MenuOrder")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedDate")
@@ -190,9 +193,6 @@ namespace TH.CompanyMS.Infra.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
 
                     b.Property<string>("ParentId")
                         .HasMaxLength(450)
@@ -214,9 +214,6 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("AccessTypeId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
@@ -231,11 +228,18 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Property<bool>("Delete")
                         .HasColumnType("bit");
 
+                    b.Property<int>("MenuOrder")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime");
 
                     b.Property<string>("ModuleId")
                         .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ParentId")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
@@ -263,6 +267,8 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("ModuleId");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("RoleId");
 
@@ -314,6 +320,9 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("AccessTypeId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
@@ -351,6 +360,50 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("TH.CompanyMS.Core.UserCompany", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CompanyId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("SpaceId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserCompanies");
                 });
 
             modelBuilder.Entity("TH.CompanyMS.Core.UserRole", b =>
@@ -460,6 +513,11 @@ namespace TH.CompanyMS.Infra.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Permissions_Modules");
 
+                    b.HasOne("TH.CompanyMS.Core.Permission", "Parent")
+                        .WithMany("InverseParent")
+                        .HasForeignKey("ParentId")
+                        .HasConstraintName("FK_Permissions_Permissions");
+
                     b.HasOne("TH.CompanyMS.Core.Role", "Role")
                         .WithMany("Permissions")
                         .HasForeignKey("RoleId")
@@ -469,6 +527,8 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("Module");
+
+                    b.Navigation("Parent");
 
                     b.Navigation("Role");
                 });
@@ -493,6 +553,25 @@ namespace TH.CompanyMS.Infra.Migrations
                         .HasConstraintName("FK_Users_Companies");
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("TH.CompanyMS.Core.UserCompany", b =>
+                {
+                    b.HasOne("TH.CompanyMS.Core.Company", "Company")
+                        .WithMany("UserCompanies")
+                        .HasForeignKey("CompanyId")
+                        .IsRequired()
+                        .HasConstraintName("FK_UserCompanies_Companies");
+
+                    b.HasOne("TH.CompanyMS.Core.User", "User")
+                        .WithMany("UserCompanies")
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_UserCompanies_Users");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TH.CompanyMS.Core.UserRole", b =>
@@ -537,6 +616,8 @@ namespace TH.CompanyMS.Infra.Migrations
 
                     b.Navigation("Roles");
 
+                    b.Navigation("UserCompanies");
+
                     b.Navigation("UserRoles");
 
                     b.Navigation("Users");
@@ -549,6 +630,11 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Navigation("Permissions");
                 });
 
+            modelBuilder.Entity("TH.CompanyMS.Core.Permission", b =>
+                {
+                    b.Navigation("InverseParent");
+                });
+
             modelBuilder.Entity("TH.CompanyMS.Core.Role", b =>
                 {
                     b.Navigation("Permissions");
@@ -559,6 +645,8 @@ namespace TH.CompanyMS.Infra.Migrations
             modelBuilder.Entity("TH.CompanyMS.Core.User", b =>
                 {
                     b.Navigation("BranchUsers");
+
+                    b.Navigation("UserCompanies");
 
                     b.Navigation("UserRoles");
                 });

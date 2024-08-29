@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\..\AuthMS\TH.AuthMS.API\Protos\auth.proto" GrpcServices="Client">
+    <Protobuf Include="..\..\AuthMS\TH.AuthMS.Grpc\Protos\auth.proto" GrpcServices="Client">
       <Link>Protos\auth.proto</Link>
     </Protobuf>
   </ItemGroup>

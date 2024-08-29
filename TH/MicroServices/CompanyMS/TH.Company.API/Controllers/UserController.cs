@@ -33,14 +33,14 @@ public class UserController : CustomBaseController
     [Authorize(Policy = "UserWritePolicy")]
     public async Task<IActionResult> SaveUserAsync([FromBody] UserInputModel model)
     {
-        var entity = await _userService.SaveAsync(_mapper.Map<UserInputModel, User>(model), DataFilter);
+        var entity = await _userService.SaveAsync(_mapper.Map<UserInputModel, User>(model),true, DataFilter);
         if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
 
         using (var scope = _scopeFactory.CreateScope())
         {
             var filter = _mapper.Map<User, UserFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IUserService>();
-            var viewModel = _mapper.Map<User, UserViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<User, UserViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnSaveUserAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -59,7 +59,7 @@ public class UserController : CustomBaseController
         {
             var filter = _mapper.Map<User, UserFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IUserService>();
-            var viewModel = _mapper.Map<User, UserViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<User, UserViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnUpdateUserAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -93,7 +93,7 @@ public class UserController : CustomBaseController
     [Authorize(Policy = "UserReadPolicy")]
     public async Task<IActionResult> FindUserAsync([FromBody] UserFilterModel filter)
     {
-        var entity = await _userService.FindAsync(filter, DataFilter);
+        var entity = await _userService.FindByIdAsync(filter, DataFilter);
         if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
 
         return CustomResult(Lang.Find("success"), _mapper.Map<User, UserViewModel>(entity));

@@ -13,20 +13,22 @@ public partial class UserService : BaseService, IUserService
     protected readonly IUow Repo;
     
 	protected readonly IBranchUserService BranchUserService;
+	protected readonly IUserCompanyService UserCompanyService;
 	protected readonly IUserRoleService UserRoleService;
 
     private readonly AuthGrpcClientService _authGrpcClientService;
 
-    public UserService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IBranchUserService branchUserService, IUserRoleService userRoleService, AuthGrpcClientService authGrpcClientService) : base(mapper,publishEndpoint)
+    public UserService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IBranchUserService branchUserService, IUserCompanyService userCompanyService, IUserRoleService userRoleService, AuthGrpcClientService authGrpcClientService) : base(mapper,publishEndpoint)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
         
 		BranchUserService = branchUserService ?? throw new ArgumentNullException(nameof(branchUserService));
+		UserCompanyService = userCompanyService ?? throw new ArgumentNullException(nameof(userCompanyService));
 		UserRoleService = userRoleService ?? throw new ArgumentNullException(nameof(userRoleService));
         _authGrpcClientService = authGrpcClientService ?? throw new ArgumentNullException(nameof(authGrpcClientService));
     }
 
-    public async Task<User> SaveAsync(User entity, DataFilter dataFilter, bool commit = true)
+    public async Task<User> SaveAsync(User entity, bool invitation, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -37,13 +39,18 @@ public partial class UserService : BaseService, IUserService
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
-        await ApplyOnSavingBlAsync(entity, dataFilter);
+        await ApplyOnSavingBlAsync(entity, invitation, dataFilter);
 
         //Chain effect
         
         foreach (var child in entity.BranchUsers)
         {
             await BranchUserService.SaveAsync(child, dataFilter, false);
+        }
+                
+        foreach (var child in entity.UserCompanies)
+        {
+            await UserCompanyService.SaveAsync(child, dataFilter, false);
         }
                 
         foreach (var child in entity.UserRoles)
@@ -69,7 +76,7 @@ public partial class UserService : BaseService, IUserService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.UserRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(entity.SpaceId)) && (x.CompanyId.Equals(entity.CompanyId)) && (x.Id.Equals(entity.Id)));
+        var existingEntity = await Repo.UserRepo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         existingEntity.ModifiedDate = DateTime.Now;
@@ -90,6 +97,11 @@ public partial class UserService : BaseService, IUserService
         foreach (var child in entity.BranchUsers)
         {
             await BranchUserService.UpdateAsync(child, dataFilter, false);
+        }
+                
+        foreach (var child in entity.UserCompanies)
+        {
+            await UserCompanyService.UpdateAsync(child, dataFilter, false);
         }
                 
         foreach (var child in entity.UserRoles)
@@ -113,7 +125,7 @@ public partial class UserService : BaseService, IUserService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.UserRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(entity.SpaceId)) && (x.CompanyId.Equals(entity.CompanyId)) && (x.Id.Equals(entity.Id)));
+        var existingEntity = await Repo.UserRepo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         existingEntity.ModifiedDate = DateTime.Now;
@@ -127,6 +139,11 @@ public partial class UserService : BaseService, IUserService
         foreach (var child in existingEntity.BranchUsers)
         {
             await BranchUserService.DeleteAsync(child, dataFilter, false);
+        }
+                
+        foreach (var child in existingEntity.UserCompanies)
+        {
+            await UserCompanyService.DeleteAsync(child, dataFilter, false);
         }
                 
         foreach (var child in existingEntity.UserRoles)
@@ -150,7 +167,7 @@ public partial class UserService : BaseService, IUserService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.UserRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(entity.SpaceId)) && (x.CompanyId.Equals(entity.CompanyId)) && (x.Id.Equals(entity.Id)));
+        var existingEntity = await Repo.UserRepo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         //Add your business logic here
@@ -163,6 +180,11 @@ public partial class UserService : BaseService, IUserService
         foreach (var child in existingEntity.BranchUsers)
         {
             await BranchUserService.DeleteAsync(child, dataFilter, false);
+        }
+                
+        foreach (var child in existingEntity.UserCompanies)
+        {
+            await UserCompanyService.DeleteAsync(child, dataFilter, false);
         }
                 
         foreach (var child in existingEntity.UserRoles)
@@ -182,13 +204,13 @@ public partial class UserService : BaseService, IUserService
         return true;
     }
 
-    public async Task<User> FindAsync(UserFilterModel filter, DataFilter dataFilter)
+    public async Task<User> FindByIdAsync(UserFilterModel filter, DataFilter dataFilter)
     {
         try
         {
             if (filter == null) throw new ArgumentNullException(nameof(filter));
 
-            var entity = await Repo.UserRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(filter.SpaceId)) && (x.CompanyId.Equals(filter.CompanyId)) && (x.Id.Equals(filter.Id)));
+            var entity = await Repo.UserRepo.FindByIdAsync(filter.Id, dataFilter);
             if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
 
             //Add your business logic here
@@ -263,6 +285,7 @@ public partial class UserService : BaseService, IUserService
             Repo?.Dispose();
             
 			BranchUserService?.Dispose();
+			UserCompanyService?.Dispose();
 			UserRoleService?.Dispose();
 
             //Dispose additional services if any
@@ -276,23 +299,24 @@ public partial class UserService : BaseService, IUserService
 
     #region Business logic
 
-    private void ApplyValidationBl(User entity, bool check = true)
+    private void ApplyValidationBl(User entity)
     {
         try
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             
-			if (check) entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
+			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
 			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException($"{Lang.Find("validation_error")}: CreatedDate");
 			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate"); }
-			if (check) entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
-			if (check) entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException($"{Lang.Find("validation_error")}: CompanyId") : entity.CompanyId.Trim();
+			entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
+			entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException($"{Lang.Find("validation_error")}: CompanyId") : entity.CompanyId.Trim();
 			if (entity.UserTypeId <= 0) throw new CustomException($"{Lang.Find("validation_error")}: UserTypeId");
 			entity.Name = string.IsNullOrWhiteSpace(entity.Name) ? throw new CustomException($"{Lang.Find("validation_error")}: Name") : entity.Name.Trim();
 			entity.UserName = string.IsNullOrWhiteSpace(entity.UserName) ? throw new CustomException($"{Lang.Find("validation_error")}: UserName") : entity.UserName.Trim();
 			if (entity.AccessTypeId <= 0) throw new CustomException($"{Lang.Find("validation_error")}: AccessTypeId");
             
 			if (entity.BranchUsers == null) entity.BranchUsers = new List<BranchUser>();
+			if (entity.UserCompanies == null) entity.UserCompanies = new List<UserCompany>();
 			if (entity.UserRoles == null) entity.UserRoles = new List<UserRole>();
         }
         catch (Exception)
@@ -307,9 +331,9 @@ public partial class UserService : BaseService, IUserService
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-
-            var existingEntityByName = await Repo.UserRepo.FindByNameAsync(entity.SpaceId, entity.CompanyId, entity.UserName, dataFilter);
-            if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: UserName");
+            
+			var existingEntityByName = await Repo.UserRepo.FindByUserNameAsync(entity.Name, dataFilter);
+			if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
         }
         catch (Exception)
         {
@@ -324,8 +348,8 @@ public partial class UserService : BaseService, IUserService
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
             
-		var existingEntityByName = await Repo.UserRepo.FindByNameExceptMeAsync(entity.Id, entity.SpaceId, entity.CompanyId, entity.UserName, dataFilter);
-		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: UserName");
+		var existingEntityByName = await Repo.UserRepo.FindByUserNameExceptMeAsync(entity.Id, entity.Name, dataFilter);
+		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
         }
         catch (Exception)
         {

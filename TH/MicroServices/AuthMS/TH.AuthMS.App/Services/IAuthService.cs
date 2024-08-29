@@ -5,14 +5,14 @@ using TH.Common.Model;
 
 namespace TH.AuthMS.App
 {
-    public interface IAuthService :IBaseService, IDisposable
+    public interface IAuthService : IBaseService, IDisposable
     {
-        public CompanyGrpcClientService GrpcClientService { get; set; }
-        Task<SignUpViewModel> SignUpAsync(SignUpInputModel entity);
-        Task<SignInViewModel> SignInAsync(SignInInputModel entity);
-        Task<SignInViewModel> RefreshToken(RefreshTokenInputModel model);
-        Task<bool> ActivateAccountAsync(ActivationCodeInputModel model);
-        Task ForgotPasswordAsync(ForgotPasswordInputModel model);
-        Task<bool> ResetPasswordAsync(ForgotPasswordInputModel model);
+        Task<SignUpViewModel> SignUpAsync(SignUpInputModel entity, DataFilter dataFilter);
+        Task<SignInViewModel> SignInAsync(SignInInputModel entity, DataFilter dataFilter);
+        Task<SignInViewModel> RefreshToken(RefreshTokenInputModel model, DataFilter dataFilter);
+        Task<bool> ActivateAccountAsync(ActivationCodeInputModel model, DataFilter dataFilter);
+        Task ForgotPasswordAsync(ForgotPasswordInputModel model, DataFilter dataFilter);
+        Task<bool> ResetPasswordAsync(ForgotPasswordInputModel model, DataFilter dataFilter);
+        Task<ApplicationUser> FindByEmailAsync(ApplicationUserFilterModel filter, DataFilter dataFilter);
     }
 }

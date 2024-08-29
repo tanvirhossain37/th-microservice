@@ -29,5 +29,7 @@ public partial class User
 
     public virtual Company Company { get; set; } = null!;
 
+    public virtual ICollection<UserCompany> UserCompanies { get; set; } = new List<UserCompany>();
+
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

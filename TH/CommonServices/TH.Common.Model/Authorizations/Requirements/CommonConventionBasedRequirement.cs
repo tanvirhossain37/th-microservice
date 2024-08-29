@@ -28,12 +28,6 @@ public class CommonConventionBasedRequirementHandler : AuthorizationHandler<Comm
 
         var user = context.User;
 
-        var userResolver = new UserResolver();
-        userResolver.UserName = user.Identity.Name;
-        userResolver.CompanyId = "tingting";
-
-        BaseService.SetUserResolver(userResolver);
-        
         var claims = context.User.Claims;
 
         var userPermissions = AuthorizeHelper.GetPermissionsFromClaim(controllerName, claims);

@@ -1,8 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TH.AuthMS.API.Protos;
-using TH.Common.Model;
+using TH.AuthMS.Grpc;
 using TH.CompanyMS.Core;
 
 namespace TH.CompanyMS.App;
@@ -18,6 +17,7 @@ public static class AppDependencyInjection
         services.AddScoped<Permission>();
         services.AddScoped<Role>();
         services.AddScoped<User>();
+        services.AddScoped<UserCompany>();
         services.AddScoped<UserRole>();
 
         services.AddScoped<BranchFilterModel>();
@@ -27,7 +27,9 @@ public static class AppDependencyInjection
         services.AddScoped<PermissionFilterModel>();
         services.AddScoped<RoleFilterModel>();
         services.AddScoped<UserFilterModel>();
+        services.AddScoped<UserCompanyFilterModel>();
         services.AddScoped<UserRoleFilterModel>();
+
 
         services.AddScoped<BranchInputModel>();
         services.AddScoped<BranchUserInputModel>();
@@ -36,6 +38,7 @@ public static class AppDependencyInjection
         services.AddScoped<PermissionInputModel>();
         services.AddScoped<RoleInputModel>();
         services.AddScoped<UserInputModel>();
+        services.AddScoped<UserCompanyInputModel>();
         services.AddScoped<UserRoleInputModel>();
 
         services.AddScoped<BranchViewModel>();
@@ -45,7 +48,9 @@ public static class AppDependencyInjection
         services.AddScoped<PermissionViewModel>();
         services.AddScoped<RoleViewModel>();
         services.AddScoped<UserViewModel>();
+        services.AddScoped<UserCompanyViewModel>();
         services.AddScoped<UserRoleViewModel>();
+
 
         services.AddScoped<IBranchService, BranchService>();
         services.AddScoped<IBranchUserService, BranchUserService>();
@@ -54,9 +59,10 @@ public static class AppDependencyInjection
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserCompanyService, UserCompanyService>();
         services.AddScoped<IUserRoleService, UserRoleService>();
 
-        services.AddGrpc();
+        //services.AddGrpc();
         services.AddGrpcClient<AuthProtoService.AuthProtoServiceClient>(
             options => options.Address = new Uri(configuration.GetValue<string>("GrpcSettings:GrpcUrl")));
 

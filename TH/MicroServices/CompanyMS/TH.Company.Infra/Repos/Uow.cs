@@ -14,9 +14,10 @@ public class Uow : IUow
 	public IPermissionRepo PermissionRepo { get; set; }
 	public IRoleRepo RoleRepo { get; set; }
 	public IUserRepo UserRepo { get; set; }
+	public IUserCompanyRepo UserCompanyRepo { get; set; }
 	public IUserRoleRepo UserRoleRepo { get; set; }
 
-    public Uow(CompanyDbContext dbContext, IBranchRepo branchRepo, IBranchUserRepo branchUserRepo, ICompanyRepo companyRepo, IModuleRepo moduleRepo, IPermissionRepo permissionRepo, IRoleRepo roleRepo, IUserRepo userRepo, IUserRoleRepo userRoleRepo)
+    public Uow(CompanyDbContext dbContext, IBranchRepo branchRepo, IBranchUserRepo branchUserRepo, ICompanyRepo companyRepo, IModuleRepo moduleRepo, IPermissionRepo permissionRepo, IRoleRepo roleRepo, IUserRepo userRepo, IUserCompanyRepo userCompanyRepo, IUserRoleRepo userRoleRepo)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         
@@ -27,6 +28,7 @@ public class Uow : IUow
 			PermissionRepo = permissionRepo ?? throw new ArgumentNullException(nameof(permissionRepo));
 			RoleRepo = roleRepo ?? throw new ArgumentNullException(nameof(roleRepo));
 			UserRepo = userRepo ?? throw new ArgumentNullException(nameof(userRepo));
+			UserCompanyRepo = userCompanyRepo ?? throw new ArgumentNullException(nameof(userCompanyRepo));
 			UserRoleRepo = userRoleRepo ?? throw new ArgumentNullException(nameof(userRoleRepo));
     }
 

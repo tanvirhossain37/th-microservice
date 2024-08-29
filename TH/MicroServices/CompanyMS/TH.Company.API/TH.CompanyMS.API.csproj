@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
     <PackageReference Include="CoreApiResponse" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Grpc.JsonTranscoding" Version="8.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="8.0.7" />
@@ -35,6 +34,7 @@
 
   <ItemGroup>
     <Folder Include="Mappings\" />
+    <Folder Include="Protos\" />
   </ItemGroup>
 
 </Project>

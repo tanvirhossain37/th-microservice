@@ -16,7 +16,10 @@ public class MappingProfile:Profile
         CreateMap<PermissionInputModel, Permission>().ReverseMap();
         CreateMap<RoleInputModel, Role>().ReverseMap();
         CreateMap<UserInputModel, User>().ReverseMap();
+        CreateMap<UserCompanyInputModel, UserCompany>().ReverseMap();
         CreateMap<UserRoleInputModel, UserRole>().ReverseMap();
+
+
 
         //view
         CreateMap<BranchViewModel, Branch>().ReverseMap();
@@ -30,6 +33,19 @@ public class MappingProfile:Profile
         CreateMap<UserViewModel, User>().ReverseMap();
         CreateMap<UserRoleViewModel, UserRole>().ReverseMap();
 
+        CreateMap<BranchViewModel, Branch>().ReverseMap();
+        CreateMap<BranchUserViewModel, BranchUser>().ReverseMap();
+        CreateMap<CompanyViewModel, Company>().ReverseMap();
+        CreateMap<ModuleViewModel, Module>().ReverseMap();
+        CreateMap<PermissionViewModel, Permission>()
+            .ReverseMap()
+            .ForMember(dest => dest.ControllerName, m => m.MapFrom(src => src.Module.ControllerName));
+        CreateMap<RoleViewModel, Role>().ReverseMap();
+        CreateMap<UserViewModel, User>().ReverseMap();
+        CreateMap<UserCompanyViewModel, UserCompany>().ReverseMap();
+        CreateMap<UserRoleViewModel, UserRole>().ReverseMap();
+
+
         //filters
         CreateMap<Branch, BranchFilterModel>().ReverseMap();
         CreateMap<BranchUser, BranchUserFilterModel>().ReverseMap();
@@ -38,7 +54,9 @@ public class MappingProfile:Profile
         CreateMap<Permission, PermissionFilterModel>().ReverseMap();
         CreateMap<Role, RoleFilterModel>().ReverseMap();
         CreateMap<User, UserFilterModel>().ReverseMap();
+        CreateMap<UserCompany, UserCompanyFilterModel>().ReverseMap();
         CreateMap<UserRole, UserRoleFilterModel>().ReverseMap();
+
 
         //protobuf
         //CreateMap<PermissionRequest, PermissionFilterModel>().ReverseMap();

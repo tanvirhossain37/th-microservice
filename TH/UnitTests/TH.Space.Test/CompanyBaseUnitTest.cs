@@ -65,9 +65,10 @@ namespace TH.CompanyMS.Test
         public void LoginAsOwner(IBaseService service)
         {
             var userResolver = new UserResolver();
-            userResolver.UserName = "tanvir";
-            userResolver.SpaceId = "f0f01ad3-d0fc-4baa-9fae-547ecf6cc71d";
-            userResolver.FullName = "Tanvir Hossain";
+            userResolver.UserName = "Tanvir.Hossain.05d571270582";
+            userResolver.SpaceId = "34e57033-58a7-40b8-a410-a1f47458ab98";
+            userResolver.Name = "Tanvir Hossain";
+            userResolver.Email = "tanvir.hossain37@gmail.com";
 
             service.SetUserResolver(userResolver);
         }

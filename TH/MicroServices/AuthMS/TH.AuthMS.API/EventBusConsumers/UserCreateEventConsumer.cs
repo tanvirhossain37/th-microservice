@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MassTransit;
 using TH.AuthMS.App;
+using TH.Common.Model;
 using TH.EventBus.Messages;
 
 namespace TH.AuthMS.API;
@@ -21,7 +22,7 @@ public class UserCreateEventConsumer: IConsumer<UserCreateEvent>, IDisposable
         if (context == null) throw new ArgumentNullException(nameof(context));
 
         var userCreateEvent = context.Message;
-        await _authService.SignUpAsync(_mapper.Map<UserCreateEvent, SignUpInputModel>(userCreateEvent));
+        await _authService.SignUpAsync(_mapper.Map<UserCreateEvent, SignUpInputModel>(userCreateEvent), new DataFilter());
     }
 
     public void Dispose()

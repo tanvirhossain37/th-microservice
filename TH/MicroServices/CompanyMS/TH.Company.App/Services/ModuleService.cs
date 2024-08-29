@@ -29,7 +29,7 @@ public partial class ModuleService : BaseService, IModuleService
         entity.Id = Util.TryGenerateGuid();
         entity.CreatedDate = DateTime.Now;
 
-        ApplyValidationBl(entity, commit);
+        ApplyValidationBl(entity);
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
@@ -60,7 +60,7 @@ public partial class ModuleService : BaseService, IModuleService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.ModuleRepo.SingleOrDefaultQueryableAsync(x => (x.Id.Equals(entity.Id)));
+        var existingEntity = await Repo.ModuleRepo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         existingEntity.ModifiedDate = DateTime.Now;
@@ -101,7 +101,7 @@ public partial class ModuleService : BaseService, IModuleService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.ModuleRepo.SingleOrDefaultQueryableAsync(x => (x.Id.Equals(entity.Id)));
+        var existingEntity = await Repo.ModuleRepo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         existingEntity.ModifiedDate = DateTime.Now;
@@ -133,7 +133,7 @@ public partial class ModuleService : BaseService, IModuleService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.ModuleRepo.SingleOrDefaultQueryableAsync(x => (x.Id.Equals(entity.Id)));
+        var existingEntity = await Repo.ModuleRepo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         //Add your business logic here
@@ -160,13 +160,13 @@ public partial class ModuleService : BaseService, IModuleService
         return true;
     }
 
-    public async Task<Module> FindAsync(ModuleFilterModel filter, DataFilter dataFilter)
+    public async Task<Module> FindByIdAsync(ModuleFilterModel filter, DataFilter dataFilter)
     {
         try
         {
             if (filter == null) throw new ArgumentNullException(nameof(filter));
 
-            var entity = await Repo.ModuleRepo.SingleOrDefaultQueryableAsync(x => (x.Id.Equals(filter.Id)));
+            var entity = await Repo.ModuleRepo.FindByIdAsync(filter.Id, dataFilter);
             if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
 
             //Add your business logic here
@@ -250,13 +250,13 @@ public partial class ModuleService : BaseService, IModuleService
 
     #region Business logic
 
-    private void ApplyValidationBl(Module entity, bool check = true)
+    private void ApplyValidationBl(Module entity)
     {
         try
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             
-			if (check) entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
+			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
 			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException($"{Lang.Find("validation_error")}: CreatedDate");
 			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate"); }
 			entity.Name = string.IsNullOrWhiteSpace(entity.Name) ? throw new CustomException($"{Lang.Find("validation_error")}: Name") : entity.Name.Trim();
@@ -282,8 +282,8 @@ public partial class ModuleService : BaseService, IModuleService
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
             
-		var existingEntityByName = await Repo.ModuleRepo.FindByNameAsync(entity.Name, dataFilter);
-		if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
+			var existingEntityByName = await Repo.ModuleRepo.FindByNameAsync(entity.Name, dataFilter);
+			if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
         }
         catch (Exception)
         {

@@ -27,11 +27,11 @@ public class CompanyServiceUnitTest : CompanyBaseUnitTest
             var model = new CompanyInputModel
             {
                 Name = "Google Inc.",
-                SpaceId = "482a7084-3278-46d3-be3f-8f5ced154c34"
+                SpaceId = "34e57033-58a7-40b8-a410-a1f47458ab98"
             };
             model.Branches.Add(new BranchInputModel
             {
-                Name = "LA Branch",
+                Name = "Banani Branch",
                 IsDefault = true
             });
 
@@ -105,7 +105,7 @@ public class CompanyServiceUnitTest : CompanyBaseUnitTest
         {
             var filter = new CompanyFilterModel();
 
-            var entity = await _service.FindAsync(filter, DataFilter); //todo
+            var entity = await _service.FindByIdAsync(filter, DataFilter); //todo
             var viewModel = Mapper.Map<Company, CompanyViewModel>(entity);
         }
         catch (Exception e)
@@ -119,7 +119,10 @@ public class CompanyServiceUnitTest : CompanyBaseUnitTest
     {
         try
         {
-            var filter = new CompanyFilterModel();
+            var filter = new CompanyFilterModel
+            {
+                SpaceId = "7efdd3d9-1520-44f2-88a7-a097049254f6"
+            };
             filter.PageSize = (int)PageEnum.All;
 
             var entity = await _service.GetAsync(filter, DataFilter);

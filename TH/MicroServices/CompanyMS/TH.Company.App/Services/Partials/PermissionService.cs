@@ -112,7 +112,7 @@ public partial class PermissionService
 
         if (!string.IsNullOrWhiteSpace(filter.UserName))
         {
-            var user = await Repo.UserRepo.FindByNameAsync(filter.SpaceId, filter.CompanyId, filter.UserName, dataFilter);
+            var user = await Repo.UserRepo.FindByUserNameAsync(filter.UserName, dataFilter);
             if (user == null) throw new CustomException(Lang.Find("data_notfound"));
 
             filter.RoleId = user.UserRoles.FirstOrDefault().RoleId;

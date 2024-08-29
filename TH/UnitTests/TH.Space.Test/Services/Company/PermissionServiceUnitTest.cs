@@ -97,7 +97,7 @@ public class PermissionServiceUnitTest : CompanyBaseUnitTest
         {
             var filter = new PermissionFilterModel();
 
-            var entity = await _service.FindAsync(filter, DataFilter); //todo
+            var entity = await _service.FindByIdAsync(filter, DataFilter); //todo
             var viewModel = Mapper.Map<Permission, PermissionViewModel>(entity);
         }
         catch (Exception e)

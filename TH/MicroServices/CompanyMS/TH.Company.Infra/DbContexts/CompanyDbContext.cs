@@ -23,6 +23,8 @@ public class CompanyDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UserCompany> UserCompanies { get; set; }
+
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -160,6 +162,25 @@ public class CompanyDbContext : DbContext
                 .HasForeignKey(d => d.CompanyId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Users_Companies");
+        });
+
+        modelBuilder.Entity<UserCompany>(entity =>
+        {
+            entity.Property(e => e.CompanyId).HasMaxLength(450);
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+            entity.Property(e => e.SpaceId).HasMaxLength(450);
+            entity.Property(e => e.UserId).HasMaxLength(450);
+
+            entity.HasOne(d => d.Company).WithMany(p => p.UserCompanies)
+                .HasForeignKey(d => d.CompanyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UserCompanies_Companies");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserCompanies)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UserCompanies_Users");
         });
 
         modelBuilder.Entity<UserRole>(entity =>

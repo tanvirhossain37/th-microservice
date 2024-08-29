@@ -97,7 +97,7 @@ public class UserRoleServiceUnitTest : CompanyBaseUnitTest
         {
             var filter = new UserRoleFilterModel();
 
-            var entity = await _service.FindAsync(filter, DataFilter); //todo
+            var entity = await _service.FindByIdAsync(filter, DataFilter); //todo
             var viewModel = Mapper.Map<UserRole, UserRoleViewModel>(entity);
         }
         catch (Exception e)

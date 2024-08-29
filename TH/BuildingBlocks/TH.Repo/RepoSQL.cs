@@ -62,6 +62,12 @@ public class RepoSQL<TEntity> : IRepoSQL<TEntity> where TEntity : class
         return await queryResult.SingleOrDefaultAsync();
     }
 
+    public async Task<TEntity> FindByIdAsync(string id, DataFilter dataFilter = new DataFilter())
+    {
+        id = string.IsNullOrWhiteSpace(id) ? throw new ArgumentNullException(nameof(id)) : id.Trim();
+        return await DbContext.Set<TEntity>().FindAsync(id);
+    }
+
     public void Delete(TEntity entity, DataFilter dataFilter = new DataFilter())
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));

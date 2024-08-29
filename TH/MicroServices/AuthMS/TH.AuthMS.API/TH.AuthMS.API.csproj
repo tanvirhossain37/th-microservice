@@ -15,12 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Protos\auth.proto" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
     <PackageReference Include="CoreApiResponse" Version="1.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
@@ -45,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\auth.proto" GrpcServices="Server" />
+    <Folder Include="GrpcServices\" />
   </ItemGroup>
 
 </Project>

@@ -9,6 +9,6 @@ public interface IRoleService : IBaseService
     Task<Role> UpdateAsync(Role entity, DataFilter dataFilter, bool commit = true);
     Task<bool> SoftDeleteAsync(Role entity, DataFilter dataFilter, bool commit = true);
     Task<bool> DeleteAsync(Role entity, DataFilter dataFilter, bool commit = true);
-    Task<Role> FindAsync(RoleFilterModel filter, DataFilter dataFilter);
+    Task<Role> FindByIdAsync(RoleFilterModel filter, DataFilter dataFilter);
     Task<IEnumerable<Role>> GetAsync(RoleFilterModel filter, DataFilter dataFilter);
 }

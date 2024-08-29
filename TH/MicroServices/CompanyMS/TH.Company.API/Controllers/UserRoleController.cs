@@ -40,7 +40,7 @@ public class UserRoleController : CustomBaseController
         {
             var filter = _mapper.Map<UserRole, UserRoleFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IUserRoleService>();
-            var viewModel = _mapper.Map<UserRole, UserRoleViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<UserRole, UserRoleViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnSaveUserRoleAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -59,7 +59,7 @@ public class UserRoleController : CustomBaseController
         {
             var filter = _mapper.Map<UserRole, UserRoleFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IUserRoleService>();
-            var viewModel = _mapper.Map<UserRole, UserRoleViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<UserRole, UserRoleViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnUpdateUserRoleAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -93,7 +93,7 @@ public class UserRoleController : CustomBaseController
     [Authorize(Policy = "UserRoleReadPolicy")]
     public async Task<IActionResult> FindUserRoleAsync([FromBody] UserRoleFilterModel filter)
     {
-        var entity = await _userRoleService.FindAsync(filter, DataFilter);
+        var entity = await _userRoleService.FindByIdAsync(filter, DataFilter);
         if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
 
         return CustomResult(Lang.Find("success"), _mapper.Map<UserRole, UserRoleViewModel>(entity));

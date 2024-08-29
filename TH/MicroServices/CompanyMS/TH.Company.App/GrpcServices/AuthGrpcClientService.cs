@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Logging;
-using TH.AuthMS.API.Protos;
+using TH.AuthMS.Grpc;
 
 namespace TH.CompanyMS.App;
 
-public class AuthGrpcClientService : AuthProtoService.AuthProtoServiceClient
+public class AuthGrpcClientService
 {
     private readonly AuthProtoService.AuthProtoServiceClient _grpcClient;
     private readonly IMapper _mapper;
@@ -15,8 +14,9 @@ public class AuthGrpcClientService : AuthProtoService.AuthProtoServiceClient
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<SignUpReply> GetPermissionsAsync(SignUpRequest request)
+
+    public async Task<ApplicationUserViewReply> FindApplicationUserByEmailAsync(ApplicationUserFilterRequest request)
     {
-        return await _grpcClient.SaveAuthUserAsync(request);
+        return await _grpcClient.FindApplicationUserByEmailAsync(request);
     }
 }

@@ -69,7 +69,7 @@ namespace TH.CompanyMS.Test
             var userResolver = new UserResolver();
             userResolver.UserName = "tanvir";
             userResolver.SpaceId = "f0f01ad3-d0fc-4baa-9fae-547ecf6cc71d";
-            userResolver.FullName = "Tanvir Hossain";
+            userResolver.Name = "Tanvir Hossain";
 
             service.SetUserResolver(userResolver);
         }

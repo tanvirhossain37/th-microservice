@@ -100,7 +100,7 @@ public class RoleServiceUnitTest : CompanyBaseUnitTest
         {
             var filter = new RoleFilterModel();
 
-            var entity = await _service.FindAsync(filter, DataFilter); //todo
+            var entity = await _service.FindByIdAsync(filter, DataFilter); //todo
             var viewModel = Mapper.Map<Role, RoleViewModel>(entity);
         }
         catch (Exception e)

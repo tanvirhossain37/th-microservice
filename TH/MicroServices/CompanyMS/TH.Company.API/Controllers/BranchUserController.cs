@@ -40,7 +40,7 @@ public class BranchUserController : CustomBaseController
         {
             var filter = _mapper.Map<BranchUser, BranchUserFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IBranchUserService>();
-            var viewModel = _mapper.Map<BranchUser, BranchUserViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<BranchUser, BranchUserViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnSaveBranchUserAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -59,7 +59,7 @@ public class BranchUserController : CustomBaseController
         {
             var filter = _mapper.Map<BranchUser, BranchUserFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IBranchUserService>();
-            var viewModel = _mapper.Map<BranchUser, BranchUserViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<BranchUser, BranchUserViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnUpdateBranchUserAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -93,7 +93,7 @@ public class BranchUserController : CustomBaseController
     [Authorize(Policy = "BranchUserReadPolicy")]
     public async Task<IActionResult> FindBranchUserAsync([FromBody] BranchUserFilterModel filter)
     {
-        var entity = await _branchUserService.FindAsync(filter, DataFilter);
+        var entity = await _branchUserService.FindByIdAsync(filter, DataFilter);
         if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
 
         return CustomResult(Lang.Find("success"), _mapper.Map<BranchUser, BranchUserViewModel>(entity));

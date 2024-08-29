@@ -40,7 +40,7 @@ public class RoleController : CustomBaseController
         {
             var filter = _mapper.Map<Role, RoleFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IRoleService>();
-            var viewModel = _mapper.Map<Role, RoleViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<Role, RoleViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnSaveRoleAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -59,7 +59,7 @@ public class RoleController : CustomBaseController
         {
             var filter = _mapper.Map<Role, RoleFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<IRoleService>();
-            var viewModel = _mapper.Map<Role, RoleViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<Role, RoleViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnUpdateRoleAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -93,7 +93,7 @@ public class RoleController : CustomBaseController
     [Authorize(Policy = "RoleReadPolicy")]
     public async Task<IActionResult> FindRoleAsync([FromBody] RoleFilterModel filter)
     {
-        var entity = await _roleService.FindAsync(filter, DataFilter);
+        var entity = await _roleService.FindByIdAsync(filter, DataFilter);
         if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
 
         return CustomResult(Lang.Find("success"), _mapper.Map<Role, RoleViewModel>(entity));

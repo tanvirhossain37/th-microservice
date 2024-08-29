@@ -26,7 +26,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
         entity.Id = Util.TryGenerateGuid();
         entity.CreatedDate = DateTime.Now;
 
-        ApplyValidationBl(entity, commit);
+        ApplyValidationBl(entity);
         await ApplyDuplicateOnSaveBl(entity, dataFilter);
 
         //Add your business logic here
@@ -52,7 +52,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.$WE$Repo.SingleOrDefaultQueryableAsync(//todo updateQuery);
+        var existingEntity = await Repo.$WE$Repo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         existingEntity.ModifiedDate = DateTime.Now;
@@ -82,7 +82,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.$WE$Repo.SingleOrDefaultQueryableAsync(//todo deleteQuery);
+        var existingEntity = await Repo.$WE$Repo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         existingEntity.ModifiedDate = DateTime.Now;
@@ -109,7 +109,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.$WE$Repo.SingleOrDefaultQueryableAsync(//todo deleteQuery);
+        var existingEntity = await Repo.$WE$Repo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         //Add your business logic here
@@ -131,13 +131,13 @@ public partial class $WE$Service : BaseService, I$WE$Service
         return true;
     }
 
-    public async Task<$WE$> FindAsync($WE$FilterModel filter, DataFilter dataFilter)
+    public async Task<$WE$> FindByIdAsync($WE$FilterModel filter, DataFilter dataFilter)
     {
         try
         {
             if (filter == null) throw new ArgumentNullException(nameof(filter));
 
-            var entity = await Repo.$WE$Repo.SingleOrDefaultQueryableAsync(//todo findQuery);
+            var entity = await Repo.$WE$Repo.FindByIdAsync(filter.Id, dataFilter);
             if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
 
             //Add your business logic here
@@ -209,7 +209,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
 
     #region Business logic
 
-    private void ApplyValidationBl($WE$ entity, bool check = true)
+    private void ApplyValidationBl($WE$ entity)
     {
         try
         {

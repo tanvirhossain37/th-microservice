@@ -97,7 +97,7 @@ public class ModuleServiceUnitTest : CompanyBaseUnitTest
         {
             var filter = new ModuleFilterModel();
 
-            var entity = await _service.FindAsync(filter, DataFilter); //todo
+            var entity = await _service.FindByIdAsync(filter, DataFilter); //todo
             var viewModel = Mapper.Map<Module, ModuleViewModel>(entity);
         }
         catch (Exception e)

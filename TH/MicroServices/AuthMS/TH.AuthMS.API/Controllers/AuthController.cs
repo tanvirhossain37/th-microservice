@@ -17,17 +17,13 @@ namespace TH.AuthMS.API
         private readonly IAuthService _authService;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly JwtConfiguration _configuration;
-        private readonly CompanyGrpcClientService _grpcClientService;
 
         public AuthController(IAuthService authService, IPublishEndpoint publishEndpoint, IOptions<JwtConfiguration> options,
-            HttpContextAccessor httpContextAccessor, CompanyGrpcClientService grpcClientService) : base(httpContextAccessor)
+            HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
             _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
-            _grpcClientService = grpcClientService ?? throw new ArgumentNullException(nameof(grpcClientService));
             _configuration = options.Value;
-
-            _authService.GrpcClientService = _grpcClientService;
         }
 
         [HttpPost("SignUpAsync")]
@@ -37,7 +33,7 @@ namespace TH.AuthMS.API
             //override
             model.IsAutoUserName = true;
 
-            var viewModel = await _authService.SignUpAsync(model);
+            var viewModel = await _authService.SignUpAsync(model, DataFilter);
             if (viewModel is null) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
 
             return CustomResult(Lang.Find("success"), true);
@@ -47,7 +43,7 @@ namespace TH.AuthMS.API
         [ProducesResponseType(typeof(SignInViewModel), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SignInAsync([FromBody] SignInInputModel model)
         {
-            var viewModel = await _authService.SignInAsync(model);
+            var viewModel = await _authService.SignInAsync(model, DataFilter);
             if (viewModel is null)
                 return CustomResult(Lang.Find("error_not_found"), null, HttpStatusCode.NotFound);
 
@@ -58,7 +54,7 @@ namespace TH.AuthMS.API
         [ProducesResponseType(typeof(SignInViewModel), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenInputModel model)
         {
-            var result = await _authService.RefreshToken(model);
+            var result = await _authService.RefreshToken(model, DataFilter);
             if (result is null)
                 return CustomResult(Lang.Find("error_not_found"), null, HttpStatusCode.NotFound);
 
@@ -71,7 +67,7 @@ namespace TH.AuthMS.API
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            var viewModel = await _authService.ActivateAccountAsync(model);
+            var viewModel = await _authService.ActivateAccountAsync(model, DataFilter);
             if (!viewModel) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
 
             return CustomResult(Lang.Find("success"), viewModel);
@@ -83,7 +79,7 @@ namespace TH.AuthMS.API
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            await _authService.ForgotPasswordAsync(model);
+            await _authService.ForgotPasswordAsync(model, DataFilter);
 
             return CustomResult(Lang.Find("success"));
         }
@@ -94,7 +90,7 @@ namespace TH.AuthMS.API
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            await _authService.ResetPasswordAsync(model);
+            await _authService.ResetPasswordAsync(model, DataFilter);
 
             return CustomResult(Lang.Find("success"));
         }

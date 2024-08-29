@@ -52,7 +52,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.UserRoleRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(entity.SpaceId)) && (x.CompanyId.Equals(entity.CompanyId)) && (x.Id.Equals(entity.Id)));
+        var existingEntity = await Repo.UserRoleRepo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         existingEntity.ModifiedDate = DateTime.Now;
@@ -84,7 +84,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.UserRoleRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(entity.SpaceId)) && (x.CompanyId.Equals(entity.CompanyId)) && (x.Id.Equals(entity.Id)));
+        var existingEntity = await Repo.UserRoleRepo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         existingEntity.ModifiedDate = DateTime.Now;
@@ -111,7 +111,7 @@ public partial class UserRoleService : BaseService, IUserRoleService
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        var existingEntity = await Repo.UserRoleRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(entity.SpaceId)) && (x.CompanyId.Equals(entity.CompanyId)) && (x.Id.Equals(entity.Id)));
+        var existingEntity = await Repo.UserRoleRepo.FindByIdAsync(entity.Id, dataFilter);
         if (existingEntity == null) throw new CustomException(Lang.Find("error_notfound"));
 
         //Add your business logic here
@@ -133,13 +133,13 @@ public partial class UserRoleService : BaseService, IUserRoleService
         return true;
     }
 
-    public async Task<UserRole> FindAsync(UserRoleFilterModel filter, DataFilter dataFilter)
+    public async Task<UserRole> FindByIdAsync(UserRoleFilterModel filter, DataFilter dataFilter)
     {
         try
         {
             if (filter == null) throw new ArgumentNullException(nameof(filter));
 
-            var entity = await Repo.UserRoleRepo.SingleOrDefaultQueryableAsync(x => (x.SpaceId.Equals(filter.SpaceId)) && (x.CompanyId.Equals(filter.CompanyId)) && (x.Id.Equals(filter.Id)));
+            var entity = await Repo.UserRoleRepo.FindByIdAsync(filter.Id, dataFilter);
             if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
 
             //Add your business logic here
@@ -223,19 +223,19 @@ public partial class UserRoleService : BaseService, IUserRoleService
 
     #region Business logic
 
-    private void ApplyValidationBl(UserRole entity, bool check = true)
+    private void ApplyValidationBl(UserRole entity)
     {
         try
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
             
-			if (check) entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
+			entity.Id = string.IsNullOrWhiteSpace(entity.Id) ? throw new CustomException($"{Lang.Find("validation_error")}: Id") : entity.Id.Trim();
 			if (!Util.TryIsValidDate(entity.CreatedDate)) throw new CustomException($"{Lang.Find("validation_error")}: CreatedDate");
 			if (entity.ModifiedDate.HasValue) { if (!Util.TryIsValidDate((DateTime)entity.ModifiedDate)) throw new CustomException($"{Lang.Find("validation_error")}: ModifiedDate"); }
-			if (check) entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
-			if (check) entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException($"{Lang.Find("validation_error")}: CompanyId") : entity.CompanyId.Trim();
-			if (check) entity.UserId = string.IsNullOrWhiteSpace(entity.UserId) ? throw new CustomException($"{Lang.Find("validation_error")}: UserId") : entity.UserId.Trim();
-			if (check) entity.RoleId = string.IsNullOrWhiteSpace(entity.RoleId) ? throw new CustomException($"{Lang.Find("validation_error")}: RoleId") : entity.RoleId.Trim();
+			entity.SpaceId = string.IsNullOrWhiteSpace(entity.SpaceId) ? throw new CustomException($"{Lang.Find("validation_error")}: SpaceId") : entity.SpaceId.Trim();
+			entity.CompanyId = string.IsNullOrWhiteSpace(entity.CompanyId) ? throw new CustomException($"{Lang.Find("validation_error")}: CompanyId") : entity.CompanyId.Trim();
+			entity.UserId = string.IsNullOrWhiteSpace(entity.UserId) ? throw new CustomException($"{Lang.Find("validation_error")}: UserId") : entity.UserId.Trim();
+			entity.RoleId = string.IsNullOrWhiteSpace(entity.RoleId) ? throw new CustomException($"{Lang.Find("validation_error")}: RoleId") : entity.RoleId.Trim();
             
         }
         catch (Exception)

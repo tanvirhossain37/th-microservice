@@ -7,6 +7,7 @@ using TH.Common.Model;
 using TH.Common.Util;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Identity;
+using TH.AuthMS.Core;
 
 namespace TH.AuthMS.App
 {
@@ -16,7 +17,6 @@ namespace TH.AuthMS.App
         private readonly IConfiguration _config;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IMapper _mapper;
-        public CompanyGrpcClientService GrpcClientService { get; set; }
 
         public AuthService(IAuthRepo authRepo, IConfiguration config, IPublishEndpoint publishEndpoint, IMapper mapper) : base(mapper,
             publishEndpoint)
@@ -27,7 +27,7 @@ namespace TH.AuthMS.App
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<SignUpViewModel> SignUpAsync(SignUpInputModel entity)
+        public async Task<SignUpViewModel> SignUpAsync(SignUpInputModel entity, DataFilter dataFilter)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -52,6 +52,7 @@ namespace TH.AuthMS.App
                 if (existingEntity is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Email");
 
                 await _authRepo.SaveAsync(identityUser, entity.Password);
+                
                 //publish
                 var emailEventAgain = new EmailEvent();
                 emailEventAgain.To.Add(identityUser.Email);
@@ -110,7 +111,7 @@ namespace TH.AuthMS.App
             return _mapper.Map<ApplicationUser, SignUpViewModel>(identityUser);
         }
 
-        public async Task<SignInViewModel> SignInAsync(SignInInputModel entity)
+        public async Task<SignInViewModel> SignInAsync(SignInInputModel entity, DataFilter dataFilter)
         {
             var identityUser = await _authRepo.FindByEmailAsync(entity.Email);
             if (identityUser is null) throw new UnauthorizedAccessException(Lang.Find("error_user"));
@@ -163,6 +164,7 @@ namespace TH.AuthMS.App
             signInViewModel.SpaceId = identityUser.Id;
             signInViewModel.Name = identityUser.Name;
             signInViewModel.Email = identityUser.Email;
+            signInViewModel.UserName = identityUser.UserName;
             signInViewModel.EmailConfirmed = identityUser.EmailConfirmed;
             signInViewModel.CreatedDate = identityUser.CreatedDate;
             signInViewModel.ModifiedDate = identityUser.ModifiedDate;
@@ -193,7 +195,7 @@ namespace TH.AuthMS.App
             return signInViewModel;
         }
 
-        private async Task EmailLinkAsync(ApplicationUser identityUser, string referralName, string verifyUrl)
+        private async Task EmailLinkAsync(ApplicationUser identityUser, string referralName, string verifyUrl, DataFilter dataFilter)
         {
             var emailEvent = new EmailEvent();
             emailEvent.To.Add(identityUser.Email);
@@ -203,7 +205,7 @@ namespace TH.AuthMS.App
             await _publishEndpoint.Publish(emailEvent);
         }
 
-        private async Task EmailCodeAsync(ApplicationUser identityUser)
+        private async Task EmailCodeAsync(ApplicationUser identityUser, DataFilter dataFilter)
         {
             var emailEventAgain = new EmailEvent();
             emailEventAgain.To.Add(identityUser.Email);
@@ -213,7 +215,7 @@ namespace TH.AuthMS.App
             await _publishEndpoint.Publish(emailEventAgain);
         }
 
-        public async Task<SignInViewModel> RefreshToken(RefreshTokenInputModel model)
+        public async Task<SignInViewModel> RefreshToken(RefreshTokenInputModel model, DataFilter dataFilter)
         {
             var principal = _authRepo.GetTokenPrincipal(model.Token);
             if (principal?.Identity?.Name is null)
@@ -242,7 +244,7 @@ namespace TH.AuthMS.App
             return signInViewModel;
         }
 
-        public async Task<bool> ActivateAccountAsync(ActivationCodeInputModel model)
+        public async Task<bool> ActivateAccountAsync(ActivationCodeInputModel model, DataFilter dataFilter)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
@@ -262,7 +264,7 @@ namespace TH.AuthMS.App
             return identityUser.EmailConfirmed;
         }
 
-        public async Task ForgotPasswordAsync(ForgotPasswordInputModel model)
+        public async Task ForgotPasswordAsync(ForgotPasswordInputModel model, DataFilter dataFilter)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
@@ -290,7 +292,7 @@ namespace TH.AuthMS.App
                 var emailEvent = new EmailEvent();
                 emailEvent.To.Add(identityUser.Email);
                 emailEvent.Subject = "Reset Password Request";
-                emailEvent.Content = string.Format(Lang.Find("change_password"), identityUser.Name, identityUser.ActivationCode);
+                emailEvent.Content = string.Format(Lang.Find("reset_password"), identityUser.Name, identityUser.ActivationCode);
 
                 await _publishEndpoint.Publish(emailEvent);
             }
@@ -304,13 +306,13 @@ namespace TH.AuthMS.App
                 var emailEvent = new EmailEvent();
                 emailEvent.To.Add(identityUser.Email);
                 emailEvent.Subject = "Change Password Request";
-                emailEvent.Content = string.Format(Lang.Find("change_password"), identityUser.Name, identityUser.ActivationCode);
+                emailEvent.Content = string.Format(Lang.Find("reset_password"), identityUser.Name, identityUser.ActivationCode);
 
                 await _publishEndpoint.Publish(emailEvent);
             }
         }
 
-        public async Task<bool> ResetPasswordAsync(ForgotPasswordInputModel model)
+        public async Task<bool> ResetPasswordAsync(ForgotPasswordInputModel model, DataFilter dataFilter)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
@@ -332,6 +334,16 @@ namespace TH.AuthMS.App
             }
 
             return true;
+        }
+
+        public async Task<ApplicationUser> FindByEmailAsync(ApplicationUserFilterModel filter, DataFilter dataFilter)
+        {
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
+
+            var entity = await _authRepo.FindByEmailAsync(filter.Email);
+            if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
+
+            return entity;
         }
 
         public void Dispose()

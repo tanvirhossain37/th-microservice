@@ -40,7 +40,7 @@ public class CompanyController : CustomBaseController
         {
             var filter = _mapper.Map<Company, CompanyFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<ICompanyService>();
-            var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnSaveCompanyAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -59,7 +59,7 @@ public class CompanyController : CustomBaseController
         {
             var filter = _mapper.Map<Company, CompanyFilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<ICompanyService>();
-            var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnUpdateCompanyAsync(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -93,7 +93,7 @@ public class CompanyController : CustomBaseController
     [Authorize(Policy = "CompanyReadPolicy")]
     public async Task<IActionResult> FindCompanyAsync([FromBody] CompanyFilterModel filter)
     {
-        var entity = await _companyService.FindAsync(filter, DataFilter);
+        var entity = await _companyService.FindByIdAsync(filter, DataFilter);
         if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
 
         return CustomResult(Lang.Find("success"), _mapper.Map<Company, CompanyViewModel>(entity));

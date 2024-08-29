@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using TH.AuthMS.API.Protos;
+using TH.AuthMS.Grpc;
 using TH.Common.Model;
 using TH.Common.Util;
 using TH.CompanyMS.Core;
@@ -15,11 +15,32 @@ public partial class UserService
     //{
     //}
 
-    private async Task ApplyOnSavingBlAsync(User entity, DataFilter dataFilter)
+    private async Task ApplyOnSavingBlAsync(User entity, bool invitation, DataFilter dataFilter)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
         //todo
+        if (invitation)
+        {
+            //call auth
+            var applicationUser =
+                await _authGrpcClientService.FindApplicationUserByEmailAsync(new ApplicationUserFilterRequest{ Email = "tanvir.hossain37@gmail.com"});
+            //override
+            entity.UserName = applicationUser is null ? Util.TryGenerateUserName(entity.Name) :
+               applicationUser.UserName;
+
+            var userCompany = new UserCompany
+            {
+                Id = Util.TryGenerateGuid(),
+                SpaceId = entity.SpaceId,
+                CompanyId = entity.CompanyId,
+                TypeId = (int)CompanyTypeEnum.Guest,
+                StatusId = (int)InvitationStatusEnum.Pending,
+                UserId = entity.Id
+            };
+
+            entity.UserCompanies.Add(userCompany);
+        }
     }
 
     private async Task ApplyOnSavedBlAsync(User entity, DataFilter dataFilter)

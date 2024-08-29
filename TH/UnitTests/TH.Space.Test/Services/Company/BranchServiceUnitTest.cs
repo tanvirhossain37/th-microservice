@@ -97,7 +97,7 @@ public class BranchServiceUnitTest : CompanyBaseUnitTest
         {
             var filter = new BranchFilterModel();
 
-            var entity = await _service.FindAsync(filter, DataFilter); //todo
+            var entity = await _service.FindByIdAsync(filter, DataFilter); //todo
             var viewModel = Mapper.Map<Branch, BranchViewModel>(entity);
         }
         catch (Exception e)

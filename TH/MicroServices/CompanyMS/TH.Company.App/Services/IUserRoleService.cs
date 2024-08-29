@@ -9,6 +9,6 @@ public interface IUserRoleService : IBaseService
     Task<UserRole> UpdateAsync(UserRole entity, DataFilter dataFilter, bool commit = true);
     Task<bool> SoftDeleteAsync(UserRole entity, DataFilter dataFilter, bool commit = true);
     Task<bool> DeleteAsync(UserRole entity, DataFilter dataFilter, bool commit = true);
-    Task<UserRole> FindAsync(UserRoleFilterModel filter, DataFilter dataFilter);
+    Task<UserRole> FindByIdAsync(UserRoleFilterModel filter, DataFilter dataFilter);
     Task<IEnumerable<UserRole>> GetAsync(UserRoleFilterModel filter, DataFilter dataFilter);
 }

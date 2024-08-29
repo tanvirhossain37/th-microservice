@@ -23,6 +23,7 @@ public partial class CompanyService
 
         foreach (var branch in entity.Branches)
         {
+            branch.Id = Util.TryGenerateGuid();
             branch.CompanyId = entity.Id;
             branch.SpaceId = entity.SpaceId;
         }
@@ -42,12 +43,25 @@ public partial class CompanyService
         user.CreatedDate=entity.CreatedDate;
         user.SpaceId = entity.SpaceId;
         user.CompanyId = entity.Id;
-        user.Name = UserResolver.FullName;
+        user.Name = UserResolver.Name;
         user.UserName = UserResolver.UserName;
         user.AccessTypeId = (int)AccessTypeEnum.TenantAccess;
         user.UserTypeId = (int)UserTypeEnum.TenantUser;
 
         entity.Users.Add(user);
+
+        var userCompany = new UserCompany
+        {
+            Id = Util.TryGenerateGuid(),
+            SpaceId = entity.SpaceId,
+            CompanyId = entity.Id,
+            TypeId = (int)CompanyTypeEnum.Owner,
+            StatusId = (int)InvitationStatusEnum.Accept,
+            UserId = user.Id
+        };
+
+        user.UserCompanies.Add(userCompany);
+        entity.UserCompanies.Add(userCompany);
 
         var userRole = new UserRole();
         userRole.Id = Util.TryGenerateGuid();
@@ -60,6 +74,7 @@ public partial class CompanyService
         role.UserRoles.Add(userRole);
         user.UserRoles.Add(userRole);
         entity.UserRoles.Add(userRole);
+        entity.UserCompanies.Add(userCompany);
 
         ////get modules
         //var modules = await Repo.ModuleRepo.GetQueryableAsync(x => x.ParentId == null, i => i.InverseParent, o => o.OrderBy(m => m.Id), (int)PageEnum.PageIndex,

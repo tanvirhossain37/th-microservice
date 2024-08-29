@@ -9,6 +9,6 @@ public interface IBranchService : IBaseService
     Task<Branch> UpdateAsync(Branch entity, DataFilter dataFilter, bool commit = true);
     Task<bool> SoftDeleteAsync(Branch entity, DataFilter dataFilter, bool commit = true);
     Task<bool> DeleteAsync(Branch entity, DataFilter dataFilter, bool commit = true);
-    Task<Branch> FindAsync(BranchFilterModel filter, DataFilter dataFilter);
+    Task<Branch> FindByIdAsync(BranchFilterModel filter, DataFilter dataFilter);
     Task<IEnumerable<Branch>> GetAsync(BranchFilterModel filter, DataFilter dataFilter);
 }

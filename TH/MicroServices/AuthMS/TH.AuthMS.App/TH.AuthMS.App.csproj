@@ -44,13 +44,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Enums\" />
     <Folder Include="GrpcServices\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Protobuf Include="..\..\..\BuildingBlocks\TH.Grpc\Protos\space.proto" GrpcServices="Client">
-      <Link>Protos\space.proto</Link>
-    </Protobuf>
   </ItemGroup>
 
 </Project>

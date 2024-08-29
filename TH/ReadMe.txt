@@ -1,5 +1,6 @@
 #scafold
 Scaffold-DbContext "Data Source=localhost;Initial Catalog=DoNotDeleteSpace;User ID=sa;Password=admin123##;Trust Server Certificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+Scaffold-DbContext "Data Source=localhost;Initial Catalog=AuthDB;User ID=sa;Password=admin123##;Trust Server Certificate=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir AuthModels
 
 add-migration Initial_Company -Context CompanyDbContext -o Migrations/Company
 update-database -Context CompanyDbContext
