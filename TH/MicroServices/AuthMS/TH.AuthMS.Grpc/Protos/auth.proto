@@ -1,8 +1,5 @@
 syntax = "proto3";
 
-import "google/protobuf/duration.proto";  
-import "google/protobuf/timestamp.proto";
-
 option csharp_namespace = "TH.AuthMS.Grpc";
 
 // The greeting service definition.
@@ -18,8 +15,6 @@ message ApplicationUserFilterRequest {
 message ApplicationUserViewReply {	
 	string id = 1;
 	string name = 2;
-	google.protobuf.Timestamp created_date = 3;
-	google.protobuf.Timestamp modified_date = 4;
 	string user_name = 5;
 	string email = 6;
 }
