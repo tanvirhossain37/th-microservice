@@ -8,6 +8,7 @@
     <UserSecretsId>ad20b657-4bd3-4c3e-867e-a022affa729f</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..\..</DockerfileContext>
+    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles><!--Tanvir-->
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,7 +34,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Lang\TH.Common.Lang.csproj" />
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Model\TH.Common.Model.csproj" />
-    <ProjectReference Include="..\..\UserSvc\TH.UserSvc.App\TH.UserSvc.App.csproj" />
     <ProjectReference Include="..\TH.AuthMS.App\TH.AuthMS.App.csproj" />
     <ProjectReference Include="..\TH.AuthMS.Core\TH.AuthMS.Core.csproj" />
     <ProjectReference Include="..\TH.AuthMS.Infra\TH.AuthMS.Infra.csproj" />
@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <Folder Include="GrpcServices\" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
 </Project>
