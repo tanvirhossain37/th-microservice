@@ -15,8 +15,8 @@ public class AuthGrpcClientService
     }
 
 
-    public async Task<ApplicationUserViewReply> FindApplicationUserByEmailAsync(ApplicationUserFilterRequest request)
+    public async Task<SignUpViewReply> SignUpAsync(SignUpInputRequest request)
     {
-        return await _grpcClient.FindApplicationUserByEmailAsync(request);
+        return await _grpcClient.SignUpAsync(request);
     }
 }

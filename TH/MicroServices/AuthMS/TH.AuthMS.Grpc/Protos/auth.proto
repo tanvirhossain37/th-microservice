@@ -5,16 +5,21 @@ option csharp_namespace = "TH.AuthMS.Grpc";
 // The greeting service definition.
 service AuthProtoService {
   // Sends a greeting
-  rpc FindApplicationUserByEmail (ApplicationUserFilterRequest) returns (ApplicationUserViewReply);
+  rpc SignUp (SignUpInputRequest) returns (SignUpViewReply);
 }
 
-message ApplicationUserFilterRequest {	
-	string email = 1;
+message SignUpInputRequest {	
+	string name = 1;
+	string user_name = 2;
+	string password = 3;
+	string email = 4;
+	string referral_id = 5;
+	string company_name = 6;
+	bool is_auto_user_name = 7;
 }
 
-message ApplicationUserViewReply {	
-	string id = 1;
-	string name = 2;
-	string user_name = 5;
-	string email = 6;
+message SignUpViewReply {	
+	string name = 1;
+	string user_name = 2;
+	string email = 3;
 }

@@ -60,6 +60,8 @@ namespace TH.AuthMS.App
                 emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
 
                 await _publishEndpoint.Publish(emailEventAgain);
+
+                return _mapper.Map<ApplicationUser, SignUpViewModel>(identityUser);
             }
             else
             {
@@ -79,6 +81,7 @@ namespace TH.AuthMS.App
                     identityUser.ReferralId = entity.ReferralId;
 
                     await _authRepo.SaveAsync(identityUser, entity.Password);
+
                     //publish
                     var emailEvent = new EmailEvent();
                     emailEvent.To.Add(identityUser.Email);
@@ -86,6 +89,8 @@ namespace TH.AuthMS.App
                     emailEvent.Content = string.Format(Lang.Find("email_invitation"), identityUser.Email, referralUser.Name, entity.CompanyName, verifyUrl);
 
                     await _publishEndpoint.Publish(emailEvent);
+
+                    return _mapper.Map<ApplicationUser, SignUpViewModel>(identityUser);
                 }
                 else
                 {
@@ -105,6 +110,8 @@ namespace TH.AuthMS.App
                     emailEvent.Content = string.Format(Lang.Find("email_invitation"), existingEntity.Name, referralUser.Name, entity.CompanyName, verifyUrl);
 
                     await _publishEndpoint.Publish(emailEvent);
+
+                    _mapper.Map<ApplicationUser, SignUpViewModel>(existingEntity);
                 }
             }
 

@@ -26,8 +26,8 @@ public class RoleServiceUnitTest : CompanyBaseUnitTest
             var model = new RoleInputModel
             {
                 Name = "Executive",
-                SpaceId = "f0f01ad3-d0fc-4baa-9fae-547ecf6cc71d",
-                CompanyId = "be1cca01-ce7f-4512-8ece-fd05a43d12d3"
+                SpaceId = "0e682664-d508-412e-97a3-5a44806678f8",
+                CompanyId = "5bfbe4be-60bc-4af0-8c7c-0c9a61207a09"
             };
 
             var entity = await _service.SaveAsync(Mapper.Map<RoleInputModel, Role>(model), DataFilter);

@@ -26,13 +26,13 @@ public class AuthGrpcServerService : AuthProtoService.AuthProtoServiceBase, IDis
         };
     }
 
-    public override async Task<ApplicationUserViewReply> FindApplicationUserByEmail(ApplicationUserFilterRequest request, ServerCallContext context)
+    public override async Task<SignUpViewReply> SignUp(SignUpInputRequest request, ServerCallContext context)
     {
-        var filter = _mapper.Map<ApplicationUserFilterRequest, ApplicationUserFilterModel>(request);
+        var inputModel = _mapper.Map<SignUpInputRequest, SignUpInputModel>(request);
 
-        var applicationUser = await _authService.FindByEmailAsync(filter, DataFilter);
+        var viewModel = await _authService.SignUpAsync(inputModel, DataFilter);
 
-        var viewReply = _mapper.Map<ApplicationUser, ApplicationUserViewReply>(applicationUser);
+        var viewReply = _mapper.Map<SignUpViewModel, SignUpViewReply>(viewModel);
 
         return viewReply;
     }

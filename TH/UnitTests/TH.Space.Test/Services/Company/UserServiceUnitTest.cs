@@ -33,6 +33,8 @@ public class UserServiceUnitTest : CompanyBaseUnitTest
                 AccessTypeId = (int)AccessTypeEnum.TenantAccess,
                 UserTypeId = (int)UserTypeEnum.TenantUser
             };
+            model.UserRoles.Add(new UserRoleInputModel{RoleId = "fbedd6d7-17fe-4984-ad95-23afa42d2c9f" });
+            
 
             var entity = await _service.SaveAsync(Mapper.Map<UserInputModel, User>(model),true, DataFilter);
             var viewModel = Mapper.Map<User, UserViewModel>(entity);

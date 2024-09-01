@@ -7,7 +7,9 @@ public class AuthGrpcMappingProfile : Profile
 {
     public AuthGrpcMappingProfile()
     {
-        CreateMap<ApplicationUserFilterRequest, ApplicationUserFilterModel>().ReverseMap();
-        CreateMap<ApplicationUser, ApplicationUserViewReply>().ReverseMap();
+        CreateMap<SignUpInputRequest, SignUpInputModel>().ReverseMap();
+        CreateMap<SignUpViewModel, SignUpViewReply>().ReverseMap();
+        CreateMap<ApplicationUser, SignUpViewModel>().ReverseMap();
+        CreateMap<ApplicationUser, ApplicationUserViewModel>().ReverseMap();
     }
 }

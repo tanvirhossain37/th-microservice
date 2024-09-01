@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using TH.AuthMS.Grpc;
+using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
 using TH.CompanyMS.Core;
@@ -20,14 +21,37 @@ public partial class UserService
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
         //todo
+        //validation
+        if (entity.UserRoles.Count <= 0) throw new CustomException($"{Lang.Find("validation_error")}: UserRoles");
+        foreach (var userRole in entity.UserRoles)
+        {
+            userRole.SpaceId = entity.SpaceId;
+            userRole.CompanyId = entity.CompanyId;
+            userRole.UserId = entity.Id;
+        }
+
+
         if (invitation)
         {
             //call auth
-            var applicationUser =
-                await _authGrpcClientService.FindApplicationUserByEmailAsync(new ApplicationUserFilterRequest{ Email = "tanvir.hossain37@gmail.com"});
+            var company = await Repo.CompanyRepo.SingleOrDefaultQueryableAsync(x => x.Id == entity.CompanyId);
+            if (company == null) throw new CustomException(Lang.Find("error_notfound"));
+
+            var signUpInputRequest = new SignUpInputRequest
+            {
+                Name = entity.Name,
+                UserName = Util.TryGenerateUserName(entity.UserName),
+                Email = entity.UserName,
+                Password = Util.TryGenerateCode(),
+                ReferralId = UserResolver.UserName,
+                CompanyName = company.Name,
+                IsAutoUserName = false
+            };
+            //grpc
+            var applicationUser = await _authGrpcClientService.SignUpAsync(signUpInputRequest);
+
             //override
-            entity.UserName = applicationUser is null ? Util.TryGenerateUserName(entity.Name) :
-               applicationUser.UserName;
+            entity.UserName = applicationUser?.UserName;
 
             var userCompany = new UserCompany
             {
@@ -49,22 +73,22 @@ public partial class UserService
 
         //todo
         //override
-        entity.UserTypeId = (int)UserTypeEnum.TenantUser;
+        //entity.UserTypeId = (int)UserTypeEnum.TenantUser;
 
-        var company = await Repo.CompanyRepo.SingleOrDefaultQueryableAsync(x=>x.Id==entity.CompanyId);
+        //var company = await Repo.CompanyRepo.SingleOrDefaultQueryableAsync(x=>x.Id==entity.CompanyId);
 
-        var userCreateEvent = new UserCreateEvent
-        {
-            Name = entity.Name,
-            UserName = Util.TryGenerateUserName(entity.UserName.Split("@")[0]),
-            Email = entity.UserName,
-            Password = Util.TryGenerateCode(),
-            ReferralId = UserResolver.UserName,
-            CompanyName = company.Name,
-            IsAutoUserName = false
-        };
+        //var userCreateEvent = new UserCreateEvent
+        //{
+        //    Name = entity.Name,
+        //    UserName = Util.TryGenerateUserName(entity.UserName.Split("@")[0]),
+        //    Email = entity.UserName,
+        //    Password = Util.TryGenerateCode(),
+        //    ReferralId = UserResolver.UserName,
+        //    CompanyName = company.Name,
+        //    IsAutoUserName = false
+        //};
 
-        PublishEndpoint.Publish(userCreateEvent);
+        //PublishEndpoint.Publish(userCreateEvent);
 
         ////auth service call - grpc
         //var request = new SignUpRequest
@@ -77,7 +101,7 @@ public partial class UserService
         //var reply = await _authGrpcClientService.SaveAuthUserAsync(request);
 
         ////override username
-        entity.UserName = userCreateEvent.UserName;
+        //entity.UserName = userCreateEvent.UserName;
     }
 
     private async Task ApplyOnUpdatingBlAsync(User existingEntity, DataFilter dataFilter)
