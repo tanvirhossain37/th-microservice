@@ -17,6 +17,9 @@
     <Compile Remove="Migrations\20240819143100_Initial.Designer.cs" />
     <Compile Remove="Migrations\20240819143604_Initial.cs" />
     <Compile Remove="Migrations\20240819143604_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20240824111321_Initial.cs" />
+    <Compile Remove="Migrations\20240824111321_Initial.Designer.cs" />
+    <Compile Remove="Migrations\AuthDbContextModelSnapshot.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +33,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\CompanyMS\TH.Company.App\TH.CompanyMS.App.csproj" />
     <ProjectReference Include="..\TH.AuthMS.App\TH.AuthMS.App.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
