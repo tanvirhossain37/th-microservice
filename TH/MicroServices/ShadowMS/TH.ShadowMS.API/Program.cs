@@ -66,6 +66,9 @@ namespace TH.ShadowMS.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            //tanvir
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
 

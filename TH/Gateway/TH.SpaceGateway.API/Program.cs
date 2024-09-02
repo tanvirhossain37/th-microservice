@@ -41,6 +41,9 @@ namespace TH.SpaceGateway.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            //tanvir
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
 
