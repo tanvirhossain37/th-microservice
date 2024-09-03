@@ -25,15 +25,15 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
     {
         try
         {
-            ////self
-            //var model = new SignUpInputModel
-            //{
-            //    Name = "Tanvir Hossain",
-            //    UserName = "tanvir.hossain37@gmail.com",
-            //    Password = "admin123##",
-            //    Email = "tanvir.hossain37@gmail.com",
-            //    IsAutoUserName = true
-            //};
+            //self
+            var model = new SignUpInputModel
+            {
+                Name = "Tanvir Hossain",
+                UserName = "tanvir.hossain37@gmail.com",
+                Password = "admin123##",
+                Email = "tanvir.hossain37@gmail.com",
+                IsAutoUserName = true
+            };
 
             ////self
             //var model = new SignUpInputModel
@@ -45,18 +45,18 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
             //    IsAutoUserName = true
             //};
 
-            //invitation
-            var email = "milon.roy@rite.com.bd";
-            var model = new SignUpInputModel
-            {
-                Name = email,
-                UserName = Util.TryGenerateUserName(email),
-                Password = Util.TryGenerateCode(),
-                Email = email,
-                ReferralId = "Tanvir.Hossain.05d571270582",//milon.roy.481352d59395
-                CompanyName = "Tesla Inc.",
-                IsAutoUserName = false
-            };
+            ////invitation
+            //var email = "milon.roy@rite.com.bd";
+            //var model = new SignUpInputModel
+            //{
+            //    Name = email,
+            //    UserName = Util.TryGenerateUserName(email),
+            //    Password = Util.TryGenerateCode(),
+            //    Email = email,
+            //    ReferralId = "Tanvir.Hossain.05d571270582",//milon.roy.481352d59395
+            //    CompanyName = "Tesla Inc.",
+            //    IsAutoUserName = false
+            //};
 
             ////invitation
             //var email = "shiplu.drive7@gmail.com";
@@ -91,6 +91,25 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
             };
 
             var entity = await _service.ActivateAccountAsync(model, DataFilter);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    [TestMethod]
+    public async Task ResendActivationCodeAsyncUnitTest()
+    {
+        try
+        {
+            //self
+            var model = new ResendActivationCodeInputModel
+            {
+                Email = "tanvir.hossain37@gmail.com"
+            };
+
+            var entity = await _service.ResendActivationCodeAsync(model, DataFilter);
         }
         catch (Exception e)
         {

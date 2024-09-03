@@ -32,7 +32,7 @@ public class CompanyServiceUnitTest : CompanyBaseUnitTest
             model.Branches.Add(new BranchInputModel
             {
                 Name = "Banani Branch",
-                IsDefault = true
+                IsDefault = false
             });
 
             var entity = await _service.SaveAsync(Mapper.Map<CompanyInputModel, Company>(model), DataFilter);

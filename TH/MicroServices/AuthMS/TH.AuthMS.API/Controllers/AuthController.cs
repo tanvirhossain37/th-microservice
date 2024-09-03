@@ -73,6 +73,18 @@ namespace TH.AuthMS.API
             return CustomResult(Lang.Find("success"), viewModel);
         }
 
+        [HttpPost("ResendActivationCodeAsync")]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ResendActivationCodeAsync([FromBody] ResendActivationCodeInputModel model)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+
+            var viewModel = await _authService.ResendActivationCodeAsync(model, DataFilter);
+            if (!viewModel) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
+
+            return CustomResult(Lang.Find("success"), viewModel);
+        }
+
         [HttpPost("ForgotPasswordAsync")]
         [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ForgotPasswordAsync([FromBody] ForgotPasswordInputModel model)

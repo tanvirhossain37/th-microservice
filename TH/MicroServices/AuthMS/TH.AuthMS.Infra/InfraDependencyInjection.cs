@@ -12,6 +12,7 @@ namespace TH.AuthMS.Infra
         public static IServiceCollection AddAuthInfraDependencyInjection(this IServiceCollection services,
             IConfiguration configuration)
         {
+            var connectionString = configuration.GetConnectionString("AuthDB");
             services.AddDbContext<AuthDbContext>(options => { options.UseSqlServer(configuration.GetConnectionString("AuthDB")); });
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
                 {

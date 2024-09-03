@@ -25,6 +25,11 @@ public class BranchServiceUnitTest : CompanyBaseUnitTest
         {
             var model = new BranchInputModel
             {
+                CompanyId = "5bfbe4be-60bc-4af0-8c7c-0c9a61207a09",
+                Name = "Uttara",
+                Code = "UTT",
+                SpaceId = "0e682664-d508-412e-97a3-5a44806678f8",
+                IsDefault = true
             };
 
             var entity = await _service.SaveAsync(Mapper.Map<BranchInputModel, Branch>(model), DataFilter);

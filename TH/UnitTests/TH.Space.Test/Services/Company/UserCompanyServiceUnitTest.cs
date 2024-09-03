@@ -113,7 +113,7 @@ public class UserCompanyServiceUnitTest : CompanyBaseUnitTest
         {
             var filter = new UserCompanyFilterModel
             {
-                UserName = "7efdd3d9-1520-44f2-88a7-a097049254f6"
+                UserName = "Tanvir.Hossaini.2cd7a93d1710"
             };
             filter.PageSize = (int)PageEnum.All;
 

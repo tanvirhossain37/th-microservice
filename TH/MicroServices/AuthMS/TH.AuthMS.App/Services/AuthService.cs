@@ -129,38 +129,13 @@ namespace TH.AuthMS.App
             //email confirmed?
             if (!identityUser.EmailConfirmed)
             {
-                //update user
-                identityUser.ActivationCode = Util.TryGenerateCode();
-                identityUser.CodeExpiryTime = DateTime.Now.AddDays(Convert.ToDouble(_config.GetSection("ActivationCodeExpiryTime").Value)); //1 day
+                //publish to eventbus
+                var emailEventAgain = new EmailEvent();
+                emailEventAgain.To.Add(identityUser.Email);
+                emailEventAgain.Subject = "Activate account please!";
+                emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
 
-                var updateResult = await _authRepo.UpdateAsync(identityUser);
-                if (!updateResult.Succeeded)
-                {
-                    var code = updateResult?.Errors?.FirstOrDefault()?.Code;
-                    throw new CustomException(Lang.Find($"error_{code}"));
-                }
-
-                if (string.IsNullOrWhiteSpace(identityUser.ReferralId))
-                {
-                    //send code
-                    //publish to eventbus
-                    var emailEventAgain = new EmailEvent();
-                    emailEventAgain.To.Add(identityUser.Email);
-                    emailEventAgain.Subject = "Activate account please!";
-                    emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
-
-                    await _publishEndpoint.Publish(emailEventAgain);
-                }
-                else
-                {
-                    //publish to eventbus
-                    var emailEventAgain = new EmailEvent();
-                    emailEventAgain.To.Add(identityUser.Email);
-                    emailEventAgain.Subject = "Activate account please!";
-                    emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
-
-                    await _publishEndpoint.Publish(emailEventAgain);
-                }
+                await _publishEndpoint.Publish(emailEventAgain);
 
                 throw new InactiveUserException(Lang.Find("error_emailnotconfirmed"));
             }
@@ -195,9 +170,6 @@ namespace TH.AuthMS.App
             emailEvent.Content = $"{identityUser.UserName}, you got signed in at {DateTime.Now}";
 
             await _publishEndpoint.Publish(emailEvent);
-
-            //grpc service
-            //var reply = await GrpcClientService.GetPermissions(new PermissionFilterRequest { SpaceId = "hello" });
 
             return signInViewModel;
         }
@@ -269,6 +241,36 @@ namespace TH.AuthMS.App
             }
 
             return identityUser.EmailConfirmed;
+        }
+
+        public async Task<bool> ResendActivationCodeAsync(ResendActivationCodeInputModel model, DataFilter dataFilter)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+
+            var identityUser = await _authRepo.FindByEmailAsync(model.Email);
+            if (identityUser is null) throw new UnauthorizedAccessException(Lang.Find("error_user"));
+
+            //update user
+            identityUser.ActivationCode = Util.TryGenerateCode();
+            identityUser.CodeExpiryTime = DateTime.Now.AddDays(Convert.ToDouble(_config.GetSection("ActivationCodeExpiryTime").Value)); //1 day
+
+            var updateResult = await _authRepo.UpdateAsync(identityUser);
+            if (!updateResult.Succeeded)
+            {
+                var code = updateResult?.Errors?.FirstOrDefault()?.Code;
+                throw new CustomException(Lang.Find($"error_{code}"));
+            }
+
+            //send code
+            //publish to eventbus
+            var emailEventAgain = new EmailEvent();
+            emailEventAgain.To.Add(identityUser.Email);
+            emailEventAgain.Subject = "Activate account please!";
+            emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
+
+            await _publishEndpoint.Publish(emailEventAgain);
+
+            return true;
         }
 
         public async Task ForgotPasswordAsync(ForgotPasswordInputModel model, DataFilter dataFilter)

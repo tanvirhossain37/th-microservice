@@ -18,6 +18,22 @@ public partial class BranchService
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
         //todo
+        var branches = await Repo.BranchRepo.GetQueryableAsync(x => x.CompanyId == entity.CompanyId, null, branches => branches.OrderBy(m => m.Id),
+            (int)PageEnum.PageIndex, (int)PageEnum.All, dataFilter);
+        if (branches is null)
+        {
+            entity.IsDefault = true; //first branch
+        }
+        else
+        {
+            if (entity.IsDefault)
+            {
+                foreach (var branch in branches)
+                {
+                    branch.IsDefault = false;
+                }
+            }
+        }
     }
 
     private async Task ApplyOnSavedBlAsync(Branch entity, DataFilter dataFilter)

@@ -28,20 +28,12 @@ namespace TH.CompanyMS.Test
             var builder = WebApplication.CreateBuilder();
 
             var serviceCollection = new ServiceCollection();
-            //builder.Configuration.AddJsonFile("appsettings.json", true);
-
-            //var configurationRoot = builder.Configuration.AddJsonFile("appsettings.json").Build();
-            //IConfiguration Configuration =
-            //    new ConfigurationBuilder()
-            //        .SetBasePath(Environment.CurrentDirectory)
-            //        .AddJsonFile("appsettings.json", true, true)
-            //        .AddEnvironmentVariables()
-            //        .Build();
+            
             var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-            serviceCollection.AddAuthAppDependencyInjection(builder.Configuration);
-            serviceCollection.AddAuthInfraDependencyInjection(builder.Configuration);
-            serviceCollection.AddAuthJwtTokenBasedAuthentication(builder.Configuration);
+            serviceCollection.AddAuthAppDependencyInjection(configuration);
+            serviceCollection.AddAuthInfraDependencyInjection(configuration);
+            serviceCollection.AddAuthJwtTokenBasedAuthentication(configuration);
 
             //RabbitMQ Config
             serviceCollection.AddMassTransit(config => { config.UsingRabbitMq((ctx, cfg) => { cfg.Host("amqp://guest:guest@localhost:5672"); }); });
