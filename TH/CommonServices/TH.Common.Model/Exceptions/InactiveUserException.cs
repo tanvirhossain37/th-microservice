@@ -1,4 +1,4 @@
-﻿namespace TH.AuthMS.App;
+﻿namespace TH.Common.Model;
 
 public class InactiveUserException : Exception
 {

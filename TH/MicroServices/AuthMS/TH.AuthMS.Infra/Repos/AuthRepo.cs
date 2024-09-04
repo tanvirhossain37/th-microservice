@@ -16,7 +16,6 @@ using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
 using TH.CompanyMS.App;
-using CustomException = TH.AuthMS.App.CustomException;
 
 namespace TH.AuthMS.Infra
 {

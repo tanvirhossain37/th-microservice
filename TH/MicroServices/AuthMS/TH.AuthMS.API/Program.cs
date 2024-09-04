@@ -5,13 +5,14 @@ using TH.AuthMS.App;
 using TH.AuthMS.Infra;
 using TH.CompanyMS.API;
 using TH.EventBus.Messages;
+using TH.Common.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 //builder.Services.AddControllers();
 //Tanvir
-builder.Services.AddControllers(c => c.Filters.Add(new CustomExceptionFilter()));
+builder.Services.AddControllers(c => c.Filters.Add(new CommonCustomExceptionFilter()));
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

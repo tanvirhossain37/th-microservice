@@ -129,13 +129,13 @@ namespace TH.AuthMS.App
             //email confirmed?
             if (!identityUser.EmailConfirmed)
             {
-                //publish to eventbus
-                var emailEventAgain = new EmailEvent();
-                emailEventAgain.To.Add(identityUser.Email);
-                emailEventAgain.Subject = "Activate account please!";
-                emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
+                ////publish to eventbus
+                //var emailEventAgain = new EmailEvent();
+                //emailEventAgain.To.Add(identityUser.Email);
+                //emailEventAgain.Subject = "Activate account please!";
+                //emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
 
-                await _publishEndpoint.Publish(emailEventAgain);
+                //await _publishEndpoint.Publish(emailEventAgain);
 
                 throw new InactiveUserException(Lang.Find("error_emailnotconfirmed"));
             }
@@ -167,7 +167,7 @@ namespace TH.AuthMS.App
             var emailEvent = new EmailEvent();
             emailEvent.To.Add(identityUser.Email);
             emailEvent.Subject = "Security Alter";
-            emailEvent.Content = $"{identityUser.UserName}, you got signed in at {DateTime.Now}";
+            emailEvent.Content = $"Hello {identityUser.Name}, you got signed in at {DateTime.Now}";
 
             await _publishEndpoint.Publish(emailEvent);
 

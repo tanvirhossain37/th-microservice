@@ -5,7 +5,7 @@ using TH.Common.Util;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Core;
 
-namespace TH.CompanyMS.Test;
+namespace TH.AuthMS.Test;
 
 [TestClass]
 public class AuthServiceUnitTest : AuthBaseUnitTest

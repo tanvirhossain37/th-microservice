@@ -4,15 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Protocols;
 using TH.Common.Model;
 using TH.CompanyMS.API;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Infra;
-using Microsoft.Extensions.Configuration;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using AppDependencyInjection = TH.AuthMS.App.AppDependencyInjection;
 
 namespace TH.CompanyMS.Test
 {

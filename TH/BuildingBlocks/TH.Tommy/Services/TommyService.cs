@@ -805,12 +805,14 @@ public class TommyService : BaseService
 
                 //partials
                 var partialLines = Util.ReadObjectLines($"{modelRoot}\\InputModels\\Partials\\{Path.GetFileName(file)}");
+                if (partialLines is not null)
+                {
+                    string partialPropertyContent = GetPropertyContentOfFeModel(partialLines);
+                    template = template.Replace("//todo partial input model content", partialPropertyContent);
 
-                string partialPropertyContent = GetPropertyContentOfFeModel(partialLines);
-                string partialDependencyContent = GetDependencyContentOfFeModel(partialLines);
-
-                template = template.Replace("//todo partial input model content", partialPropertyContent);
-                template = template.Replace("//todo partial dependency", partialDependencyContent);
+                    string partialDependencyContent = GetDependencyContentOfFeModel(partialLines);
+                    template = template.Replace("//todo partial dependency", partialDependencyContent);
+                }
 
                 //save it
                 FileManager.Append($"{dest}\\{FileManager.ToCamelCase(fileNameWithoutExtension)}.ts", template);
@@ -849,11 +851,13 @@ public class TommyService : BaseService
                 //partials
                 var partialLines = Util.ReadObjectLines($"{modelRoot}\\ViewModels\\Partials\\{Path.GetFileName(file)}");
 
-                string partialPropertyContent = GetPropertyContentOfFeModel(partialLines);
-                string partialDependencyContent = GetDependencyContentOfFeModel(partialLines);
-
-                template = template.Replace("//todo partial model content", partialPropertyContent);
-                template = template.Replace("//todo partial dependency", partialDependencyContent);
+                if (partialLines != null)
+                {
+                    string partialPropertyContent = GetPropertyContentOfFeModel(partialLines);
+                    template = template.Replace("//todo partial model content", partialPropertyContent);
+                    string partialDependencyContent = GetDependencyContentOfFeModel(partialLines);
+                    template = template.Replace("//todo partial dependency", partialDependencyContent);
+                }
 
                 //save it
                 FileManager.Append($"{dest}\\{FileManager.ToCamelCase(fileNameWithoutExtension)}.ts", template);
@@ -1178,7 +1182,7 @@ public class TommyService : BaseService
                 }
                 else
                 {
-                    content = string.Concat(content, $"\n\t{fieldName}: {childEntity}[] = [];");
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: {childEntity}[] = [];");
                 }
             }
 

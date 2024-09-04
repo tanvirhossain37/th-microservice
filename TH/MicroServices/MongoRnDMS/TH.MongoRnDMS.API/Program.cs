@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.Globalization;
+using TH.Common.Model;
 using TH.MongoRnDMS.API;
 using TH.MongoRnDMS.App;
 using TH.MongoRnDMS.Infra;
@@ -13,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 ////////////////////// Tanvir /////////////////////////////
 
 //builder.Services.AddControllers();
-builder.Services.AddControllers(c => c.Filters.Add(new CustomExceptionFilter()));
+builder.Services.AddControllers(c => c.Filters.Add(new CommonCustomExceptionFilter()));
 
 ////////////////////// End //////////////////////////////
 

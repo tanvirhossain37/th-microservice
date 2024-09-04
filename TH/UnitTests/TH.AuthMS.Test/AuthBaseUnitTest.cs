@@ -8,12 +8,8 @@ using TH.AuthMS.API;
 using TH.Common.Model;
 using TH.AuthMS.App;
 using TH.AuthMS.Infra;
-using System.Configuration;
-using Castle.Core.Configuration;
-using Google.Api;
-using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
-namespace TH.CompanyMS.Test
+namespace TH.AuthMS.Test
 {
     [TestClass]
     public class AuthBaseUnitTest
@@ -29,7 +25,7 @@ namespace TH.CompanyMS.Test
 
             var serviceCollection = new ServiceCollection();
             
-            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            var configuration = new ConfigurationBuilder().AddJsonFile("appsettings-test.json").Build();
 
             serviceCollection.AddAuthAppDependencyInjection(configuration);
             serviceCollection.AddAuthInfraDependencyInjection(configuration);
@@ -39,7 +35,7 @@ namespace TH.CompanyMS.Test
             serviceCollection.AddMassTransit(config => { config.UsingRabbitMq((ctx, cfg) => { cfg.Host("amqp://guest:guest@localhost:5672"); }); });
 
             //serviceCollection.AddScoped<IConfiguration, ConfigurationManager>();
-            serviceCollection.AddSingleton<IConfiguration>(configuration);
+            serviceCollection.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configuration);
             serviceCollection.AddLogging();
 
             //AutoMapper
