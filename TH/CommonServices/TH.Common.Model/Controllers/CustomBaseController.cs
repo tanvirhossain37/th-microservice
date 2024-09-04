@@ -1,5 +1,6 @@
 ﻿using CoreApiResponse;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace TH.Common.Model
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [EnableCors("_corsPolicy")]
     //public class CustomBaseController : ControllerBase
     public abstract class CustomBaseController : BaseController, IDisposable
     {
