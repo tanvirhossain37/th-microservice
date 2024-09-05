@@ -74,3 +74,7 @@ Install:
 MassTransit
 MassTransit.RabbitMQ
 MassTransit.AspNetCore
+
+
+#Geo location
+https://www.youtube.com/watch?v=IjfaeihsFcQ&t=1s
