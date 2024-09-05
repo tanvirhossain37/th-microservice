@@ -147,4 +147,10 @@
   <data name="inactive_login" xml:space="preserve">
     <value>Hello {0},&lt;br /&gt;&lt;br /&gt;Welcome back!&lt;br /&gt;Please use this code to verify your account.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Thanks,&lt;br /&gt;We Space.</value>
   </data>
+  <data name="sign_in_alert_with_geo" xml:space="preserve">
+    <value>Hello {0}, &lt;br /&gt;&lt;br /&gt;We noticed a new sign-in to your Space Account from {1}-{2}, {3}, {4}. IP address is {5}. If this was you, you don’t need to do anything. If not, please contact us.</value>
+  </data>
+  <data name="sign_in_alert_normal" xml:space="preserve">
+    <value>Hello {0}, you got signed-in at {1}</value>
+  </data>
 </root>

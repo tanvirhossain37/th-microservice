@@ -109,6 +109,10 @@ public static class AddDependencyInjection
                 };
             });
 
+        //geo info
+        services.AddScoped<Geo>();
+        services.AddScoped<GeoHelper>();
+
         return services;
     }
 

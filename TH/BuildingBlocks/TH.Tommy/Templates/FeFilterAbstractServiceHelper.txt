@@ -1,0 +1,3 @@
+    public $methodName$(filter: BaseFilter): Observable<any> {
+        return super.postAsync($we$Url + "$MethodName$", filter);
+    }

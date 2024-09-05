@@ -159,12 +159,27 @@ public class TommyService : BaseService
         //controllers
         var controllerFiles = Directory.GetFiles($"{controllerRoot}");
 
+        //abstract
+        var abstractTemplate = FileManager.Read($"{_template}\\FeAbstractService.txt");
+        string abstractContent = string.Empty;
+        var constantContent = string.Empty;
+        var dest = Util.CreateDirectory($"{ResultFeDestRoot}\\Services");
+
         foreach (var file in controllerFiles)
         {
-            CreateFeServices(file, projectName, modelRoot);
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+
+            abstractContent = string.Concat(abstractContent, CreateFeServices(file, projectName, modelRoot));
+            constantContent = string.Concat(constantContent,
+                $"\nconst {FileManager.ToCamelCase(fileNameWithoutExtension.Replace("Controller", ""))}Url = \"api/{fileNameWithoutExtension.Replace("Controller", "")}/\";");
+
             CreateFeHubs(file, projectName);
         }
 
+        abstractTemplate = abstractTemplate.Replace("//todo abstract content", abstractContent);
+        abstractTemplate = abstractTemplate.Replace("//constant content", constantContent);
+
+        FileManager.Append($"{dest}\\abstract.service.ts", abstractTemplate);
     }
 
     //private void MakeFeEntities(string moduleName)
@@ -912,7 +927,7 @@ public class TommyService : BaseService
         }
     }
 
-    private void CreateFeServices(string file, string projectName, string modelRoot)
+    private string CreateFeServices(string file, string projectName, string modelRoot)
     {
         try
         {
@@ -923,26 +938,74 @@ public class TommyService : BaseService
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
             var dest = Util.CreateDirectory($"{ResultFeDestRoot}\\Services");
             //var partialDest = Util.CreateDirectory($"{dest}\\Partials");
+            string methodContent = string.Empty;
+            string abstractContent = string.Empty;
 
             var lines = Util.ReadObjectLines(file);
             if (lines != null)
             {
-                string methodContent = GetPropertyContentOfFeServices(lines);
-                string methodInterfaceContent = GetPropertyContentOfFeServiceInterfaces(lines);
-
-                //get template
-                var template = FileManager.Read($"{_template}\\FeService.txt");
-                template = template.Replace("$WE$", fileNameWithoutExtension.Replace("Controller", ""));
-                template = template.Replace("//todo method content", $"\n\t{methodContent}");
-                template = template.Replace("//todo method interface content", $"\n\t{methodInterfaceContent}");
-
-                
-
-                //save it
-                FileManager.Append($"{dest}\\{FileManager.ToCamelCase(fileNameWithoutExtension.Replace("Controller", ""))}.service.ts", template);
+                methodContent = GetPropertyContentOfFeServices(lines);
+                //string methodInterfaceContent = GetPropertyContentOfFeServiceInterfaces(lines);
+                abstractContent = GetPropertyContentOfFeAbstractServices(lines, file);
             }
+
+            //get template
+            var template = FileManager.Read($"{_template}\\FeService.txt");
+            template = template.Replace("$WE$", fileNameWithoutExtension.Replace("Controller", ""));
+            template = template.Replace("//todo method content", $"\n\t{methodContent}");
+            //template = template.Replace("//todo method interface content", $"\n\t{methodInterfaceContent}");
+            
+            //save it
+            FileManager.Append($"{dest}\\{FileManager.ToCamelCase(fileNameWithoutExtension.Replace("Controller", ""))}.service.ts", template);
+            return abstractContent;
         }
         catch (Exception e)
+        {
+            throw;
+        }
+    }
+
+    private string GetPropertyContentOfFeAbstractServices(IEnumerable<string> lines, string file)
+    {
+        try
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+
+            var content = string.Empty;
+            var childEntity = string.Empty;
+            var fieldName = string.Empty;
+            var typeName = string.Empty;
+
+            foreach (var line in lines)
+            {
+                if (line.Contains("public async"))
+                {
+                    var methodName = line.Trim().Split(' ', '(')[3];
+
+                    var template = string.Empty;
+
+                    if ((methodName.StartsWith("Save")) || (methodName.StartsWith("Update")) || (methodName.StartsWith("SoftDelete")) ||
+                        (methodName.StartsWith("Delete")))
+                    {
+                        template = FileManager.Read($"{_template}\\FeEntityAbstractServiceHelper.txt");
+                    }
+                    else
+                    {
+                        template = FileManager.Read($"{_template}\\FeFilterAbstractServiceHelper.txt");
+                    }
+
+                    template = template.Replace("$MethodName$", methodName);
+                    template = template.Replace("$methodName$", FileManager.ToCamelCase(methodName));
+                    template = template.Replace("$we$", FileManager.ToCamelCase(fileNameWithoutExtension.Replace("Controller","")));
+
+                    content = string.Concat(content, $"\n{template}");
+                }
+            }
+
+            return content;
+        }
+        catch (Exception)
         {
             throw;
         }
@@ -1355,7 +1418,7 @@ public class TommyService : BaseService
                         template = FileManager.Read($"{_template}\\FeFilterServiceHelper.txt");
                     }
 
-                    template = template.Replace("$MethodName$", methodName);
+                    //template = template.Replace("$MethodName$", methodName);
                     template = template.Replace("$methodName$", FileManager.ToCamelCase(methodName));
 
                     content = string.Concat(content, $"\n{template}");

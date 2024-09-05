@@ -141,6 +141,12 @@
   <data name="reset_password" xml:space="preserve">
     <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;Vous avez demandé la réinitialisation du mot de passe. Veuillez utiliser ce code pour réinitialiser votre mot de passe. Si ce n'est pas vous, ignorez-le.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Merci,&lt;br /&gt;We Space.</value>
   </data>
+  <data name="sign_in_alert_normal" xml:space="preserve">
+    <value>Bonjour {0}, vous êtes connecté à {1}</value>
+  </data>
+  <data name="sign_in_alert_with_geo" xml:space="preserve">
+    <value>Bonjour {0}, &lt;br /&gt;&lt;br /&gt;Nous avons remarqué une nouvelle connexion à votre compte Space de la part de {1}-{2}, {3}, {4}. L'adresse IP est {5}. Si c'est vous, vous n'avez rien à faire. Sinon, veuillez nous contacter.</value>
+  </data>
   <data name="title" xml:space="preserve">
     <value>ওপেন স্পেস</value>
   </data>

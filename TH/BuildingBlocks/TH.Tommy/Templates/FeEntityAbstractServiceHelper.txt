@@ -1,0 +1,3 @@
+    public $methodName$(entity: BaseEntity): Observable<any> {
+        return super.postAsync($we$Url + "$MethodName$", entity);
+    }

@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using MassTransit;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using TH.Common.Lang;
 using TH.EventBus.Messages;
 using TH.Common.Model;
 using TH.Common.Util;
-using MongoDB.Driver;
-using Microsoft.AspNetCore.Identity;
-using TH.AuthMS.Core;
+using MassTransit.Futures.Contracts;
 
 namespace TH.AuthMS.App
 {
@@ -17,14 +17,16 @@ namespace TH.AuthMS.App
         private readonly IConfiguration _config;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IMapper _mapper;
+        private readonly GeoHelper _geoHelper;
 
-        public AuthService(IAuthRepo authRepo, IConfiguration config, IPublishEndpoint publishEndpoint, IMapper mapper) : base(mapper,
+        public AuthService(IAuthRepo authRepo, IConfiguration config, IPublishEndpoint publishEndpoint, IMapper mapper, GeoHelper geoHelper) : base(mapper,
             publishEndpoint)
         {
             _authRepo = authRepo ?? throw new ArgumentNullException(nameof(authRepo));
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _geoHelper = geoHelper ?? throw new ArgumentNullException(nameof(geoHelper));
         }
 
         public async Task<SignUpViewModel> SignUpAsync(SignUpInputModel entity, DataFilter dataFilter)
@@ -167,10 +169,21 @@ namespace TH.AuthMS.App
             var emailEvent = new EmailEvent();
             emailEvent.To.Add(identityUser.Email);
             emailEvent.Subject = "Security Alter";
-            emailEvent.Content = $"Hello {identityUser.Name}, you got signed in at {DateTime.Now}";
+
+            try
+            {
+                var geoInfo = await _geoHelper.GetGeoInfo();
+                var geo = JsonConvert.DeserializeObject<Geo>(geoInfo);
+                emailEvent.Content = string.Format(Lang.Find("sign_in_alert_with_geo"), identityUser.Name, geo.City, geo.Zip, geo.Region_Name,
+                    geo.Country_Name,
+                    geo.IP);
+            }
+            catch (Exception)
+            {
+                emailEvent.Content = string.Format(Lang.Find("sign_in_alert_normal"), identityUser.Name, DateTime.Now.ToString());
+            }
 
             await _publishEndpoint.Publish(emailEvent);
-
             return signInViewModel;
         }
 

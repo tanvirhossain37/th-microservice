@@ -1,0 +1,11 @@
+import { Observable } from 'rxjs';
+import { BaseEntity } from '../models/common/baseEntity';
+import { BaseFilter } from '../models/common/baseFilter';
+import { BaseService } from './base.service';
+
+//constant content
+
+export abstract class AbstractService extends BaseService {
+
+    //todo abstract content
+}
