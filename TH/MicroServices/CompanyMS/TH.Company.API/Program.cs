@@ -23,6 +23,7 @@ namespace TH.CompanyMS.API
             builder.Services.AddCompanyInfraDependencyInjection(builder.Configuration);
             builder.Services.AddDbContext(builder.Configuration);
             builder.Services.AddCompanyJwtTokenBasedAuthentication(builder.Configuration);
+            builder.AddLog4NetDependency(builder.Configuration);
 
             builder.Services.AddSignalR();
 

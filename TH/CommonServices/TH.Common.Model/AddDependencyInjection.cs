@@ -3,9 +3,11 @@ using System.Text;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace TH.Common.Model;
@@ -114,6 +116,15 @@ public static class AddDependencyInjection
         services.AddScoped<GeoHelper>();
 
         return services;
+    }
+
+    public static WebApplicationBuilder AddLog4NetDependency(this WebApplicationBuilder builder,
+        IConfiguration configuration)
+    {
+        builder.Logging.ClearProviders();
+        builder.Logging.AddLog4Net();
+
+        return builder;
     }
 
     //public static IServiceCollection AddEventBus(this IServiceCollection services,

@@ -17,13 +17,15 @@ public class CompanyController : CustomBaseController
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IHubContext<CompanyHub, ICompanyHub> _hubContext;
+    private readonly ILogger<CompanyController> _logger;
 
-    public CompanyController(ICompanyService companyService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<CompanyHub, ICompanyHub> hubContext) : base(httpContextAccessor)
+    public CompanyController(ICompanyService companyService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<CompanyHub, ICompanyHub> hubContext, ILogger<CompanyController> logger) : base(httpContextAccessor)
     {
         _companyService = companyService ?? throw new ArgumentNullException(nameof(companyService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
         _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         _companyService.SetUserResolver(UserResolver);
     }
@@ -93,6 +95,8 @@ public class CompanyController : CustomBaseController
     [Authorize(Policy = "CompanyReadPolicy")]
     public async Task<IActionResult> FindCompanyAsync([FromBody] CompanyFilterModel filter)
     {
+
+        _logger.LogTrace("Some one is searching for the company");
         var entity = await _companyService.FindByIdAsync(filter, DataFilter);
         if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
 

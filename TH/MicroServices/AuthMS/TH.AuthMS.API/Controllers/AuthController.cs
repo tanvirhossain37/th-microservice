@@ -17,12 +17,14 @@ namespace TH.AuthMS.API
         private readonly IAuthService _authService;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly JwtConfiguration _configuration;
+        private readonly ILogger<AuthController> _logger;
 
         public AuthController(IAuthService authService, IPublishEndpoint publishEndpoint, IOptions<JwtConfiguration> options,
-            HttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+            HttpContextAccessor httpContextAccessor, ILogger<AuthController> logger) : base(httpContextAccessor)
         {
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
             _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _configuration = options.Value;
         }
 
@@ -47,6 +49,7 @@ namespace TH.AuthMS.API
             if (viewModel is null)
                 return CustomResult(Lang.Find("error_not_found"), null, HttpStatusCode.NotFound);
 
+            _logger.LogTrace("Some just logged in!");
             return CustomResult(Lang.Find("success"), viewModel);
         }
 

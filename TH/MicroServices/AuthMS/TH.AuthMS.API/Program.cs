@@ -23,10 +23,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthAppDependencyInjection(builder.Configuration);
 builder.Services.AddAuthInfraDependencyInjection(builder.Configuration);
 builder.Services.AddAuthJwtTokenBasedAuthentication(builder.Configuration);
+builder.AddLog4NetDependency(builder.Configuration);
 //builder.Services.AddCookieBasedAuthentication(builder.Configuration);
 
 //AutoMapper
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+builder.Logging.AddLog4Net();
 
 //RabbitMQ Config
 builder.Services.AddMassTransit(config =>
