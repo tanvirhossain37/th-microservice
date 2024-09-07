@@ -29,7 +29,6 @@ builder.AddLog4NetDependency(builder.Configuration);
 //AutoMapper
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-builder.Logging.AddLog4Net();
 
 //RabbitMQ Config
 builder.Services.AddMassTransit(config =>

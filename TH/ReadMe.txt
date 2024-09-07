@@ -78,3 +78,6 @@ MassTransit.AspNetCore
 
 #Geo location
 https://www.youtube.com/watch?v=IjfaeihsFcQ&t=1s
+
+#log4net
+https://www.youtube.com/watch?v=SkvGtIS9QvI&t=654s
