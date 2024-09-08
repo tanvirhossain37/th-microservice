@@ -28,4 +28,10 @@
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Util\TH.Common.Util.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

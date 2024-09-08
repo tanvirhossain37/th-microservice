@@ -31,4 +31,10 @@
     <ProjectReference Include="..\TH.ShadowMS.Infra\TH.ShadowMS.Infra.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
