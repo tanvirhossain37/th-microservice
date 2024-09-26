@@ -1,21 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using TH.AddressMS.App;
 using TH.AuthMS.App;
-using TH.AuthMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
-using TH.Common.Util;
-using TH.CompanyMS.App;
 
 namespace TH.AuthMS.Infra
 {

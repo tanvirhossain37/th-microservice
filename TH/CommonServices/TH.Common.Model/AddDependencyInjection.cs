@@ -109,6 +109,11 @@ public static class AddDependencyInjection
                     ClockSkew = TimeSpan.Zero,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configurationRoot.GetSection("Jwt:Key").Value))
                 };
+            })
+            .AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = configuration["Google:ClientId"];
+                googleOptions.ClientSecret = configuration["Google:ClientSecret"];
             });
 
         //geo info

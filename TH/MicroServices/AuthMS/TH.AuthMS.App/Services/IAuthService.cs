@@ -15,5 +15,6 @@ namespace TH.AuthMS.App
         Task ForgotPasswordAsync(ForgotPasswordInputModel model, DataFilter dataFilter);
         Task<bool> ResetPasswordAsync(ForgotPasswordInputModel model, DataFilter dataFilter);
         Task<ApplicationUser> FindByEmailAsync(ApplicationUserFilterModel filter, DataFilter dataFilter);
+        Task<SignInViewModel> SocialSignInAsync(SocialUserInputModel entity, DataFilter dataFilter);
     }
 }

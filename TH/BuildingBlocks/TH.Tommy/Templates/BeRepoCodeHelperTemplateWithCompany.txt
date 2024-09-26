@@ -1,0 +1,21 @@
+    public async Task<$WE$> FindByCodeAsync(string companyId, string code, DataFilter dataFilter)
+    {
+        companyId = string.IsNullOrWhiteSpace(companyId) ? throw new ArgumentNullException(nameof(companyId)) : companyId.Trim().ToLower();
+        code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
+
+        return await SingleOrDefaultQueryableAsync(e =>
+            (e.Code.Equals(code)) &&
+            (e.CompanyId.Equals(companyId)), dataFilter);
+    }
+
+    public async Task<$WE$> FindByCodeExceptMeAsync(string id, string companyId, string code, DataFilter dataFilter)
+    {
+        id = string.IsNullOrWhiteSpace(id) ? throw new ArgumentNullException(nameof(id)) : id.Trim().ToLower();
+        companyId = string.IsNullOrWhiteSpace(companyId) ? throw new ArgumentNullException(nameof(companyId)) : companyId.Trim().ToLower();
+        code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
+
+        return await SingleOrDefaultQueryableAsync(e =>
+            (!e.Id.Equals(id)) &&
+            (e.Code.Equals(code)) &&
+            (e.CompanyId.Equals(companyId)), dataFilter);
+    }

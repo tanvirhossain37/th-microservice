@@ -40,6 +40,7 @@ public partial class UserService
             var signUpInputRequest = new SignUpInputRequest
             {
                 Name = entity.Name,
+                Provider = "LOCAL",
                 UserName = Util.TryGenerateUserName(entity.UserName),
                 Email = entity.UserName,
                 Password = Util.TryGenerateCode(),

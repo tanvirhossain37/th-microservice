@@ -1,0 +1,2 @@
+app.MapHub<CompanyHub>("/Address");
+app.MapHub<CompanyHub>("/Country");

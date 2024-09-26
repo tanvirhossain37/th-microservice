@@ -48,7 +48,7 @@ namespace TH.CompanyMS.Test
             serviceCollection.AddSingleton<IConfiguration>(configuration);
             ServiceProvider = serviceCollection.BuildServiceProvider();
             var config = new MapperConfiguration(cfg =>
-                cfg.AddProfile<MappingProfile>());
+                cfg.AddProfile<CompanyMappingProfile>());
 
             Mapper = new Mapper(config);
 

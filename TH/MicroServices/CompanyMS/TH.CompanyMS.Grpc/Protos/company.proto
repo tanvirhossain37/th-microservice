@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option csharp_namespace = "TH.CompanyMS.Grpc";
+
+// The greeting service definition.
+service CompanyProtoService {
+  // Sends a greeting
+  //rpc SignUp (SignUpInputRequest) returns (SignUpViewReply);
+}

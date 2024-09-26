@@ -7,6 +7,9 @@ using TH.AuthMS.App;
 using TH.AuthMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace TH.AuthMS.API
 {
@@ -110,6 +113,30 @@ namespace TH.AuthMS.API
             return CustomResult(Lang.Find("success"));
         }
 
+        [HttpGet("SignInGoogleAsync")]
+        public async Task SignInGoogleAsync()
+        {
+            await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
+                new AuthenticationProperties
+                {
+                    RedirectUri = Url.Action("GoogleResponse")
+                });
+        }
+
+        [HttpGet("GoogleResponse")]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var claims = result.Principal.Identities.FirstOrDefault().Claims.Select(claim => new
+            {
+                claim.Issuer,
+                claim.OriginalIssuer,
+                claim.Type,
+                claim.Value
+            });
+
+            return CustomResult(Lang.Find("success"), claims);
+        }
         public override void Dispose()
         {
             _authService?.Dispose();

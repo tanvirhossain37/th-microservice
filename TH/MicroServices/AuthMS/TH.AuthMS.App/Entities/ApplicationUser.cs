@@ -11,7 +11,8 @@ namespace TH.AuthMS.App
     public class ApplicationUser : IdentityUser, IEntity
     {
         public string Name { get; set; } = null!;
-        public string? CompanyId { get; set; }
+        public string Provider { get; set; }
+        public string? PhotoUrl { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string? RefreshToken { get; set; }
@@ -20,5 +21,6 @@ namespace TH.AuthMS.App
         public string? ActivationCode { get; set; }
         public DateTime CodeExpiryTime { get; set; }
         public string? ReferralId { get; set; }
+        public int SubscriptionId { get; set; }
     }
 }

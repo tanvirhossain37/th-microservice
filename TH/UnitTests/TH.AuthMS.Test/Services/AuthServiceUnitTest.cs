@@ -1,9 +1,5 @@
-﻿using Google.Api;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using TH.AuthMS.App;
-using TH.Common.Util;
-using TH.CompanyMS.App;
-using TH.CompanyMS.Core;
 
 namespace TH.AuthMS.Test;
 
@@ -29,6 +25,7 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
             var model = new SignUpInputModel
             {
                 Name = "Tanvir Hossain",
+                Provider = "LOCAL",
                 UserName = "tanvir.hossain37@gmail.com",
                 Password = "admin123##",
                 Email = "tanvir.hossain37@gmail.com",
@@ -197,6 +194,33 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
 
             var applicationUser = await _service.FindByEmailAsync(model, DataFilter);
             var viewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(applicationUser);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    [TestMethod]
+    public async Task ExternalSignInAsyncUnitTest()
+    {
+        try
+        {
+            var model = new SocialUserInputModel
+            {
+                Name = "Tanvir Hossain",
+
+                Email = "tanvir.hossain37@gmail.com",
+                //Password = "admin123##"//
+            };
+
+            //var model = new SignInInputModel
+            //{
+            //    Email = "milon.roy@rite.com.bd",
+            //    Password = "admin123##"
+            //};
+
+            var entity = await _service.SocialSignInAsync(model, DataFilter);
         }
         catch (Exception e)
         {

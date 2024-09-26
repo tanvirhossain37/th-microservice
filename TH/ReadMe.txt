@@ -81,3 +81,11 @@ https://www.youtube.com/watch?v=IjfaeihsFcQ&t=1s
 
 #log4net
 https://www.youtube.com/watch?v=SkvGtIS9QvI&t=654s
+
+#social login
+https://www.youtube.com/watch?v=0PHS5R5uYzk
+https://www.youtube.com/watch?v=O8Ae6MC5bf4
+https://stackoverflow.com/questions/77589486/nextjs-cannot-find-dirname
+
+#environemnt variables
+https://www.youtube.com/watch?v=rT9P3hfU7bk

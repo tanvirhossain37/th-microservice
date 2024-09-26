@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
+using $core-dependency$;
 using TH.Common.Model;
 using TH.Common.Util;
-using TH.CompanyMS.Core;
 
 namespace $namespace$;
 

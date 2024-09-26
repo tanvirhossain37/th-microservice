@@ -7,31 +7,31 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.27.2" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
-    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.64.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.65.0">
+    <PackageReference Include="Google.Protobuf" Version="3.28.2" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.66.0" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.66.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.66.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="TH.Common.Lang" Version="1.0.4" />
-    <PackageReference Include="MassTransit" Version="8.2.3" />
+    <PackageReference Include="MassTransit" Version="8.2.5" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.3" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,7 +39,6 @@
     <ProjectReference Include="..\..\..\BuildingBlocks\TH.Grpc\TH.Grpc.csproj" />
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Lang\TH.Common.Lang.csproj" />
     <ProjectReference Include="..\..\..\CommonServices\TH.Common.Util\TH.Common.Util.csproj" />
-    <ProjectReference Include="..\..\UserSvc\TH.UserSvc.App\TH.UserSvc.App.csproj" />
     <ProjectReference Include="..\TH.AuthMS.Core\TH.AuthMS.Core.csproj" />
   </ItemGroup>
 

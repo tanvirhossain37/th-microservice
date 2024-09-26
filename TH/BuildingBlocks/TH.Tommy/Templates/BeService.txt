@@ -1,10 +1,10 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using $core-dependency$;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using TH.CompanyMS.Core;
 
 namespace $namespace$;
 

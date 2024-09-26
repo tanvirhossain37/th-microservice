@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TH.AddressMS.App;
+using TH.Common.Model;
 
 namespace TH.AddressMS.Mongo
 {

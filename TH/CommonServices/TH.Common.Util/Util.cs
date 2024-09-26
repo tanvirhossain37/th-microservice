@@ -11,6 +11,57 @@ namespace TH.Common.Util
 {
     public static class Util
     {
+        // Convert the string to camel case.
+        public static string ToCamelCase(string name)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                name = name.Trim();
+                name = char.ToLower(name[0]) + name.Substring(1);
+            }
+
+            return name;
+        }
+
+        // Convert the string to pascal case.
+        public static string ToPascalCase(string name)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
+                name = ti.ToTitleCase(name);
+            }
+
+            return name;
+        }
+
+        public static string ToUnderscoreCase(string value)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    return string.Empty;
+
+                value = ToCamelCase(value.Trim());
+
+                string[] words = Regex.Matches(value, "(^[a-z]+|[A-Z]+(?![a-z])|[A-Z][a-z]+)")
+                    .OfType<Match>()
+                    .Select(m => m.Value)
+                    .ToArray();
+
+                for (int i = 0; i < words.Length; i++)
+                {
+                    words[i] = ToCamelCase(words[i]);
+                }
+
+                return string.Join("_", words);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public static bool TryIsValidDate(DateTime dateTime)
         {
             try

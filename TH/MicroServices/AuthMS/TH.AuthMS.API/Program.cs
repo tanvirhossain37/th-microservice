@@ -1,11 +1,14 @@
 using System.Reflection;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using TH.AuthMS.API;
 using TH.AuthMS.App;
 using TH.AuthMS.Infra;
 using TH.CompanyMS.API;
 using TH.EventBus.Messages;
 using TH.Common.Model;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +31,19 @@ builder.AddLog4NetDependency(builder.Configuration);
 
 //AutoMapper
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+//builder.Services.AddAuthentication(options =>
+//    {
+//        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+//    })
+//    .AddCookie()
+//    .AddGoogle(opt =>
+//    {
+//        opt.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//        opt.ClientId = builder.Configuration["Google:ClientId"];
+//        opt.ClientSecret = builder.Configuration["Google:ClientSecret"];
+//    });
 
 
 //RabbitMQ Config
@@ -56,6 +72,14 @@ builder.Services.AddCors(options =>
                 .AllowAnyHeader();
         });
 });
+
+//google auth
+//builder.Services.AddAuthentication().AddGoogle(options =>
+//    {
+//        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+//        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+//    }
+//);
 
 var app = builder.Build();
 

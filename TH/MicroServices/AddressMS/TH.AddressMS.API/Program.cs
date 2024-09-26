@@ -1,3 +1,4 @@
+using System.Reflection;
 using TH.AddressMS.API;
 using TH.AddressMS.App;
 using TH.AddressMS.Infra;
@@ -11,10 +12,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//AutoMapper
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
 //tanvir
-builder.Services.AddScoped<AddressDbContextSeed>();
-builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices(builder.Configuration);
+//builder.Services.AddScoped<AddressDbContextSeed>();
+builder.Services.AddAddressApplicationServices(builder.Configuration);
+builder.Services.AddAddressAppEventBus(builder.Configuration);
+builder.Services.AddAddressInfrastructureServices(builder.Configuration);
+builder.Services.AddDbContext(builder.Configuration);
 
 builder.Services.AddHostedService<AppHostedService>();
 /////////////////////////////////////////////
@@ -33,5 +39,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();

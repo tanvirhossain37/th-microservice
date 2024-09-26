@@ -1,5 +1,5 @@
+using $core-dependency$;
 using TH.Common.Model;
-using TH.CompanyMS.Core;
 using TH.Repo;
 
 namespace $namespace$;

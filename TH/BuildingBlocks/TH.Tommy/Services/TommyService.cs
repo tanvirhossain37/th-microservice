@@ -484,7 +484,9 @@ public class TommyService : BaseService
             iuowTemplate = iuowTemplate.Replace("//we todo repo", uowInterfacePropertyContent);
 
             var uowTemplate = FileManager.Read($"{_template}\\UowRepo.txt");
-            uowTemplate = uowTemplate.Replace("$namespace$", $"{projectName}.infra");
+            uowTemplate = uowTemplate.Replace("$namespace$", $"{projectName}.Infra");
+            uowTemplate = uowTemplate.Replace("$app-dependency$", $"{projectName}.App");
+            uowTemplate = uowTemplate.Replace("$DbContext$", $"{projectName.Replace("TH.","").Replace("MS","")}DbContext");
             uowTemplate = uowTemplate.Replace("$UOW$", FileManager.ToPascalCase(projectName));
             uowTemplate = uowTemplate.Replace("//we todo repo", uowPropertyContent);
             uowTemplate = uowTemplate.Replace("//we todo constructor inject", uowConstructorInjectContent);
@@ -542,6 +544,7 @@ public class TommyService : BaseService
 
                 var interfaceTemplate = FileManager.Read($"{_template}\\IBeService.txt");
                 interfaceTemplate = interfaceTemplate.Replace("$namespace$", $"{projectName}.App");
+                interfaceTemplate = interfaceTemplate.Replace("$core-dependency$", $"{projectName}.Core");
                 interfaceTemplate = interfaceTemplate.Replace("$WE$", fileNameWithoutExtension);
                 interfaceTemplate = interfaceTemplate.Replace("$WES$", Util.TryPluralize(fileNameWithoutExtension));
 
@@ -552,6 +555,7 @@ public class TommyService : BaseService
                 string serviceTemplate = FileManager.Read($"{_template}\\BeService.txt");
 
                 serviceTemplate = serviceTemplate.Replace("$namespace$", $"{projectName}.App");
+                serviceTemplate = serviceTemplate.Replace("$core-dependency$", $"{projectName}.Core");
                 serviceTemplate = serviceTemplate.Replace("$WE$", fileNameWithoutExtension);
                 serviceTemplate = serviceTemplate.Replace("$WES$", Util.TryPluralize(fileNameWithoutExtension));
                 serviceTemplate = serviceTemplate.Replace("$UOW$", FileManager.ToPascalCase(projectName));
@@ -579,6 +583,7 @@ public class TommyService : BaseService
 
                 var partialTemplate = FileManager.Read($"{_template}\\BePartialService.txt");
                 partialTemplate = partialTemplate.Replace("$namespace$", $"{projectName}.App");
+                partialTemplate = partialTemplate.Replace("$core-dependency$", $"{projectName}.Core");
                 partialTemplate = partialTemplate.Replace("$WE$", fileNameWithoutExtension);
                 partialTemplate = partialTemplate.Replace("//we todo constructor inject", serviceConstructorInjectContent);
                 partialTemplate = partialTemplate.Replace("//we todo this constructor inject", partialServiceConstructorInjectContent);
@@ -625,12 +630,16 @@ public class TommyService : BaseService
                 //get template
                 var interfaceTemplate = FileManager.Read($"{_template}\\IBeRepo.txt");
                 interfaceTemplate = interfaceTemplate.Replace("$namespace$", $"{projectName}.App");
+                interfaceTemplate = interfaceTemplate.Replace("$core-dependency$", $"{projectName}.Core");
                 interfaceTemplate = interfaceTemplate.Replace("$WE$", fileNameWithoutExtension);
                 interfaceTemplate = interfaceTemplate.Replace("//todo repo name methods", interfaceNameMethodContent);
                 interfaceTemplate = interfaceTemplate.Replace("//todo repo code methods", interfaceCodeMethodContent);
 
                 var repoTemplate = FileManager.Read($"{_template}\\BeRepo.txt");
                 repoTemplate = repoTemplate.Replace("$namespace$", $"{projectName}.App");
+                repoTemplate = repoTemplate.Replace("$core-dependency$", $"{projectName}.Core");
+                repoTemplate = repoTemplate.Replace("$infra-dependency$", $"{projectName}.Infra");
+                repoTemplate = repoTemplate.Replace("$DbContext$", $"{projectName.Replace("TH.","").Replace("MS","")}DbContext");
                 repoTemplate = repoTemplate.Replace("$WE$", fileNameWithoutExtension);
                 repoTemplate = repoTemplate.Replace("//todo repo name methods", nameMethodContent);
                 repoTemplate = repoTemplate.Replace("//todo repo code methods", codeMethodContent);
@@ -1115,7 +1124,7 @@ public class TommyService : BaseService
                 FileManager.Write($"{dest}\\{fileNameWithoutExtension}.cs", template);
 
                 ////factory
-                FileManager.Append(Path.Combine(_factory, @"Entities.txt"), $"services.AddScoped<I{fileNameWithoutExtension}, {fileNameWithoutExtension}>();");
+                FileManager.Append(Path.Combine(_factory, @"Entities.txt"), $"services.AddScoped<{fileNameWithoutExtension}>();");
             }
         }
         catch (Exception)
@@ -1682,7 +1691,8 @@ public class TommyService : BaseService
 
             var content = string.Empty;
 
-            bool yes = DoesTheWordExist("CompanyId", lines);
+            bool companyYes = DoesTheWordExist("CompanyId", lines);
+            bool spaceYes = DoesTheWordExist("SpaceId", lines);
 
             foreach (var line in lines)
             {
@@ -1700,18 +1710,27 @@ public class TommyService : BaseService
                     }
                     else
                     {
-                        if (yes)
+                        if (companyYes && spaceYes)
                         {
                             content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByNameAsync(string spaceId, string companyId, string name, DataFilter dataFilter);");
                             content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByNameExceptMeAsync(string id, string spaceId, string companyId, string name, DataFilter dataFilter);");
                         }
-                        else
+                        else if (companyYes)
+                        {
+                            content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByNameAsync(string companyId, string name, DataFilter dataFilter);");
+                            content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByNameExceptMeAsync(string id, string companyId, string name, DataFilter dataFilter);");
+                        }
+                        else if (spaceYes)
                         {
                             content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByNameAsync(string spaceId, string name, DataFilter dataFilter);");
                             content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByNameExceptMeAsync(string id, string spaceId, string name, DataFilter dataFilter);");
                         }
+                        else
+                        {
+                            content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByNameAsync(string name, DataFilter dataFilter);");
+                            content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByNameExceptMeAsync(string id, string name, DataFilter dataFilter);");
+                        }
                     }
-                    
                 }
             }
 
@@ -1734,7 +1753,8 @@ public class TommyService : BaseService
 
             var content = string.Empty;
 
-            bool yes = DoesTheWordExist("CompanyId", lines);
+            bool companyYesy = DoesTheWordExist("CompanyId", lines);
+            bool spaceYesy = DoesTheWordExist("SpaceId", lines);
 
             foreach (var line in lines)
             {
@@ -1747,20 +1767,40 @@ public class TommyService : BaseService
                 {
                     if (fileNameWithoutExtension.Equals("Module"))
                     {
-                        content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByCodeAsync(string code, DataFilter dataFilter);");
-                        content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByCodeExceptMeAsync(string id, string code, DataFilter dataFilter);");
+                        content = string.Concat(content,
+                            $"\n\tTask<{fileNameWithoutExtension}> FindByCodeAsync(string code, DataFilter dataFilter);");
+                        content = string.Concat(content,
+                            $"\n\tTask<{fileNameWithoutExtension}> FindByCodeExceptMeAsync(string id, string code, DataFilter dataFilter);");
                     }
                     else
                     {
-                        if (yes)
+                        if (spaceYesy && companyYesy)
                         {
-                            content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByCodeAsync(string spaceId, string companyId, string code, DataFilter dataFilter);");
-                            content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByCodeExceptMeAsync(string id, string spaceId, string companyId, string code, DataFilter dataFilter);");
+                            content = string.Concat(content,
+                                $"\n\tTask<{fileNameWithoutExtension}> FindByCodeAsync(string spaceId, string companyId, string code, DataFilter dataFilter);");
+                            content = string.Concat(content,
+                                $"\n\tTask<{fileNameWithoutExtension}> FindByCodeExceptMeAsync(string id, string spaceId, string companyId, string code, DataFilter dataFilter);");
+                        }
+                        else if (companyYesy)
+                        {
+                            content = string.Concat(content,
+                                $"\n\tTask<{fileNameWithoutExtension}> FindByCodeAsync(string companyId, string code, DataFilter dataFilter);");
+                            content = string.Concat(content,
+                                $"\n\tTask<{fileNameWithoutExtension}> FindByCodeExceptMeAsync(string id, string companyId, string code, DataFilter dataFilter);");
+                        }
+                        else if (spaceYesy)
+                        {
+                            content = string.Concat(content,
+                                $"\n\tTask<{fileNameWithoutExtension}> FindByCodeAsync(string spaceId, string code, DataFilter dataFilter);");
+                            content = string.Concat(content,
+                                $"\n\tTask<{fileNameWithoutExtension}> FindByCodeExceptMeAsync(string id, string spaceId, string code, DataFilter dataFilter);");
                         }
                         else
                         {
-                            content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByCodeAsync(string spaceId, string code, DataFilter dataFilter);");
-                            content = string.Concat(content, $"\n\tTask<{fileNameWithoutExtension}> FindByCodeExceptMeAsync(string id, string spaceId, string code, DataFilter dataFilter);");
+                            content = string.Concat(content,
+                                $"\n\tTask<{fileNameWithoutExtension}> FindByCodeAsync(string code, DataFilter dataFilter);");
+                            content = string.Concat(content,
+                                $"\n\tTask<{fileNameWithoutExtension}> FindByCodeExceptMeAsync(string id, string code, DataFilter dataFilter);");
                         }
                     }
                 }
@@ -1786,15 +1826,24 @@ public class TommyService : BaseService
             string content = string.Empty;
             var helperTemplate = string.Empty;
 
-            bool yes = DoesTheWordExist("CompanyId", lines);
+            bool companyYes = DoesTheWordExist("CompanyId", lines);
+            bool spaceYes = DoesTheWordExist("SpaceId", lines);
 
-            if (fileNameWithoutExtension.Equals("Module"))
+            if (companyYes && spaceYes)
             {
-                helperTemplate= FileManager.Read($"{_template}\\BeRepoNameHelperTemplateForModule.txt");
+                helperTemplate = FileManager.Read($"{_template}\\BeRepoNameHelperTemplateBoth.txt");//both
+            }
+            else if(companyYes)
+            {
+                helperTemplate = FileManager.Read($"{_template}\\BeRepoNameHelperTemplateWithCompany.txt");
+            }
+            else if (spaceYes)
+            {
+                helperTemplate = FileManager.Read($"{_template}\\BeRepoNameHelperTemplateWithSpace.txt");
             }
             else
             {
-                helperTemplate = FileManager.Read(yes ? $"{_template}\\BeRepoNameHelperTemplate.txt" : $"{_template}\\BeRepoNameHelperTemplateWithOutTenant.txt");
+                helperTemplate = FileManager.Read($"{_template}\\BeRepoNameHelperTemplateForNone.txt");
             }
 
             foreach (var line in lines)
@@ -1831,15 +1880,25 @@ public class TommyService : BaseService
 
             string content = string.Empty;
             var helperTemplate = string.Empty;
-            bool yes = DoesTheWordExist("CompanyId", lines);
 
-            if (fileNameWithoutExtension.Equals("Module"))
+            bool companyYes = DoesTheWordExist("CompanyId", lines);
+            bool spaceYes = DoesTheWordExist("SpaceId", lines);
+
+            if (companyYes && spaceYes)
             {
-                helperTemplate = FileManager.Read($"{_template}\\BeRepoCodeHelperTemplateForModule.txt");
+                helperTemplate = FileManager.Read($"{_template}\\BeRepoCodeHelperTemplateForBoth.txt");
+            }
+            else if (companyYes)
+            {
+                helperTemplate = FileManager.Read($"{_template}\\BeRepoCodeHelperTemplateWithCompany.txt");
+            }
+            else if (spaceYes)
+            {
+                helperTemplate = FileManager.Read($"{_template}\\BeRepoCodeHelperTemplateWithSpace.txt");
             }
             else
             {
-                helperTemplate = FileManager.Read(yes ? $"{_template}\\BeRepoCodeHelperTemplate.txt" : $"{_template}\\BeRepoCodeHelperTemplateWithOutTenant.txt");
+                helperTemplate = FileManager.Read($"{_template}\\BeRepoCodeHelperTemplateForNone.txt");
             }
 
             foreach (var line in lines)

@@ -148,7 +148,7 @@ namespace TH.Tommy
             return name;
         }
 
-        // Convert the string to camel case.
+        // Convert the string to pascal case.
         public static string ToPascalCase(string name)
         {
             if (!string.IsNullOrEmpty(name))
@@ -219,7 +219,7 @@ namespace TH.Tommy
 
                 for (int i = 0; i < words.Length; i++)
                 {
-                    words[i] = FileManager.ToCamelCase(words[i]);
+                    words[i] = ToCamelCase(words[i]);
                 }
 
                 return string.Join("_", words);

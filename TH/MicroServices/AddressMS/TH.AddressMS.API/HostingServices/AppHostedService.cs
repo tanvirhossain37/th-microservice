@@ -7,7 +7,7 @@ namespace TH.AddressMS.API
     {
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            AddressDbContextSeed.Seed();
+            //AddressDbContextSeed.Seed();
             return Task.CompletedTask;
         }
 

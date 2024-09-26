@@ -8,6 +8,7 @@ using TH.EventBus.Messages;
 using TH.Common.Model;
 using TH.Common.Util;
 using MassTransit.Futures.Contracts;
+using Microsoft.AspNetCore.Identity;
 
 namespace TH.AuthMS.App
 {
@@ -38,6 +39,7 @@ namespace TH.AuthMS.App
             var identityUser = new ApplicationUser
             {
                 Name = entity.Name,
+                Provider = entity.Provider,
                 UserName = entity.IsAutoUserName? Util.TryGenerateUserName(entity.Name):entity.UserName,
                 Email = entity.Email,
                 CreatedDate = DateTime.Now,
@@ -368,6 +370,88 @@ namespace TH.AuthMS.App
             return entity;
         }
 
+        public async Task<SignInViewModel> SocialSignInAsync(SocialUserInputModel entity, DataFilter dataFilter)
+        {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+            var identityUser = new ApplicationUser
+            {
+                Name = entity.Name,
+                UserName = Util.TryGenerateUserName(entity.Name),
+                Email = entity.Email,
+                CreatedDate = DateTime.Now,
+                EmailConfirmed = true,
+                //ActivationCode = Util.TryGenerateCode(),
+                //ReferralId = entity.ReferralId,
+                //CodeExpiryTime = DateTime.Now.AddDays(Convert.ToDouble(_config.GetSection("ActivationCodeExpiryTime").Value)) //1 day
+            };
+
+            //if not found, then create
+            var existingUser = _authRepo.FindByEmailAsync(entity.Email);
+            if (existingUser is null)
+            {
+                //create
+                await _authRepo.SaveAsync(identityUser, null);
+
+                //publish
+                var emailEventAgain = new EmailEvent();
+                emailEventAgain.To.Add(identityUser.Email);
+                emailEventAgain.Subject = "Activate account please!";
+                emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
+
+                await _publishEndpoint.Publish(emailEventAgain);
+
+                return _mapper.Map<ApplicationUser, SignInViewModel>(identityUser);
+            }
+            else
+            {
+            }
+
+            var signInViewModel = _authRepo.GenerateToken(identityUser);
+            signInViewModel.RefreshToken = _authRepo.GenerateRefreshToken();
+
+            signInViewModel.SpaceId = identityUser.Id;
+            signInViewModel.Name = identityUser.Name;
+            signInViewModel.Email = identityUser.Email;
+            signInViewModel.UserName = identityUser.UserName;
+            signInViewModel.EmailConfirmed = identityUser.EmailConfirmed;
+            signInViewModel.CreatedDate = identityUser.CreatedDate;
+            signInViewModel.ModifiedDate = identityUser.ModifiedDate;
+
+            //update db
+            identityUser.RefreshToken = signInViewModel.RefreshToken;
+            identityUser.RefreshTokenExpiryTime = SetRefreshTokenExpiryTime();
+            identityUser.ModifiedDate = DateTime.Now;
+
+            var result = await _authRepo.UpdateAsync(identityUser);
+            if (!result.Succeeded)
+            {
+                var code = result?.Errors?.FirstOrDefault()?.Code;
+                throw new CustomException(Lang.Find($"error_{code}"));
+            }
+
+            //publish to eventbus
+            var emailEvent = new EmailEvent();
+            emailEvent.To.Add(identityUser.Email);
+            emailEvent.Subject = "Security Alter";
+
+            try
+            {
+                var geoInfo = await _geoHelper.GetGeoInfo();
+                var geo = JsonConvert.DeserializeObject<Geo>(geoInfo);
+                emailEvent.Content = string.Format(Lang.Find("sign_in_alert_with_geo"), identityUser.Name, geo.City, geo.Zip, geo.Region_Name,
+                    geo.Country_Name,
+                    geo.IP);
+            }
+            catch (Exception)
+            {
+                emailEvent.Content = string.Format(Lang.Find("sign_in_alert_normal"), identityUser.Name, DateTime.Now.ToString());
+            }
+
+            await _publishEndpoint.Publish(emailEvent);
+            return signInViewModel;
+        }
+
         public void Dispose()
         {
             _authRepo?.Dispose();
@@ -380,6 +464,9 @@ namespace TH.AuthMS.App
             entity.UserName = string.IsNullOrWhiteSpace(entity.UserName)
                 ? throw new CustomException($"{Lang.Find("error_validation")} : UserName")
                 : entity.UserName.Trim();
+            entity.Provider = string.IsNullOrWhiteSpace(entity.Provider)
+                ? throw new CustomException($"{Lang.Find("error_validation")} : Provider")
+                : entity.Provider.Trim();
             entity.Password = string.IsNullOrWhiteSpace(entity.Password)
                 ? throw new CustomException($"{Lang.Find("error_validation")} : Password")
                 : entity.Password.Trim();

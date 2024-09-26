@@ -10,7 +10,6 @@ public class UserServiceUnitTest : CompanyBaseUnitTest
 {
     private IUserService _service;
 
-
     [TestInitialize]
     public override void Init()
     {

@@ -2,9 +2,9 @@
 {
     public abstract class BaseEntity
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public DateTime? ModifiedDate { get; set; } = null;
+        public string Id { get; set; } = null!;
+        public DateTime CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
         public bool Active { get; set; } = true;
     }
 }

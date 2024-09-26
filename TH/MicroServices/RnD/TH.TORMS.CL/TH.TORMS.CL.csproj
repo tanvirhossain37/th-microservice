@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PuppeteerSharp" Version="18.0.5" />
-    <PackageReference Include="Sitko.Core.Puppeteer" Version="11.36.0" />
+    <PackageReference Include="PuppeteerSharp" Version="20.0.2" />
+    <PackageReference Include="Sitko.Core.Puppeteer" Version="11.41.0" />
   </ItemGroup>
 
   <ItemGroup>

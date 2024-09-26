@@ -7,11 +7,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20240925092732_Initial.cs" />
+    <Compile Remove="Migrations\20240925092732_Initial.Designer.cs" />
+    <Compile Remove="Migrations\AddressDbContextModelSnapshot.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\TH.Repo\TH.Repo.csproj" />
     <ProjectReference Include="..\TH.AddressMS.App\TH.AddressMS.App.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MongoRepo" Version="1.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

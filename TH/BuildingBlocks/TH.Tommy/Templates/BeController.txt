@@ -40,7 +40,7 @@ public class $WE$Controller : CustomBaseController
         {
             var filter = _mapper.Map<$WE$, $WE$FilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<I$WE$Service>();
-            var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnSave$WE$Async(viewModel);
             return CustomResult(Lang.Find("success"));
@@ -59,7 +59,7 @@ public class $WE$Controller : CustomBaseController
         {
             var filter = _mapper.Map<$WE$, $WE$FilterModel>(entity);
             var service = scope.ServiceProvider.GetRequiredService<I$WE$Service>();
-            var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await service.FindAsync(filter, DataFilter));
+            var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnUpdate$WE$Async(viewModel);
             return CustomResult(Lang.Find("success"));

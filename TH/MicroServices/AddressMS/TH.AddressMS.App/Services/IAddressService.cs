@@ -1,13 +1,14 @@
-﻿using TH.AddressMS.Core;
+using TH.AddressMS.Core;
+using TH.Common.Model;
 
-namespace TH.AddressMS.App
+namespace TH.AddressMS.App;
+
+public interface IAddressService : IBaseService
 {
-    public interface IAddressService : IBaseService
-    {
-        Task<Address> SaveAsync(Address entity);
-        Task<Address> UpdateAsync(Address entity);
-        Task<bool> DeleteAsync(Address entity);
-        Task<Address> FindByIdAsync(string id);
-        Task<IEnumerable<Address>> GetAllByClientIdAsync(string clientId);
-    }
+    Task<Address> SaveAsync(Address entity, DataFilter dataFilter, bool commit = true);
+    Task<Address> UpdateAsync(Address entity, DataFilter dataFilter, bool commit = true);
+    Task<bool> SoftDeleteAsync(Address entity, DataFilter dataFilter, bool commit = true);
+    Task<bool> DeleteAsync(Address entity, DataFilter dataFilter, bool commit = true);
+    Task<Address> FindByIdAsync(AddressFilterModel filter, DataFilter dataFilter);
+    Task<IEnumerable<Address>> GetAsync(AddressFilterModel filter, DataFilter dataFilter);
 }

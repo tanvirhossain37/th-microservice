@@ -12,5 +12,6 @@ public class MappingProfile : Profile
         //CreateMap<SignUpRequest, SignUpInputModel>().ReverseMap();
         //CreateMap<SignUpViewModel, SignUpReply>().ReverseMap();
         //CreateMap<UserCreateEvent, SignUpInputModel>().ReverseMap();
+        CreateMap<ApplicationUser, SignInViewModel>().ReverseMap();
     }
 }

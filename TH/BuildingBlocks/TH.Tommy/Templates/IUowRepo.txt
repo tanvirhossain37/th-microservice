@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace $namespace$;
+﻿namespace $namespace$;
 
 public interface IUow : IDisposable
 {   //we todo repo

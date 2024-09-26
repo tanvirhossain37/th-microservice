@@ -1,14 +1,10 @@
-﻿using MongoRepo.Interfaces.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TH.AddressMS.Core;
+using TH.Common.Model;
+using TH.Repo;
 
-namespace TH.AddressMS.App
-{
-    public interface IAddressRepo : ICommonRepository<Address>
-    {
-    }
+namespace TH.AddressMS.App;
+
+public interface IAddressRepo : IRepoSQL<Address>
+{   
+    
 }

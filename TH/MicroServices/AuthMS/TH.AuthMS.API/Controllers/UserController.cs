@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using TH.Common.Model;
-using TH.UserSvc.App;
+using TH.CompanyMS.App;
 
 namespace TH.AuthMS.API.Controllers;
 

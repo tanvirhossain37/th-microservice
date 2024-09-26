@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "TH.AddressMS.Grpc";
+
+service AddressProtoService{
+	// Sends a greeting
+  rpc FindByCode (CountryFilterRequest) returns (CountryViewReply);
+}
+
+message AddressInputRequest {	
+	
+	string id = 1;
+	string street = 2;
+	string city = 3;
+	string state = 4;
+	string postal_code = 5;
+	string country_id = 6;
+	string client_id = 7;
+}
+message CountryInputRequest {	
+	
+	string id = 1;
+	string name = 2;
+	string code = 3;
+	string iso_code = 4;
+	string currency_name = 5;
+	string currency_code = 6;
+}
+message AddressFilterRequest {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string street = 5;
+	string city = 6;
+	string state = 7;
+	string postal_code = 8;
+	string country_id = 9;
+	string client_id = 10;
+}
+message CountryFilterRequest {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string name = 5;
+	string code = 6;
+	string iso_code = 7;
+	string currency_name = 8;
+	string currency_code = 9;
+}
+message AddressViewReply {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string street = 5;
+	string city = 6;
+	string state = 7;
+	string postal_code = 8;
+	string country_id = 9;
+	string client_id = 10;
+}
+message CountryViewReply {	
+	
+	string id = 1;
+	google.protobuf.Timestamp created_date = 2;
+	google.protobuf.Timestamp modified_date = 3;
+	bool active = 4;
+	string name = 5;
+	string code = 6;
+	string iso_code = 7;
+	string currency_name = 8;
+	string currency_code = 9;
+}

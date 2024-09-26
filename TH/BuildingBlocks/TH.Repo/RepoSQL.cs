@@ -114,7 +114,7 @@ public class RepoSQL<TEntity> : IRepoSQL<TEntity> where TEntity : class
             return await queryResult.ToListAsync();
         }
 
-        return await queryResult.ToPagedListAsync(pageIndex, pageSize);
+        return queryResult.ToPagedList(pageIndex, pageSize);
     }
 
     public async Task<IEnumerable<TEntity>> GetFilterableAsync(IList<Expression<Func<TEntity, bool>>> predicates,
@@ -169,6 +169,6 @@ public class RepoSQL<TEntity> : IRepoSQL<TEntity> where TEntity : class
             return await queryResult.ToListAsync();
         }
 
-        return await queryResult.ToPagedListAsync(pageIndex, pageSize);
+        return queryResult.ToPagedList(pageIndex, pageSize);
     }
 }

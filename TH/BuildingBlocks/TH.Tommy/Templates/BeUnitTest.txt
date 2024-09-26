@@ -97,7 +97,7 @@ public class $WE$ServiceUnitTest : BaseUnitTest
         {
             var filter = new $WE$FilterModel();
 
-            var entity = await _service.FindAsync(filter, DataFilter); //todo
+            var entity = await _service.FindByIdAsync(filter, DataFilter); //todo
             var viewModel = Mapper.Map<$WE$, $WE$ViewModel>(entity);
         }
         catch (Exception e)

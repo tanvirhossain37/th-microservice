@@ -10,12 +10,13 @@ service AuthProtoService {
 
 message SignUpInputRequest {	
 	string name = 1;
-	string user_name = 2;
-	string password = 3;
-	string email = 4;
-	string referral_id = 5;
-	string company_name = 6;
-	bool is_auto_user_name = 7;
+	string provider = 2;
+	string user_name = 3;
+	string password = 4;
+	string email = 5;
+	string referral_id = 6;
+	string company_name = 7;
+	bool is_auto_user_name = 8;
 }
 
 message SignUpViewReply {	

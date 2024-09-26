@@ -153,4 +153,16 @@
   <data name="sign_in_alert_normal" xml:space="preserve">
     <value>Hello {0}, you got signed-in at {1}</value>
   </data>
+  <data name="cr_bangladeshi_taka" xml:space="preserve">
+    <value>Bangladeshi Taka</value>
+  </data>
+  <data name="cr_united_states_dollar" xml:space="preserve">
+    <value>United States Dollar</value>
+  </data>
+  <data name="c_bangladesh" xml:space="preserve">
+    <value>Bangladesh</value>
+  </data>
+  <data name="c_united_states" xml:space="preserve">
+    <value>United States</value>
+  </data>
 </root>

@@ -1,19 +1,15 @@
-﻿using MongoRepo.Context;
-using MongoRepo.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TH.AddressMS.App;
 using TH.AddressMS.Core;
+using TH.AddressMS.Infra;
+using TH.Common.Model;
+using TH.Repo;
 
-namespace TH.AddressMS.Infra
+namespace TH.AddressMS.App;
+
+public partial class AddressRepo : RepoSQL<Address>, IAddressRepo
 {
-    public class AddressRepo : CommonRepository<Address>, IAddressRepo
+    public AddressRepo(AddressDbContext dbContext, ICustomSort customSort) : base(dbContext, customSort)
     {
-        public AddressRepo(AddressDbContext dbContext) : base(dbContext)
-        {
-        }
     }
+
+
 }

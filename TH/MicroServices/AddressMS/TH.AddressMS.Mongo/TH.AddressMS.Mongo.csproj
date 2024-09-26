@@ -7,11 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Common\Repo.cs" />
+    <Compile Remove="Common\UoWRepo.cs" />
+    <Compile Remove="Repos\AddressRepository.cs" />
+    <Compile Remove="Repos\CountryRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TH.AddressMS.App\TH.AddressMS.App.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Driver" Version="2.27.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.29.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\" />
+    <Folder Include="Repos\" />
   </ItemGroup>
 
 </Project>

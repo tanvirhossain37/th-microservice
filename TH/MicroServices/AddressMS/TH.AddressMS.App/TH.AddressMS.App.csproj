@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Contracts\Infras\**" />
+    <EmbeddedResource Remove="Contracts\Infras\**" />
+    <None Remove="Contracts\Infras\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
@@ -15,11 +21,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\TH.Io\TH.Io.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\TH.Repo\TH.Repo.csproj" />
+    <ProjectReference Include="..\..\..\CommonServices\TH.Common.Util\TH.Common.Util.csproj" />
     <ProjectReference Include="..\TH.AddressMS.Core\TH.AddressMS.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\Infras\" />
+    <Folder Include="Common\" />
   </ItemGroup>
 
 </Project>
