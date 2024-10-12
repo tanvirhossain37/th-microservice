@@ -15,13 +15,13 @@ public class BranchUserHub : Hub<IBranchUserHub>
         await Clients.All.BroadcastOnUpdateBranchUserAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteBranchUserAsync(BranchUserInputModel inputModel)
+    public async Task BroadcastOnSoftDeleteBranchUserAsync(BranchUserViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteBranchUserAsync(inputModel);
+        await Clients.All.BroadcastOnSoftDeleteBranchUserAsync(viewModel);
     }
 
-    public async Task BroadcastOnDeleteBranchUserAsync(BranchUserInputModel inputModel)
+    public async Task BroadcastOnDeleteBranchUserAsync(BranchUserViewModel viewModel)
     {
-        await Clients.All.BroadcastOnDeleteBranchUserAsync(inputModel);
+        await Clients.All.BroadcastOnDeleteBranchUserAsync(viewModel);
     }
 }

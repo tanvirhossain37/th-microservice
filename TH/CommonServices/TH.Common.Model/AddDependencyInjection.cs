@@ -77,6 +77,11 @@ public static class AddDependencyInjection
             options.AddPolicy("UserRoleSoftDeletePolicy", policy => { policy.RequireClaim("UserRole", TS.Permissions.SoftDelete); });
             options.AddPolicy("UserRoleDeletePolicy", policy => { policy.RequireClaim("UserRole", TS.Permissions.Delete); });
 
+            options.AddPolicy("UserCompanyReadPolicy", policy => { policy.RequireClaim("UserCompany", TS.Permissions.Read); });
+            options.AddPolicy("UserCompanyWritePolicy", policy => { policy.RequireClaim("UserCompany", TS.Permissions.Write); });
+            options.AddPolicy("UserCompanyUpdatePolicy", policy => { policy.RequireClaim("UserCompany", TS.Permissions.Update); });
+            options.AddPolicy("UserCompanySoftDeletePolicy", policy => { policy.RequireClaim("UserCompany", TS.Permissions.SoftDelete); });
+            options.AddPolicy("UserCompanyDeletePolicy", policy => { policy.RequireClaim("UserCompany", TS.Permissions.Delete); });
         });
 
         //AutoMapper
@@ -109,12 +114,12 @@ public static class AddDependencyInjection
                     ClockSkew = TimeSpan.Zero,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configurationRoot.GetSection("Jwt:Key").Value))
                 };
-            })
-            .AddGoogle(googleOptions =>
-            {
-                googleOptions.ClientId = configuration["Google:ClientId"];
-                googleOptions.ClientSecret = configuration["Google:ClientSecret"];
             });
+            //.AddGoogle(googleOptions =>
+            //{
+            //    googleOptions.ClientId = configuration["Google:ClientId"];
+            //    googleOptions.ClientSecret = configuration["Google:ClientSecret"];
+            //});
 
         //geo info
         services.AddScoped<Geo>();

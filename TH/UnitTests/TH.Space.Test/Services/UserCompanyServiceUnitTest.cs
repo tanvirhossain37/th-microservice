@@ -95,9 +95,33 @@ public class UserCompanyServiceUnitTest : CompanyBaseUnitTest
     {
         try
         {
-            var filter = new UserCompanyFilterModel();
+            var filter = new UserCompanyFilterModel
+            {
+                CompanyId = "64937385-d888-455b-9450-5fa07272ab5a",
+                
+            };
 
             var entity = await _service.FindByIdAsync(filter, DataFilter); //todo
+            var viewModel = Mapper.Map<UserCompany, UserCompanyViewModel>(entity);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    [TestMethod]
+    public async Task FindByCompanyIdAsyncUnitTest()
+    {
+        try
+        {
+            var filter = new UserCompanyFilterModel
+            {
+                CompanyId = "b92fd91f-7ffb-49b8-a995-f366706b967d",
+
+            };
+
+            var entity = await _service.FindByCompanyIdAsync(filter, DataFilter); //todo
             var viewModel = Mapper.Map<UserCompany, UserCompanyViewModel>(entity);
         }
         catch (Exception e)
@@ -113,7 +137,8 @@ public class UserCompanyServiceUnitTest : CompanyBaseUnitTest
         {
             var filter = new UserCompanyFilterModel
             {
-                UserName = "Tanvir.Hossaini.2cd7a93d1710"
+                UserName = "Tanvir.Hossain.bcb28694f2c7",
+                StatusId = (int)InvitationStatusEnum.Accept
             };
             filter.PageSize = (int)PageEnum.All;
 

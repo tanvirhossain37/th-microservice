@@ -19,8 +19,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.AspNetCore" Version="2.57.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.66.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TH.Company.API\TH.CompanyMS.API.csproj" />
+    <ProjectReference Include="..\TH.Company.App\TH.CompanyMS.App.csproj" />
+    <ProjectReference Include="..\TH.Company.Core\TH.CompanyMS.Core.csproj" />
+    <ProjectReference Include="..\TH.Company.Infra\TH.CompanyMS.Infra.csproj" />
   </ItemGroup>
 
 </Project>

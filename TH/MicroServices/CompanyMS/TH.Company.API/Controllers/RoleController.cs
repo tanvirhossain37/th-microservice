@@ -38,11 +38,12 @@ public class RoleController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Role, RoleFilterModel>(entity);
+            var filter = new RoleFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<IRoleService>();
             var viewModel = _mapper.Map<Role, RoleViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnSaveRoleAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnSaveRoleAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -57,11 +58,12 @@ public class RoleController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Role, RoleFilterModel>(entity);
+            var filter = new RoleFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<IRoleService>();
             var viewModel = _mapper.Map<Role, RoleViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnUpdateRoleAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnUpdateRoleAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -71,9 +73,15 @@ public class RoleController : CustomBaseController
     [Authorize(Policy = "RoleSoftDeletePolicy")]
     public async Task<IActionResult> SoftDeleteRoleAsync([FromBody] RoleInputModel model)
     {
+        //first grab it
+        var filter = new RoleFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Role, RoleViewModel>(await _roleService.FindByIdAsync(filter, DataFilter));
+
+        //then soft delete
         await _roleService.SoftDeleteAsync(_mapper.Map<RoleInputModel, Role>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnSoftDeleteRoleAsync(model);
+        await _hubContext.Clients.All.BroadcastOnSoftDeleteRoleAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 
@@ -82,9 +90,15 @@ public class RoleController : CustomBaseController
     [Authorize(Policy = "RoleDeletePolicy")]
     public async Task<IActionResult> DeleteRoleAsync([FromBody] RoleInputModel model)
     {
+        //first grab it
+        var filter = new RoleFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Role, RoleViewModel>(await _roleService.FindByIdAsync(filter, DataFilter));
+
+        //then delete
         await _roleService.DeleteAsync(_mapper.Map<RoleInputModel, Role>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnDeleteRoleAsync(model);
+        await _hubContext.Clients.All.BroadcastOnDeleteRoleAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 

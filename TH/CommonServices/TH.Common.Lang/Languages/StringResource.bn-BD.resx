@@ -165,4 +165,7 @@
   <data name="update_password" xml:space="preserve">
     <value>Bonjour {0}, &lt;big /&gt;&lt;big /&gt;Votre mot de passe a été modifié. Si ce n'est pas vous, veuillez nous contacter.</value>
   </data>
+  <data name="user_create_fail" xml:space="preserve">
+    <value>Désolé, impossible de créer l'utilisateur.</value>
+  </data>
 </root>

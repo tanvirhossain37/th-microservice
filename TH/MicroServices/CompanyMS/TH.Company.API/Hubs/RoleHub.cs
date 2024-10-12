@@ -15,13 +15,13 @@ public class RoleHub : Hub<IRoleHub>
         await Clients.All.BroadcastOnUpdateRoleAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteRoleAsync(RoleInputModel inputModel)
+    public async Task BroadcastOnSoftDeleteRoleAsync(RoleViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteRoleAsync(inputModel);
+        await Clients.All.BroadcastOnSoftDeleteRoleAsync(viewModel);
     }
 
-    public async Task BroadcastOnDeleteRoleAsync(RoleInputModel inputModel)
+    public async Task BroadcastOnDeleteRoleAsync(RoleViewModel viewModel)
     {
-        await Clients.All.BroadcastOnDeleteRoleAsync(inputModel);
+        await Clients.All.BroadcastOnDeleteRoleAsync(viewModel);
     }
 }

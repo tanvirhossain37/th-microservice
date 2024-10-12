@@ -15,13 +15,32 @@ public class CompanyHub : Hub<ICompanyHub>
         await Clients.All.BroadcastOnUpdateCompanyAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteCompanyAsync(CompanyInputModel inputModel)
+    public async Task BroadcastOnSoftDeleteCompanyAsync(CompanyViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteCompanyAsync(inputModel);
+        await Clients.All.BroadcastOnSoftDeleteCompanyAsync(viewModel);
     }
 
-    public async Task BroadcastOnDeleteCompanyAsync(CompanyInputModel inputModel)
+    public async Task BroadcastOnDeleteCompanyAsync(CompanyViewModel viewModel)
     {
-        await Clients.All.BroadcastOnDeleteCompanyAsync(inputModel);
+        await Clients.All.BroadcastOnDeleteCompanyAsync(viewModel);
+    }
+
+    public async Task BroadcastOnSaveUserCompanyAsync(UserCompanyViewModel viewModel)
+    {
+        await Clients.All.BroadcastOnSaveUserCompanyAsync(viewModel);
+    }
+    public async Task BroadcastOnUpdateUserCompanyAsync(UserCompanyViewModel viewModel)
+    {
+        await Clients.All.BroadcastOnUpdateUserCompanyAsync(viewModel);
+    }
+
+    public async Task BroadcastOnSoftDeleteUserCompanyAsync(UserCompanyViewModel viewModel)
+    {
+        await Clients.All.BroadcastOnSoftDeleteUserCompanyAsync(viewModel);
+    }
+
+    public async Task BroadcastOnDeleteUserCompanyAsync(UserCompanyViewModel viewModel)
+    {
+        await Clients.All.BroadcastOnDeleteUserCompanyAsync(viewModel);
     }
 }

@@ -67,7 +67,18 @@ namespace TH.CompanyMS.API
             app.UseCors(CorsPolicy); //tanvir
             app.UseAuthorization();
 
+            //Hubs
             app.MapControllers();
+            app.MapHub<CompanyHub>("/Branch");
+            app.MapHub<CompanyHub>("/BranchUser");
+            app.MapHub<CompanyHub>("/Company");
+            app.MapHub<CompanyHub>("/Module");
+            app.MapHub<CompanyHub>("/Permission");
+            app.MapHub<CompanyHub>("/Role");
+            app.MapHub<CompanyHub>("/SpaceSubscription");
+            app.MapHub<CompanyHub>("/User");
+            app.MapHub<CompanyHub>("/UserCompany");
+            app.MapHub<CompanyHub>("/UserRole");
 
             app.Run();
         }

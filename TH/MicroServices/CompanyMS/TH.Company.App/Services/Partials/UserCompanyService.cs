@@ -101,7 +101,7 @@ public partial class UserCompanyService
 
         if (!string.IsNullOrWhiteSpace(filter.UserName))
         {
-            var user = await Repo.UserRepo.FindByUserNameAsync(filter.UserName, dataFilter);
+            var user = await Repo.UserRepo.SingleOrDefaultQueryableAsync(x => x.UserName.Equals(filter.UserName), dataFilter);
             if (user== null) throw new CustomException(Lang.Find("data_notfound"));
 
             filter.UserId = user.Id;

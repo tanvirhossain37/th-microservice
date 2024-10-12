@@ -27,12 +27,12 @@ public class CompanyServiceUnitTest : CompanyBaseUnitTest
             var model = new CompanyInputModel
             {
                 Name = "Google Inc.",
-                SpaceId = "34e57033-58a7-40b8-a410-a1f47458ab98"
+                SpaceId = "078bb819-39da-4842-99c0-5d867130f33f"
             };
             model.Branches.Add(new BranchInputModel
             {
                 Name = "Banani Branch",
-                IsDefault = false
+                IsDefault = true
             });
 
             var entity = await _service.SaveAsync(Mapper.Map<CompanyInputModel, Company>(model), DataFilter);

@@ -1,10 +1,11 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using TH.CompanyMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using TH.CompanyMS.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace TH.CompanyMS.App;
 
@@ -14,13 +15,13 @@ public partial class RoleService : BaseService, IRoleService
     
 	protected readonly IPermissionService PermissionService;
 	protected readonly IUserRoleService UserRoleService;
-        
-    public RoleService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IPermissionService permissionService, IUserRoleService userRoleService) : base(mapper,publishEndpoint)
+
+    public RoleService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config, IPermissionService permissionService, IUserRoleService userRoleService) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-        
-		PermissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
-		UserRoleService = userRoleService ?? throw new ArgumentNullException(nameof(userRoleService));
+
+        PermissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
+        UserRoleService = userRoleService ?? throw new ArgumentNullException(nameof(userRoleService));
     }
 
     public async Task<Role> SaveAsync(Role entity, DataFilter dataFilter, bool commit = true)

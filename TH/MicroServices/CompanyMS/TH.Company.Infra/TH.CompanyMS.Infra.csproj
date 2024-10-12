@@ -13,6 +13,8 @@
     <Compile Remove="Migrations\20240728171605_Initial.Designer.cs" />
     <Compile Remove="Migrations\20240828121830_Initial.cs" />
     <Compile Remove="Migrations\20240828121830_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20240927170143_Initial.cs" />
+    <Compile Remove="Migrations\20240927170143_Initial.Designer.cs" />
     <Compile Remove="Migrations\CompanyDbContextModelSnapshot.cs" />
   </ItemGroup>
 

@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 using TH.AddressMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
@@ -13,7 +14,7 @@ public partial class AddressService : BaseService, IAddressService
     protected readonly IUow Repo;
     
         
-    public AddressService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper) : base(mapper,publishEndpoint)
+    public AddressService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config) : base(mapper,publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
         

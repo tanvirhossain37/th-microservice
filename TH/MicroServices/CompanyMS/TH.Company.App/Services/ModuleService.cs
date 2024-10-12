@@ -1,10 +1,11 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using TH.CompanyMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using TH.CompanyMS.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace TH.CompanyMS.App;
 
@@ -14,12 +15,12 @@ public partial class ModuleService : BaseService, IModuleService
     
 	//protected readonly IModuleService ModuleService;
 	protected readonly IPermissionService PermissionService;
-        
-    public ModuleService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IPermissionService permissionService) : base(mapper,publishEndpoint)
+
+    public ModuleService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config, IPermissionService permissionService) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-        
-		PermissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
+
+        PermissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
     }
 
     public async Task<Module> SaveAsync(Module entity, DataFilter dataFilter, bool commit = true)

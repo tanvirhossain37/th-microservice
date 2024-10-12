@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TH.AuthMS.App;
+using TH.Common.Model;
 
 namespace TH.AuthMS.Test;
 
@@ -25,11 +26,9 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
             var model = new SignUpInputModel
             {
                 Name = "Tanvir Hossain",
-                Provider = "LOCAL",
                 UserName = "tanvir.hossain37@gmail.com",
                 Password = "admin123##",
-                Email = "tanvir.hossain37@gmail.com",
-                IsAutoUserName = true
+                Email = "tanvir.hossain37@gmail.com"
             };
 
             ////self
@@ -67,6 +66,11 @@ public class AuthServiceUnitTest : AuthBaseUnitTest
             //    CompanyName = "Google Inc.",
             //    IsAutoUserName = false
             //};
+
+            //override
+            model.IsAutoUserName = true;
+            model.EmailConfirmed = false;
+            model.Provider = TS.Providers.LOCAL;
 
             var entity = await _service.SignUpAsync(model, DataFilter);
         }

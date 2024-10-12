@@ -2,8 +2,36 @@ syntax = "proto3";
 
 option csharp_namespace = "TH.CompanyMS.Grpc";
 
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
 // The greeting service definition.
 service CompanyProtoService {
   // Sends a greeting
-  //rpc SignUp (SignUpInputRequest) returns (SignUpViewReply);
+  rpc TrySaveSpaceSubscription (SpaceSubscriptionInputRequest) returns (google.protobuf.BoolValue);
+  rpc TryFindBySpaceId(SpaceSubscriptionFilterRequest) returns (SpaceSubscriptionViewReply);
+}
+
+message SpaceSubscriptionInputRequest {		
+	string space_id = 1;
+	sint32 plan_id = 2;
+	bool is_current = 3;
+}
+
+message SpaceSubscriptionFilterRequest {	
+	string space_id = 1;
+}
+
+message SpaceSubscriptionViewReply {
+	string id = 1;
+	bool active = 2;
+	string space_id = 3;
+	sint32 plan_id = 4;
+	bool is_current = 5;
+	string card_holder_name = 6;
+	string card_number = 7;
+	string security_code = 8;
+	string country_id = 9;
+	string zip_code = 10;
 }

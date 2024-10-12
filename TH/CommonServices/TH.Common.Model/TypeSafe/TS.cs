@@ -11,6 +11,7 @@ public static class TS
         public const string User = "User";
         public const string UserRole = "UserRole";
         public const string Permission = "Permission";
+        public const string UserCompany = "UserCompany";
     }
 
     public static class Permissions
@@ -21,5 +22,12 @@ public static class TS
         public const string Update = "Update";
         public const string SoftDelete = "SoftDelete";
         public const string Delete = "Delete";
+    }
+
+    public static class Providers
+    {
+        public const string LOCAL = "LOCAL";
+        public const string GOOGLE = "GOOGLE";
+        public const string FACEBOOK = "FACEBOOK";
     }
 }

@@ -8,6 +8,27 @@ update-database -Context CompanyDbContext
 add-migration Initial_Company -Context CompanyDbContext -o Migrations/Company
 update-database -Context CompanyDbContext
 
+#view
+select * from [CompanyDB].[dbo].Companies
+select * from [CompanyDB].[dbo].Branches
+select * from [CompanyDB].[dbo].Roles
+select * from [CompanyDB].[dbo].Users
+select * from [CompanyDB].[dbo].BranchUsers
+select * from [CompanyDB].[dbo].UserRoles
+select * from [CompanyDB].[dbo].Permissions
+select * from [CompanyDB].[dbo].UserCompanies
+select * from [CompanyDB].[dbo].SpaceSubscriptions
+
+#delete all
+delete [CompanyDB].[dbo].Companies
+delete [CompanyDB].[dbo].Branches
+delete [CompanyDB].[dbo].Roles
+delete [CompanyDB].[dbo].Users
+delete [CompanyDB].[dbo].BranchUsers
+delete [CompanyDB].[dbo].UserRoles
+delete [CompanyDB].[dbo].Permissions
+delete [CompanyDB].[dbo].UserCompanies
+delete [CompanyDB].[dbo].SpaceSubscriptions
 
 
 DotNet Migration

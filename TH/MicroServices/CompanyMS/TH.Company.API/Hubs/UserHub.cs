@@ -15,13 +15,13 @@ public class UserHub : Hub<IUserHub>
         await Clients.All.BroadcastOnUpdateUserAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteUserAsync(UserInputModel inputModel)
+    public async Task BroadcastOnSoftDeleteUserAsync(UserViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteUserAsync(inputModel);
+        await Clients.All.BroadcastOnSoftDeleteUserAsync(viewModel);
     }
 
-    public async Task BroadcastOnDeleteUserAsync(UserInputModel inputModel)
+    public async Task BroadcastOnDeleteUserAsync(UserViewModel viewModel)
     {
-        await Clients.All.BroadcastOnDeleteUserAsync(inputModel);
+        await Clients.All.BroadcastOnDeleteUserAsync(viewModel);
     }
 }

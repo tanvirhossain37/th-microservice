@@ -1,5 +1,3 @@
-using System;
-
 namespace TH.CompanyMS.App;
 
 public interface IUow : IDisposable
@@ -10,6 +8,7 @@ public interface IUow : IDisposable
 	IModuleRepo ModuleRepo { get; set; }
 	IPermissionRepo PermissionRepo { get; set; }
 	IRoleRepo RoleRepo { get; set; }
+	ISpaceSubscriptionRepo SpaceSubscriptionRepo { get; set; }
 	IUserRepo UserRepo { get; set; }
 	IUserCompanyRepo UserCompanyRepo { get; set; }
 	IUserRoleRepo UserRoleRepo { get; set; }

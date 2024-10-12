@@ -15,13 +15,13 @@ public class ModuleHub : Hub<IModuleHub>
         await Clients.All.BroadcastOnUpdateModuleAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteModuleAsync(ModuleInputModel inputModel)
+    public async Task BroadcastOnSoftDeleteModuleAsync(ModuleViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteModuleAsync(inputModel);
+        await Clients.All.BroadcastOnSoftDeleteModuleAsync(viewModel);
     }
 
-    public async Task BroadcastOnDeleteModuleAsync(ModuleInputModel inputModel)
+    public async Task BroadcastOnDeleteModuleAsync(ModuleViewModel viewModel)
     {
-        await Clients.All.BroadcastOnDeleteModuleAsync(inputModel);
+        await Clients.All.BroadcastOnDeleteModuleAsync(viewModel);
     }
 }

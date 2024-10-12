@@ -38,11 +38,12 @@ public class ModuleController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Module, ModuleFilterModel>(entity);
+            var filter = new ModuleFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<IModuleService>();
             var viewModel = _mapper.Map<Module, ModuleViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnSaveModuleAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnSaveModuleAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -57,11 +58,12 @@ public class ModuleController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Module, ModuleFilterModel>(entity);
+            var filter = new ModuleFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<IModuleService>();
             var viewModel = _mapper.Map<Module, ModuleViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnUpdateModuleAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnUpdateModuleAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -71,9 +73,15 @@ public class ModuleController : CustomBaseController
     [Authorize(Policy = "ModuleSoftDeletePolicy")]
     public async Task<IActionResult> SoftDeleteModuleAsync([FromBody] ModuleInputModel model)
     {
+        //first grab it
+        var filter = new ModuleFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Module, ModuleViewModel>(await _moduleService.FindByIdAsync(filter, DataFilter));
+
+        //then soft delete
         await _moduleService.SoftDeleteAsync(_mapper.Map<ModuleInputModel, Module>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnSoftDeleteModuleAsync(model);
+        await _hubContext.Clients.All.BroadcastOnSoftDeleteModuleAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 
@@ -82,9 +90,15 @@ public class ModuleController : CustomBaseController
     [Authorize(Policy = "ModuleDeletePolicy")]
     public async Task<IActionResult> DeleteModuleAsync([FromBody] ModuleInputModel model)
     {
+        //first grab it
+        var filter = new ModuleFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Module, ModuleViewModel>(await _moduleService.FindByIdAsync(filter, DataFilter));
+
+        //then delete
         await _moduleService.DeleteAsync(_mapper.Map<ModuleInputModel, Module>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnDeleteModuleAsync(model);
+        await _hubContext.Clients.All.BroadcastOnDeleteModuleAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 

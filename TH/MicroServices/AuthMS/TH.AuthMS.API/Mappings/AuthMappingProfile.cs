@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using TH.AuthMS.App;
+using TH.CompanyMS.App;
+using TH.CompanyMS.Grpc;
 
 namespace TH.AuthMS.API;
 
-public class MappingProfile : Profile
+public class AuthMappingProfile : Profile
 {
-    public MappingProfile()
+    public AuthMappingProfile()
     {
         CreateMap<ApplicationUser, SignUpViewModel>().ReverseMap();
         CreateMap<ApplicationUser, ApplicationUserViewModel>().ReverseMap();
@@ -13,5 +15,6 @@ public class MappingProfile : Profile
         //CreateMap<SignUpViewModel, SignUpReply>().ReverseMap();
         //CreateMap<UserCreateEvent, SignUpInputModel>().ReverseMap();
         CreateMap<ApplicationUser, SignInViewModel>().ReverseMap();
+        CreateMap<SpaceSubscriptionViewReply, SpaceSubscriptionViewModel>().ReverseMap();
     }
 }

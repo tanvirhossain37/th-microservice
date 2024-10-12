@@ -9,6 +9,10 @@ using TH.Common.Model;
 using TH.Common.Util;
 using MassTransit.Futures.Contracts;
 using Microsoft.AspNetCore.Identity;
+using TH.AuthMS.App.GrpcServices;
+using TH.AuthMS.Grpc;
+using TH.CompanyMS.App;
+using TH.CompanyMS.Grpc;
 
 namespace TH.AuthMS.App
 {
@@ -19,15 +23,16 @@ namespace TH.AuthMS.App
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IMapper _mapper;
         private readonly GeoHelper _geoHelper;
+        private readonly CompanyGrpcClientService _companyGrpcClientService;
 
-        public AuthService(IAuthRepo authRepo, IConfiguration config, IPublishEndpoint publishEndpoint, IMapper mapper, GeoHelper geoHelper) : base(mapper,
-            publishEndpoint)
+        public AuthService(IAuthRepo authRepo, IConfiguration config, IPublishEndpoint publishEndpoint, IMapper mapper, GeoHelper geoHelper, CompanyGrpcClientService companyGrpcClientService) : base(mapper, publishEndpoint, config)
         {
             _authRepo = authRepo ?? throw new ArgumentNullException(nameof(authRepo));
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _geoHelper = geoHelper ?? throw new ArgumentNullException(nameof(geoHelper));
+            _companyGrpcClientService = companyGrpcClientService ?? throw new ArgumentNullException(nameof(companyGrpcClientService));
         }
 
         public async Task<SignUpViewModel> SignUpAsync(SignUpInputModel entity, DataFilter dataFilter)
@@ -45,7 +50,8 @@ namespace TH.AuthMS.App
                 CreatedDate = DateTime.Now,
                 ActivationCode = Util.TryGenerateCode(),
                 //ReferralId = entity.ReferralId,
-                CodeExpiryTime = DateTime.Now.AddDays(Convert.ToDouble(_config.GetSection("ActivationCodeExpiryTime").Value)) //1 day
+                CodeExpiryTime = DateTime.Now.AddDays(Convert.ToDouble(_config.GetSection("ActivationCodeExpiryTime").Value)), //1 day
+                EmailConfirmed = entity.EmailConfirmed
             };
 
             //self
@@ -64,8 +70,6 @@ namespace TH.AuthMS.App
                 emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
 
                 await _publishEndpoint.Publish(emailEventAgain);
-
-                return _mapper.Map<ApplicationUser, SignUpViewModel>(identityUser);
             }
             else
             {
@@ -92,9 +96,7 @@ namespace TH.AuthMS.App
                     emailEvent.Subject = "Invitation from We Space Inc.";
                     emailEvent.Content = string.Format(Lang.Find("email_invitation"), identityUser.Email, referralUser.Name, entity.CompanyName, verifyUrl);
 
-                    await _publishEndpoint.Publish(emailEvent);
-
-                    return _mapper.Map<ApplicationUser, SignUpViewModel>(identityUser);
+                    //await _publishEndpoint.Publish(emailEvent);
                 }
                 else
                 {
@@ -106,6 +108,7 @@ namespace TH.AuthMS.App
                     var verifyUrl = $"{_config.GetSection("GlobalConfigs:BaseUrl").Value}/signin?code={encodedCode}";
                     
                     await _authRepo.UpdateAsync(existingEntity);
+                    identityUser = existingEntity;
 
                     //publish
                     var emailEvent = new EmailEvent();
@@ -114,9 +117,22 @@ namespace TH.AuthMS.App
                     emailEvent.Content = string.Format(Lang.Find("email_invitation"), existingEntity.Name, referralUser.Name, entity.CompanyName, verifyUrl);
 
                     await _publishEndpoint.Publish(emailEvent);
-
-                    _mapper.Map<ApplicationUser, SignUpViewModel>(existingEntity);
                 }
+            }
+
+            //grpc company
+            var request = new SpaceSubscriptionInputRequest
+            {
+                SpaceId = identityUser.Id,
+                PlanId = (int)SubscriptionEnum.FreePlan,
+                IsCurrent = true
+            };
+            var result = await _companyGrpcClientService.TrySaveSpaceSubscriptionAsync(request);
+            if (!result.Value)
+            {
+                //redo
+                await _authRepo.DeleteAsync(identityUser);
+                throw new CustomException(Lang.Find("user_create_fail"));
             }
 
             return _mapper.Map<ApplicationUser, SignUpViewModel>(identityUser);
@@ -133,60 +149,10 @@ namespace TH.AuthMS.App
             //email confirmed?
             if (!identityUser.EmailConfirmed)
             {
-                ////publish to eventbus
-                //var emailEventAgain = new EmailEvent();
-                //emailEventAgain.To.Add(identityUser.Email);
-                //emailEventAgain.Subject = "Activate account please!";
-                //emailEventAgain.Content = string.Format(Lang.Find("inactive_login"), identityUser.Name, identityUser.ActivationCode);
-
-                //await _publishEndpoint.Publish(emailEventAgain);
-
                 throw new InactiveUserException(Lang.Find("error_emailnotconfirmed"));
             }
 
-            var signInViewModel = _authRepo.GenerateToken(identityUser);
-            signInViewModel.RefreshToken = _authRepo.GenerateRefreshToken();
-
-            signInViewModel.SpaceId = identityUser.Id;
-            signInViewModel.Name = identityUser.Name;
-            signInViewModel.Email = identityUser.Email;
-            signInViewModel.UserName = identityUser.UserName;
-            signInViewModel.EmailConfirmed = identityUser.EmailConfirmed;
-            signInViewModel.CreatedDate = identityUser.CreatedDate;
-            signInViewModel.ModifiedDate = identityUser.ModifiedDate;
-
-            //update db
-            identityUser.RefreshToken = signInViewModel.RefreshToken;
-            identityUser.RefreshTokenExpiryTime = SetRefreshTokenExpiryTime();
-            identityUser.ModifiedDate = DateTime.Now;
-
-            var result = await _authRepo.UpdateAsync(identityUser);
-            if (!result.Succeeded)
-            {
-                var code = result?.Errors?.FirstOrDefault()?.Code;
-                throw new CustomException(Lang.Find($"error_{code}"));
-            }
-
-            //publish to eventbus
-            var emailEvent = new EmailEvent();
-            emailEvent.To.Add(identityUser.Email);
-            emailEvent.Subject = "Security Alter";
-
-            try
-            {
-                var geoInfo = await _geoHelper.GetGeoInfo();
-                var geo = JsonConvert.DeserializeObject<Geo>(geoInfo);
-                emailEvent.Content = string.Format(Lang.Find("sign_in_alert_with_geo"), identityUser.Name, geo.City, geo.Zip, geo.Region_Name,
-                    geo.Country_Name,
-                    geo.IP);
-            }
-            catch (Exception)
-            {
-                emailEvent.Content = string.Format(Lang.Find("sign_in_alert_normal"), identityUser.Name, DateTime.Now.ToString());
-            }
-
-            await _publishEndpoint.Publish(emailEvent);
-            return signInViewModel;
+            return await LoginAsync(identityUser);
         }
 
         private async Task EmailLinkAsync(ApplicationUser identityUser, string referralName, string verifyUrl, DataFilter dataFilter)
@@ -238,7 +204,7 @@ namespace TH.AuthMS.App
             return signInViewModel;
         }
 
-        public async Task<bool> ActivateAccountAsync(ActivationCodeInputModel model, DataFilter dataFilter)
+        public async Task<SignInViewModel> ActivateAccountAsync(ActivationCodeInputModel model, DataFilter dataFilter)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
@@ -247,15 +213,72 @@ namespace TH.AuthMS.App
 
             if (identityUser.EmailConfirmed)
             {
-                var emailEvent = new EmailEvent();
-                emailEvent.To.Add(identityUser.Email);
-                emailEvent.Subject = "Account activation confirmed!";
-                emailEvent.Content = $"Welcome {identityUser.Name} on the space!";
+                var email = new EmailEvent();
+                email.To.Add(identityUser.Email);
+                email.Subject = "Account activation confirmed!";
+                email.Content = $"Welcome {identityUser.Name} on the space!";
 
-                await _publishEndpoint.Publish(emailEvent);
+                await _publishEndpoint.Publish(email);
             }
 
-            return identityUser.EmailConfirmed;
+            return await LoginAsync(identityUser);
+        }
+
+        private async Task<SignInViewModel> LoginAsync(ApplicationUser identityUser)
+        {
+            //login
+            var signInViewModel = _authRepo.GenerateToken(identityUser);
+            signInViewModel.RefreshToken = _authRepo.GenerateRefreshToken();
+
+            //grpc company planId
+            var request = new SpaceSubscriptionFilterRequest
+            {
+                SpaceId = identityUser.Id
+            };
+            var viewReply = await _companyGrpcClientService.TryFindBySpaceIdAsync(request);
+            signInViewModel.SpaceSubscription = _mapper.Map<SpaceSubscriptionViewReply, SpaceSubscriptionViewModel>(viewReply);
+
+            signInViewModel.SpaceId = identityUser.Id;
+            signInViewModel.Name = identityUser.Name;
+            signInViewModel.PhotoUrl = identityUser.PhotoUrl;
+            signInViewModel.Email = identityUser.Email;
+            signInViewModel.UserName = identityUser.UserName;
+            signInViewModel.EmailConfirmed = identityUser.EmailConfirmed;
+            signInViewModel.CreatedDate = identityUser.CreatedDate;
+            signInViewModel.ModifiedDate = identityUser.ModifiedDate;
+
+            //update db
+            identityUser.RefreshToken = signInViewModel.RefreshToken;
+            identityUser.RefreshTokenExpiryTime = SetRefreshTokenExpiryTime();
+            identityUser.ModifiedDate = DateTime.Now;
+
+            var result = await _authRepo.UpdateAsync(identityUser);
+            if (!result.Succeeded)
+            {
+                var code = result?.Errors?.FirstOrDefault()?.Code;
+                throw new CustomException(Lang.Find($"error_{code}"));
+            }
+
+            //publish to eventbus
+            var emailEvent = new EmailEvent();
+            emailEvent.To.Add(identityUser.Email);
+            emailEvent.Subject = "Security Alter";
+
+            try
+            {
+                var geoInfo = await _geoHelper.GetGeoInfo();
+                var geo = JsonConvert.DeserializeObject<Geo>(geoInfo);
+                emailEvent.Content = string.Format(Lang.Find("sign_in_alert_with_geo"), identityUser.Name, geo.City, geo.Zip, geo.Region_Name,
+                    geo.Country_Name,
+                    geo.IP);
+            }
+            catch (Exception)
+            {
+                emailEvent.Content = string.Format(Lang.Find("sign_in_alert_normal"), identityUser.Name, DateTime.Now.ToString());
+            }
+
+            await _publishEndpoint.Publish(emailEvent);
+            return signInViewModel;
         }
 
         public async Task<bool> ResendActivationCodeAsync(ResendActivationCodeInputModel model, DataFilter dataFilter)
@@ -461,6 +484,9 @@ namespace TH.AuthMS.App
 
         private void ApplyValidationBl(SignUpInputModel entity)
         {
+            entity.Name = string.IsNullOrWhiteSpace(entity.Name)
+                ? string.Empty
+                : entity.Name.Trim();
             entity.UserName = string.IsNullOrWhiteSpace(entity.UserName)
                 ? throw new CustomException($"{Lang.Find("error_validation")} : UserName")
                 : entity.UserName.Trim();
@@ -473,9 +499,12 @@ namespace TH.AuthMS.App
             entity.Email = string.IsNullOrWhiteSpace(entity.Email)
                 ? throw new CustomException($"{Lang.Find("error_validation")} : Email")
                 : entity.Email.Trim();
-            entity.Email = string.IsNullOrWhiteSpace(entity.Email)
-                ? null
-                : entity.Email.Trim();
+            entity.ReferralId = string.IsNullOrWhiteSpace(entity.ReferralId)
+                ? string.Empty
+                : entity.ReferralId.Trim();
+            entity.PhotoUrl = string.IsNullOrWhiteSpace(entity.PhotoUrl)
+                ? string.Empty
+                : entity.PhotoUrl.Trim();
         }
 
         private DateTime SetRefreshTokenExpiryTime()

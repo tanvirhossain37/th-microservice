@@ -17,15 +17,15 @@ public class CompanyController : CustomBaseController
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IHubContext<CompanyHub, ICompanyHub> _hubContext;
-    private readonly ILogger<CompanyController> _logger;
+    private readonly IUserCompanyService _userCompanyService;
 
-    public CompanyController(ICompanyService companyService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<CompanyHub, ICompanyHub> hubContext, ILogger<CompanyController> logger) : base(httpContextAccessor)
+    public CompanyController(ICompanyService companyService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<CompanyHub, ICompanyHub> hubContext, IUserCompanyService userCompanyService) : base(httpContextAccessor)
     {
         _companyService = companyService ?? throw new ArgumentNullException(nameof(companyService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
         _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _userCompanyService = userCompanyService ?? throw new ArgumentNullException(nameof(userCompanyService));
 
         _companyService.SetUserResolver(UserResolver);
     }
@@ -40,11 +40,20 @@ public class CompanyController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Company, CompanyFilterModel>(entity);
+            // broadcast company
+            var filter = new CompanyFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<ICompanyService>();
             var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnSaveCompanyAsync(viewModel);
+
+            // broadcast user company
+            var ucFilter = new UserCompanyFilterModel { CompanyId = entity.Id };
+            var ucService = scope.ServiceProvider.GetRequiredService<IUserCompanyService>();
+            var ucViewModel = _mapper.Map<UserCompany, UserCompanyViewModel>(await ucService.FindByCompanyIdAsync(ucFilter, DataFilter));
+
+            _hubContext.Clients.All.BroadcastOnSaveUserCompanyAsync(ucViewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -59,11 +68,19 @@ public class CompanyController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Company, CompanyFilterModel>(entity);
+            var filter = new CompanyFilterModel { Id=entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<ICompanyService>();
             var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
             _hubContext.Clients.All.BroadcastOnUpdateCompanyAsync(viewModel);
+
+            // broadcast user company
+            var ucFilter = new UserCompanyFilterModel { CompanyId = entity.Id };
+            var ucService = scope.ServiceProvider.GetRequiredService<IUserCompanyService>();
+            var ucViewModel = _mapper.Map<UserCompany, UserCompanyViewModel>(await ucService.FindByCompanyIdAsync(ucFilter, DataFilter));
+
+            _hubContext.Clients.All.BroadcastOnUpdateUserCompanyAsync(ucViewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -76,6 +93,13 @@ public class CompanyController : CustomBaseController
         await _companyService.SoftDeleteAsync(_mapper.Map<CompanyInputModel, Company>(model), DataFilter);
 
         _hubContext.Clients.All.BroadcastOnSoftDeleteCompanyAsync(model);
+
+        // broadcast user company
+        var ucFilter = new UserCompanyFilterModel { CompanyId = model.Id, Active = false };
+        var ucViewModel = _mapper.Map<UserCompany, UserCompanyViewModel>(await _userCompanyService.FindByCompanyIdAsync(ucFilter, DataFilter));
+               
+        //_hubContext.Clients.All.BroadcastOnSoftDeleteUserCompanyAsync(ucViewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 
@@ -95,8 +119,6 @@ public class CompanyController : CustomBaseController
     [Authorize(Policy = "CompanyReadPolicy")]
     public async Task<IActionResult> FindCompanyAsync([FromBody] CompanyFilterModel filter)
     {
-
-        _logger.LogTrace("Some one is searching for the company");
         var entity = await _companyService.FindByIdAsync(filter, DataFilter);
         if (entity is null) return CustomResult(Lang.Find("error_not_found"), entity, HttpStatusCode.NotFound);
 
@@ -117,5 +139,6 @@ public class CompanyController : CustomBaseController
     public override void Dispose()
     {
         _companyService?.Dispose();
+        _userCompanyService?.Dispose();
     }
 }

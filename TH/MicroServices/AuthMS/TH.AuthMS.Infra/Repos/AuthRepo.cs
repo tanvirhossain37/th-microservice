@@ -42,6 +42,12 @@ namespace TH.AuthMS.Infra
             return await _userManager.UpdateAsync(identityApplicationUser);
         }
 
+        public async Task DeleteAsync(ApplicationUser identityUser)
+        {
+            if (identityUser == null) throw new ArgumentNullException(nameof(identityUser));
+            await _userManager.DeleteAsync(identityUser);
+        }
+
         public async Task<ApplicationUser> FindByUserNameAsync(string userName)
         {
             return await _userManager.FindByNameAsync(userName);
@@ -87,7 +93,12 @@ namespace TH.AuthMS.Infra
                 new Claim(TS.Controllers.User, TS.Permissions.Write),
                 new Claim(TS.Controllers.User, TS.Permissions.Update),
                 new Claim(TS.Controllers.User, TS.Permissions.SoftDelete),
-                new Claim(TS.Controllers.User, TS.Permissions.Delete)
+                new Claim(TS.Controllers.User, TS.Permissions.Delete),
+                new Claim(TS.Controllers.UserCompany, TS.Permissions.Read),
+                new Claim(TS.Controllers.UserCompany, TS.Permissions.Write),
+                new Claim(TS.Controllers.UserCompany, TS.Permissions.Update),
+                new Claim(TS.Controllers.UserCompany, TS.Permissions.SoftDelete),
+                new Claim(TS.Controllers.UserCompany, TS.Permissions.Delete)
             };
 
 

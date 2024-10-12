@@ -6,6 +6,6 @@ public interface IUserHub
 {
     public Task BroadcastOnSaveUserAsync(UserViewModel viewModel);
     public Task BroadcastOnUpdateUserAsync(UserViewModel viewModel);
-    public Task BroadcastOnSoftDeleteUserAsync(UserInputModel inputModel);
-    public Task BroadcastOnDeleteUserAsync(UserInputModel inputModel);
+    public Task BroadcastOnSoftDeleteUserAsync(UserViewModel viewModel);
+    public Task BroadcastOnDeleteUserAsync(UserViewModel viewModel);
 }

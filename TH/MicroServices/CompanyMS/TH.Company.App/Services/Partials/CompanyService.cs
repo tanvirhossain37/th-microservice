@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
+using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
 using TH.CompanyMS.Core;
-using TH.MongoRnDMS.Common;
 
 namespace TH.CompanyMS.App;
 
@@ -34,7 +34,7 @@ public partial class CompanyService
         role.CreatedDate = entity.CreatedDate;
         role.SpaceId = entity.SpaceId;
         role.CompanyId = entity.Id;
-        role.Name = "Super Admin";
+        role.Name = Config.GetSection("RoleName").Value?.Trim();
 
         entity.Roles.Add(role);
 
@@ -74,16 +74,6 @@ public partial class CompanyService
         role.UserRoles.Add(userRole);
         user.UserRoles.Add(userRole);
         entity.UserRoles.Add(userRole);
-        entity.UserCompanies.Add(userCompany);
-
-        ////get modules
-        //var modules = await Repo.ModuleRepo.GetQueryableAsync(x => x.ParentId == null, i => i.InverseParent, o => o.OrderBy(m => m.Id), (int)PageEnum.PageIndex,
-        //    (int)PageEnum.All, dataFilter);
-
-        //foreach (var module in modules)
-        //{
-        //    await AddPermissionRecursivelyAsync(entity, role, module, null, dataFilter);
-        //}
     }
 
     private async Task ApplyOnSavedBlAsync(Company entity, DataFilter dataFilter)

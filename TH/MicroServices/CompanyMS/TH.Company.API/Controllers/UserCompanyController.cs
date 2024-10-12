@@ -38,11 +38,12 @@ public class UserCompanyController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<UserCompany, UserCompanyFilterModel>(entity);
+            var filter = new UserCompanyFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<IUserCompanyService>();
             var viewModel = _mapper.Map<UserCompany, UserCompanyViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnSaveUserCompanyAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnSaveUserCompanyAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -57,11 +58,12 @@ public class UserCompanyController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<UserCompany, UserCompanyFilterModel>(entity);
+            var filter = new UserCompanyFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<IUserCompanyService>();
             var viewModel = _mapper.Map<UserCompany, UserCompanyViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnUpdateUserCompanyAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnUpdateUserCompanyAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -71,9 +73,15 @@ public class UserCompanyController : CustomBaseController
     [Authorize(Policy = "UserCompanySoftDeletePolicy")]
     public async Task<IActionResult> SoftDeleteUserCompanyAsync([FromBody] UserCompanyInputModel model)
     {
+        //first grab it
+        var filter = new UserCompanyFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<UserCompany, UserCompanyViewModel>(await _userCompanyService.FindByIdAsync(filter, DataFilter));
+
+        //then soft delete
         await _userCompanyService.SoftDeleteAsync(_mapper.Map<UserCompanyInputModel, UserCompany>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnSoftDeleteUserCompanyAsync(model);
+        await _hubContext.Clients.All.BroadcastOnSoftDeleteUserCompanyAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 
@@ -82,9 +90,15 @@ public class UserCompanyController : CustomBaseController
     [Authorize(Policy = "UserCompanyDeletePolicy")]
     public async Task<IActionResult> DeleteUserCompanyAsync([FromBody] UserCompanyInputModel model)
     {
+        //first grab it
+        var filter = new UserCompanyFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<UserCompany, UserCompanyViewModel>(await _userCompanyService.FindByIdAsync(filter, DataFilter));
+
+        //then delete
         await _userCompanyService.DeleteAsync(_mapper.Map<UserCompanyInputModel, UserCompany>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnDeleteUserCompanyAsync(model);
+        await _hubContext.Clients.All.BroadcastOnDeleteUserCompanyAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 

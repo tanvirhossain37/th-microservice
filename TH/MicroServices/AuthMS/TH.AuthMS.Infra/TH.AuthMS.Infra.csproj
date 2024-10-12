@@ -19,6 +19,8 @@
     <Compile Remove="Migrations\20240819143604_Initial.Designer.cs" />
     <Compile Remove="Migrations\20240824111321_Initial.cs" />
     <Compile Remove="Migrations\20240824111321_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20240930103401_Initial.cs" />
+    <Compile Remove="Migrations\20240930103401_Initial.Designer.cs" />
     <Compile Remove="Migrations\AuthDbContextModelSnapshot.cs" />
   </ItemGroup>
 

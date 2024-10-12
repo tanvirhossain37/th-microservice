@@ -1,10 +1,11 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using TH.CompanyMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using TH.CompanyMS.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace TH.CompanyMS.App;
 
@@ -13,12 +14,12 @@ public partial class BranchService : BaseService, IBranchService
     protected readonly IUow Repo;
     
 	protected readonly IBranchUserService BranchUserService;
-        
-    public BranchService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IBranchUserService branchUserService) : base(mapper,publishEndpoint)
+
+    public BranchService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config, IBranchUserService branchUserService) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-        
-		BranchUserService = branchUserService ?? throw new ArgumentNullException(nameof(branchUserService));
+
+        BranchUserService = branchUserService ?? throw new ArgumentNullException(nameof(branchUserService));
     }
 
     public async Task<Branch> SaveAsync(Branch entity, DataFilter dataFilter, bool commit = true)

@@ -37,6 +37,8 @@ namespace TH.AuthMS.API
         {
             //override
             model.IsAutoUserName = true;
+            model.EmailConfirmed = false;
+            model.Provider = TS.Providers.LOCAL;
 
             var viewModel = await _authService.SignUpAsync(model, DataFilter);
             if (viewModel is null) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
@@ -68,13 +70,13 @@ namespace TH.AuthMS.API
         }
 
         [HttpPost("ActivateAccountAsync")]
-        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(SignInViewModel), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ActivateAccountAsync([FromBody] ActivationCodeInputModel model)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
             var viewModel = await _authService.ActivateAccountAsync(model, DataFilter);
-            if (!viewModel) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
+            if (viewModel is null) return CustomResult(Lang.Find("error_not_found"), viewModel, HttpStatusCode.NotFound);
 
             return CustomResult(Lang.Find("success"), viewModel);
         }

@@ -16,6 +16,7 @@ public static class AppDependencyInjection
         services.AddScoped<Module>();
         services.AddScoped<Permission>();
         services.AddScoped<Role>();
+        services.AddScoped<SpaceSubscription>();
         services.AddScoped<User>();
         services.AddScoped<UserCompany>();
         services.AddScoped<UserRole>();
@@ -26,10 +27,10 @@ public static class AppDependencyInjection
         services.AddScoped<ModuleFilterModel>();
         services.AddScoped<PermissionFilterModel>();
         services.AddScoped<RoleFilterModel>();
+        services.AddScoped<SpaceSubscriptionFilterModel>();
         services.AddScoped<UserFilterModel>();
         services.AddScoped<UserCompanyFilterModel>();
         services.AddScoped<UserRoleFilterModel>();
-
 
         services.AddScoped<BranchInputModel>();
         services.AddScoped<BranchUserInputModel>();
@@ -37,6 +38,7 @@ public static class AppDependencyInjection
         services.AddScoped<ModuleInputModel>();
         services.AddScoped<PermissionInputModel>();
         services.AddScoped<RoleInputModel>();
+        services.AddScoped<SpaceSubscriptionInputModel>();
         services.AddScoped<UserInputModel>();
         services.AddScoped<UserCompanyInputModel>();
         services.AddScoped<UserRoleInputModel>();
@@ -47,10 +49,10 @@ public static class AppDependencyInjection
         services.AddScoped<ModuleViewModel>();
         services.AddScoped<PermissionViewModel>();
         services.AddScoped<RoleViewModel>();
+        services.AddScoped<SpaceSubscriptionViewModel>();
         services.AddScoped<UserViewModel>();
         services.AddScoped<UserCompanyViewModel>();
         services.AddScoped<UserRoleViewModel>();
-
 
         services.AddScoped<IBranchService, BranchService>();
         services.AddScoped<IBranchUserService, BranchUserService>();
@@ -58,6 +60,7 @@ public static class AppDependencyInjection
         services.AddScoped<IModuleService, ModuleService>();
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<IRoleService, RoleService>();
+        services.AddScoped<ISpaceSubscriptionService, SpaceSubscriptionService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserCompanyService, UserCompanyService>();
         services.AddScoped<IUserRoleService, UserRoleService>();

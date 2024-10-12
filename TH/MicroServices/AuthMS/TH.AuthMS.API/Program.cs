@@ -45,6 +45,11 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 //        opt.ClientSecret = builder.Configuration["Google:ClientSecret"];
 //    });
 
+////RabbitMQ Config
+//builder.Services.AddMassTransit(config =>
+//{
+//    config.UsingRabbitMq((ctx, cfg) => { cfg.Host(builder.Configuration.GetSection("EventBus:Host").Value); });
+//});
 
 //RabbitMQ Config
 builder.Services.AddMassTransit(config =>

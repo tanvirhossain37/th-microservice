@@ -15,13 +15,13 @@ public class PermissionHub : Hub<IPermissionHub>
         await Clients.All.BroadcastOnUpdatePermissionAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeletePermissionAsync(PermissionInputModel inputModel)
+    public async Task BroadcastOnSoftDeletePermissionAsync(PermissionViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeletePermissionAsync(inputModel);
+        await Clients.All.BroadcastOnSoftDeletePermissionAsync(viewModel);
     }
 
-    public async Task BroadcastOnDeletePermissionAsync(PermissionInputModel inputModel)
+    public async Task BroadcastOnDeletePermissionAsync(PermissionViewModel viewModel)
     {
-        await Clients.All.BroadcastOnDeletePermissionAsync(inputModel);
+        await Clients.All.BroadcastOnDeletePermissionAsync(viewModel);
     }
 }

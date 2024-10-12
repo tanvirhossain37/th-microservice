@@ -1,7 +1,6 @@
 using TH.CompanyMS.App;
-using TH.CompanyMS.Infra;
 
-namespace TH.CompanyMS.infra;
+namespace TH.CompanyMS.Infra;
 
 public class Uow : IUow
 {
@@ -13,11 +12,12 @@ public class Uow : IUow
 	public IModuleRepo ModuleRepo { get; set; }
 	public IPermissionRepo PermissionRepo { get; set; }
 	public IRoleRepo RoleRepo { get; set; }
+	public ISpaceSubscriptionRepo SpaceSubscriptionRepo { get; set; }
 	public IUserRepo UserRepo { get; set; }
 	public IUserCompanyRepo UserCompanyRepo { get; set; }
 	public IUserRoleRepo UserRoleRepo { get; set; }
 
-    public Uow(CompanyDbContext dbContext, IBranchRepo branchRepo, IBranchUserRepo branchUserRepo, ICompanyRepo companyRepo, IModuleRepo moduleRepo, IPermissionRepo permissionRepo, IRoleRepo roleRepo, IUserRepo userRepo, IUserCompanyRepo userCompanyRepo, IUserRoleRepo userRoleRepo)
+    public Uow(CompanyDbContext dbContext, IBranchRepo branchRepo, IBranchUserRepo branchUserRepo, ICompanyRepo companyRepo, IModuleRepo moduleRepo, IPermissionRepo permissionRepo, IRoleRepo roleRepo, ISpaceSubscriptionRepo spaceSubscriptionRepo, IUserRepo userRepo, IUserCompanyRepo userCompanyRepo, IUserRoleRepo userRoleRepo)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         
@@ -27,6 +27,7 @@ public class Uow : IUow
 			ModuleRepo = moduleRepo ?? throw new ArgumentNullException(nameof(moduleRepo));
 			PermissionRepo = permissionRepo ?? throw new ArgumentNullException(nameof(permissionRepo));
 			RoleRepo = roleRepo ?? throw new ArgumentNullException(nameof(roleRepo));
+			SpaceSubscriptionRepo = spaceSubscriptionRepo ?? throw new ArgumentNullException(nameof(spaceSubscriptionRepo));
 			UserRepo = userRepo ?? throw new ArgumentNullException(nameof(userRepo));
 			UserCompanyRepo = userCompanyRepo ?? throw new ArgumentNullException(nameof(userCompanyRepo));
 			UserRoleRepo = userRoleRepo ?? throw new ArgumentNullException(nameof(userRoleRepo));

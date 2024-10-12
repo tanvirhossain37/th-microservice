@@ -8,6 +8,8 @@ using TH.AuthMS.API;
 using TH.Common.Model;
 using TH.AuthMS.App;
 using TH.AuthMS.Infra;
+using TH.CompanyMS.Grpc;
+using TH.Grpc.Services;
 
 namespace TH.AuthMS.Test
 {
@@ -42,7 +44,11 @@ namespace TH.AuthMS.Test
             serviceCollection.AddAutoMapper(Assembly.GetExecutingAssembly());
             ServiceProvider = serviceCollection.BuildServiceProvider();
             var config = new MapperConfiguration(cfg =>
-                cfg.AddProfile<MappingProfile>());
+                cfg.AddProfile<AuthMappingProfile>());
+
+            serviceCollection.AddScoped<AuthGrpcServerService>();
+            serviceCollection.AddScoped<CompanyGrpcServerService>();
+            serviceCollection.AddScoped<CompanyProtoService.CompanyProtoServiceClient>();
 
             Mapper = new Mapper(config);
 

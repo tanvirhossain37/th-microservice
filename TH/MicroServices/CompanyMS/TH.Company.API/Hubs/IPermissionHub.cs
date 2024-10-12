@@ -6,6 +6,6 @@ public interface IPermissionHub
 {
     public Task BroadcastOnSavePermissionAsync(PermissionViewModel viewModel);
     public Task BroadcastOnUpdatePermissionAsync(PermissionViewModel viewModel);
-    public Task BroadcastOnSoftDeletePermissionAsync(PermissionInputModel inputModel);
-    public Task BroadcastOnDeletePermissionAsync(PermissionInputModel inputModel);
+    public Task BroadcastOnSoftDeletePermissionAsync(PermissionViewModel viewModel);
+    public Task BroadcastOnDeletePermissionAsync(PermissionViewModel viewModel);
 }

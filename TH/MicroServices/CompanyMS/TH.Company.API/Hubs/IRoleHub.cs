@@ -6,6 +6,6 @@ public interface IRoleHub
 {
     public Task BroadcastOnSaveRoleAsync(RoleViewModel viewModel);
     public Task BroadcastOnUpdateRoleAsync(RoleViewModel viewModel);
-    public Task BroadcastOnSoftDeleteRoleAsync(RoleInputModel inputModel);
-    public Task BroadcastOnDeleteRoleAsync(RoleInputModel inputModel);
+    public Task BroadcastOnSoftDeleteRoleAsync(RoleViewModel viewModel);
+    public Task BroadcastOnDeleteRoleAsync(RoleViewModel viewModel);
 }

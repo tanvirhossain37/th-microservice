@@ -1,23 +1,24 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using TH.CompanyMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using TH.CompanyMS.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace TH.CompanyMS.App;
 
 public partial class PermissionService : BaseService, IPermissionService
 {
     protected readonly IUow Repo;
-    
-	//protected readonly IPermissionService PermissionService;
-        
-    public PermissionService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper) : base(mapper,publishEndpoint)
+
+    //protected readonly IPermissionService PermissionService;
+
+    public PermissionService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-        
+
     }
 
     public async Task<Permission> SaveAsync(Permission entity, DataFilter dataFilter, bool commit = true)

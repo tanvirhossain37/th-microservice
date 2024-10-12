@@ -38,11 +38,12 @@ public class $WE$Controller : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<$WE$, $WE$FilterModel>(entity);
+            var filter = new $WE$FilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<I$WE$Service>();
             var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnSave$WE$Async(viewModel);
+            await _hubContext.Clients.All.BroadcastOnSave$WE$Async(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -57,11 +58,12 @@ public class $WE$Controller : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<$WE$, $WE$FilterModel>(entity);
+            var filter = new $WE$FilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<I$WE$Service>();
             var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnUpdate$WE$Async(viewModel);
+            await _hubContext.Clients.All.BroadcastOnUpdate$WE$Async(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -71,9 +73,15 @@ public class $WE$Controller : CustomBaseController
     [Authorize(Policy = "$WE$SoftDeletePolicy")]
     public async Task<IActionResult> SoftDelete$WE$Async([FromBody] $WE$InputModel model)
     {
+        //first grab it
+        var filter = new $WE$FilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await _$we$Service.FindByIdAsync(filter, DataFilter));
+
+        //then soft delete
         await _$we$Service.SoftDeleteAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnSoftDelete$WE$Async(model);
+        await _hubContext.Clients.All.BroadcastOnSoftDelete$WE$Async(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 
@@ -82,9 +90,15 @@ public class $WE$Controller : CustomBaseController
     [Authorize(Policy = "$WE$DeletePolicy")]
     public async Task<IActionResult> Delete$WE$Async([FromBody] $WE$InputModel model)
     {
+        //first grab it
+        var filter = new $WE$FilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await _$we$Service.FindByIdAsync(filter, DataFilter));
+
+        //then delete
         await _$we$Service.DeleteAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnDelete$WE$Async(model);
+        await _hubContext.Clients.All.BroadcastOnDelete$WE$Async(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 

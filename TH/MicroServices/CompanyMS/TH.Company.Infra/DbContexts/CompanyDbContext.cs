@@ -21,6 +21,8 @@ public class CompanyDbContext : DbContext
 
     public virtual DbSet<Role> Roles { get; set; }
 
+    public virtual DbSet<SpaceSubscription> SpaceSubscriptions { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserCompany> UserCompanies { get; set; }
@@ -88,7 +90,7 @@ public class CompanyDbContext : DbContext
             entity.Property(e => e.SpaceId).HasMaxLength(450);
             entity.Property(e => e.Website).HasMaxLength(256);
         });
-
+        
         modelBuilder.Entity<Module>(entity =>
         {
             entity.Property(e => e.ControllerName).HasMaxLength(256);
@@ -147,6 +149,19 @@ public class CompanyDbContext : DbContext
                 .HasForeignKey(d => d.CompanyId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Roles_Companies");
+        });
+
+        modelBuilder.Entity<SpaceSubscription>(entity =>
+        {
+            entity.Property(e => e.CardExpiryDate).HasColumnType("datetime");
+            entity.Property(e => e.CardHolderName).HasMaxLength(450);
+            entity.Property(e => e.CardNumber).HasMaxLength(450);
+            entity.Property(e => e.CountryId).HasMaxLength(450);
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+            entity.Property(e => e.SecurityCode).HasMaxLength(450);
+            entity.Property(e => e.SpaceId).HasMaxLength(450);
+            entity.Property(e => e.ZipCode).HasMaxLength(50);
         });
 
         modelBuilder.Entity<User>(entity =>

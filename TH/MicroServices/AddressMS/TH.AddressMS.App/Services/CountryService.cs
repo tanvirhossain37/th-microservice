@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 using TH.AddressMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
@@ -18,7 +19,7 @@ public partial class CountryService : BaseService, ICountryService
     //additional
     private readonly IExcelRepo _excelRepo;
 
-    public CountryService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IAddressService addressService, IExcelRepo excelRepo) : base(mapper,publishEndpoint)
+    public CountryService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IAddressService addressService, IExcelRepo excelRepo, IConfiguration config) : base(mapper,publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
         

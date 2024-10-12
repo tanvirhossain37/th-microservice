@@ -38,11 +38,12 @@ public class PermissionController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Permission, PermissionFilterModel>(entity);
+            var filter = new PermissionFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<IPermissionService>();
             var viewModel = _mapper.Map<Permission, PermissionViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnSavePermissionAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnSavePermissionAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -57,11 +58,12 @@ public class PermissionController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Permission, PermissionFilterModel>(entity);
+            var filter = new PermissionFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<IPermissionService>();
             var viewModel = _mapper.Map<Permission, PermissionViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnUpdatePermissionAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnUpdatePermissionAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -71,9 +73,15 @@ public class PermissionController : CustomBaseController
     [Authorize(Policy = "PermissionSoftDeletePolicy")]
     public async Task<IActionResult> SoftDeletePermissionAsync([FromBody] PermissionInputModel model)
     {
+        //first grab it
+        var filter = new PermissionFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Permission, PermissionViewModel>(await _permissionService.FindByIdAsync(filter, DataFilter));
+
+        //then soft delete
         await _permissionService.SoftDeleteAsync(_mapper.Map<PermissionInputModel, Permission>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnSoftDeletePermissionAsync(model);
+        await _hubContext.Clients.All.BroadcastOnSoftDeletePermissionAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 
@@ -82,9 +90,15 @@ public class PermissionController : CustomBaseController
     [Authorize(Policy = "PermissionDeletePolicy")]
     public async Task<IActionResult> DeletePermissionAsync([FromBody] PermissionInputModel model)
     {
+        //first grab it
+        var filter = new PermissionFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Permission, PermissionViewModel>(await _permissionService.FindByIdAsync(filter, DataFilter));
+
+        //then delete
         await _permissionService.DeleteAsync(_mapper.Map<PermissionInputModel, Permission>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnDeletePermissionAsync(model);
+        await _hubContext.Clients.All.BroadcastOnDeletePermissionAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 

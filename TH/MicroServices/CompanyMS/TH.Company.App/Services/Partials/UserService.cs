@@ -40,13 +40,14 @@ public partial class UserService
             var signUpInputRequest = new SignUpInputRequest
             {
                 Name = entity.Name,
-                Provider = "LOCAL",
+                Provider = TS.Providers.LOCAL,
                 UserName = Util.TryGenerateUserName(entity.UserName),
                 Email = entity.UserName,
                 Password = Util.TryGenerateCode(),
                 ReferralId = UserResolver.UserName,
                 CompanyName = company.Name,
-                IsAutoUserName = false
+                IsAutoUserName = false,
+                EmailConfirmed = true
             };
             //grpc
             var applicationUser = await _authGrpcClientService.SignUpAsync(signUpInputRequest);

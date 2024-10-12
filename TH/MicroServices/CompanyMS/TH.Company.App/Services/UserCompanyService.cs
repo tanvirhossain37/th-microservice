@@ -1,22 +1,23 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using TH.CompanyMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using TH.CompanyMS.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace TH.CompanyMS.App;
 
 public partial class UserCompanyService : BaseService, IUserCompanyService
 {
     protected readonly IUow Repo;
-    
-        
-    public UserCompanyService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper) : base(mapper,publishEndpoint)
+
+
+    public UserCompanyService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-        
+
     }
 
     public async Task<UserCompany> SaveAsync(UserCompany entity, DataFilter dataFilter, bool commit = true)
@@ -152,6 +153,19 @@ public partial class UserCompanyService : BaseService, IUserCompanyService
         {
             throw;
         }
+    }
+
+    public async Task<UserCompany> FindByCompanyIdAsync(UserCompanyFilterModel filter, DataFilter dataFilter)
+    {
+        if (filter is null)
+        {
+            throw new ArgumentNullException(nameof(filter));
+        }
+
+        var entity =await Repo.UserCompanyRepo.SingleOrDefaultQueryableAsync(x=>x.CompanyId.Equals(filter.CompanyId), dataFilter);
+        if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
+
+        return entity;
     }
 
     public async Task<IEnumerable<UserCompany>> GetAsync(UserCompanyFilterModel filter, DataFilter dataFilter)

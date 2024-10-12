@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TH.Common.Model;
 using TH.CompanyMS.App;
-using TH.CompanyMS.infra;
 using TH.Repo;
 
 namespace TH.CompanyMS.Infra;
@@ -18,11 +17,11 @@ public static class InfraDependencyInjection
         services.AddScoped<IModuleRepo, ModuleRepo>();
         services.AddScoped<IPermissionRepo, PermissionRepo>();
         services.AddScoped<IRoleRepo, RoleRepo>();
+        services.AddScoped<ISpaceSubscriptionRepo, SpaceSubscriptionRepo>();
         services.AddScoped<IUserRepo, UserRepo>();
         services.AddScoped<IUserCompanyRepo, UserCompanyRepo>();
         services.AddScoped<IUserRoleRepo, UserRoleRepo>();
         services.AddScoped<IUow, Uow>();
-
 
         services.AddScoped<CompanyDbContext>();
         services.AddScoped<ICustomSort, CustomSort>();

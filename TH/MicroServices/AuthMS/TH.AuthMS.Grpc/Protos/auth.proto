@@ -17,6 +17,7 @@ message SignUpInputRequest {
 	string referral_id = 6;
 	string company_name = 7;
 	bool is_auto_user_name = 8;
+	bool email_confirmed = 9;
 }
 
 message SignUpViewReply {	

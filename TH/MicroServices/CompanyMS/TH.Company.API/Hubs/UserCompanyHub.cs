@@ -15,13 +15,13 @@ public class UserCompanyHub : Hub<IUserCompanyHub>
         await Clients.All.BroadcastOnUpdateUserCompanyAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteUserCompanyAsync(UserCompanyInputModel inputModel)
+    public async Task BroadcastOnSoftDeleteUserCompanyAsync(UserCompanyViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteUserCompanyAsync(inputModel);
+        await Clients.All.BroadcastOnSoftDeleteUserCompanyAsync(viewModel);
     }
 
-    public async Task BroadcastOnDeleteUserCompanyAsync(UserCompanyInputModel inputModel)
+    public async Task BroadcastOnDeleteUserCompanyAsync(UserCompanyViewModel viewModel)
     {
-        await Clients.All.BroadcastOnDeleteUserCompanyAsync(inputModel);
+        await Clients.All.BroadcastOnDeleteUserCompanyAsync(viewModel);
     }
 }

@@ -15,11 +15,10 @@ public class CompanyMappingProfile : Profile
         CreateMap<ModuleInputModel, Module>().ReverseMap();
         CreateMap<PermissionInputModel, Permission>().ReverseMap();
         CreateMap<RoleInputModel, Role>().ReverseMap();
+        CreateMap<SpaceSubscriptionInputModel, SpaceSubscription>().ReverseMap();
         CreateMap<UserInputModel, User>().ReverseMap();
         CreateMap<UserCompanyInputModel, UserCompany>().ReverseMap();
         CreateMap<UserRoleInputModel, UserRole>().ReverseMap();
-
-
 
         //view
         CreateMap<BranchViewModel, Branch>().ReverseMap();
@@ -44,7 +43,7 @@ public class CompanyMappingProfile : Profile
         CreateMap<UserViewModel, User>().ReverseMap();
         CreateMap<UserCompanyViewModel, UserCompany>().ReverseMap();
         CreateMap<UserRoleViewModel, UserRole>().ReverseMap();
-
+        CreateMap<SpaceSubscriptionViewModel, SpaceSubscription>().ReverseMap();
 
         //filters
         CreateMap<Branch, BranchFilterModel>().ReverseMap();
@@ -53,9 +52,11 @@ public class CompanyMappingProfile : Profile
         CreateMap<Module, ModuleFilterModel>().ReverseMap();
         CreateMap<Permission, PermissionFilterModel>().ReverseMap();
         CreateMap<Role, RoleFilterModel>().ReverseMap();
+        CreateMap<SpaceSubscription, SpaceSubscriptionFilterModel>().ReverseMap();
         CreateMap<User, UserFilterModel>().ReverseMap();
         CreateMap<UserCompany, UserCompanyFilterModel>().ReverseMap();
         CreateMap<UserRole, UserRoleFilterModel>().ReverseMap();
+
 
 
         //protobuf

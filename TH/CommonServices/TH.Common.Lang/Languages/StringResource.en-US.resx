@@ -165,4 +165,7 @@
   <data name="c_united_states" xml:space="preserve">
     <value>United States</value>
   </data>
+  <data name="user_create_fail" xml:space="preserve">
+    <value>Sorry, couldn't create the user.</value>
+  </data>
 </root>

@@ -1,5 +1,3 @@
-using TH.Common.Model;
-
 namespace TH.CompanyMS.Core;
 
 public class UserCompany : BaseEntity

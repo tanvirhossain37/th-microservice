@@ -7,6 +7,7 @@ namespace TH.AuthMS.App
     {
         Task<bool> SaveAsync(ApplicationUser identityApplicationUser, string password);
         Task<IdentityResult> UpdateAsync(ApplicationUser identityApplicationUser);
+        Task DeleteAsync(ApplicationUser identityUser);
         Task<ApplicationUser> FindByUserNameAsync(string userName);
         Task<ApplicationUser> FindByEmailAsync(string email);
         Task<bool> CheckPasswordAsync(ApplicationUser applicationUser, string password);

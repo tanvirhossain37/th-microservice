@@ -57,6 +57,29 @@ namespace TH.CompanyMS.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SpaceSubscriptions",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SpaceId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    PlanId = table.Column<int>(type: "int", nullable: false),
+                    IsCurrent = table.Column<bool>(type: "bit", nullable: false),
+                    CardHolderName = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    CardNumber = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    SecurityCode = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    CardExpiryDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    CountryId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    ZipCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Active = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SpaceSubscriptions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Branches",
                 columns: table => new
                 {
@@ -357,6 +380,9 @@ namespace TH.CompanyMS.Infra.Migrations
 
             migrationBuilder.DropTable(
                 name: "Permissions");
+
+            migrationBuilder.DropTable(
+                name: "SpaceSubscriptions");
 
             migrationBuilder.DropTable(
                 name: "UserCompanies");

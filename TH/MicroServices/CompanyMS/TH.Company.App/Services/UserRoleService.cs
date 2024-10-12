@@ -1,22 +1,23 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using TH.CompanyMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using TH.CompanyMS.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace TH.CompanyMS.App;
 
 public partial class UserRoleService : BaseService, IUserRoleService
 {
     protected readonly IUow Repo;
-    
-        
-    public UserRoleService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper) : base(mapper,publishEndpoint)
+
+
+    public UserRoleService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-        
+
     }
 
     public async Task<UserRole> SaveAsync(UserRole entity, DataFilter dataFilter, bool commit = true)

@@ -15,13 +15,13 @@ public class $WE$Hub : Hub<I$WE$Hub>
         await Clients.All.BroadcastOnUpdate$WE$Async(viewModel);
     }
 
-    public async Task BroadcastOnSoftDelete$WE$Async($WE$InputModel inputModel)
+    public async Task BroadcastOnSoftDelete$WE$Async($WE$ViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDelete$WE$Async(inputModel);
+        await Clients.All.BroadcastOnSoftDelete$WE$Async(viewModel);
     }
 
-    public async Task BroadcastOnDelete$WE$Async($WE$InputModel inputModel)
+    public async Task BroadcastOnDelete$WE$Async($WE$ViewModel viewModel)
     {
-        await Clients.All.BroadcastOnDelete$WE$Async(inputModel);
+        await Clients.All.BroadcastOnDelete$WE$Async(viewModel);
     }
 }

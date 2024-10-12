@@ -9,10 +9,10 @@ public partial class UserCompanyFilterModel
     public int PageSize { get; set; }
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
-    public string UserName { get; set; }
 
     public Print Print { get; set; }
     public IList<SortFilter> SortFilters { get; set; }
+    public string UserName { get; set; }
 
     public UserCompanyFilterModel()
     {

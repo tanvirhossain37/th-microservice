@@ -38,11 +38,12 @@ public class BranchController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Branch, BranchFilterModel>(entity);
+            var filter = new BranchFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<IBranchService>();
             var viewModel = _mapper.Map<Branch, BranchViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnSaveBranchAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnSaveBranchAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -57,11 +58,12 @@ public class BranchController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Branch, BranchFilterModel>(entity);
+            var filter = new BranchFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<IBranchService>();
             var viewModel = _mapper.Map<Branch, BranchViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnUpdateBranchAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnUpdateBranchAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -71,9 +73,15 @@ public class BranchController : CustomBaseController
     [Authorize(Policy = "BranchSoftDeletePolicy")]
     public async Task<IActionResult> SoftDeleteBranchAsync([FromBody] BranchInputModel model)
     {
+        //first grab it
+        var filter = new BranchFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Branch, BranchViewModel>(await _branchService.FindByIdAsync(filter, DataFilter));
+
+        //then soft delete
         await _branchService.SoftDeleteAsync(_mapper.Map<BranchInputModel, Branch>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnSoftDeleteBranchAsync(model);
+        await _hubContext.Clients.All.BroadcastOnSoftDeleteBranchAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 
@@ -82,9 +90,15 @@ public class BranchController : CustomBaseController
     [Authorize(Policy = "BranchDeletePolicy")]
     public async Task<IActionResult> DeleteBranchAsync([FromBody] BranchInputModel model)
     {
+        //first grab it
+        var filter = new BranchFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Branch, BranchViewModel>(await _branchService.FindByIdAsync(filter, DataFilter));
+
+        //then delete
         await _branchService.DeleteAsync(_mapper.Map<BranchInputModel, Branch>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnDeleteBranchAsync(model);
+        await _hubContext.Clients.All.BroadcastOnDeleteBranchAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 

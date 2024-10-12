@@ -1,8 +1,10 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TH.AuthMS.App.GrpcServices;
 using TH.AuthMS.Core;
 using TH.Common.Model;
+using TH.CompanyMS.Grpc;
 using TH.Grpc.Protos;
 using TH.Grpc.Services;
 
@@ -16,6 +18,13 @@ namespace TH.AuthMS.App
             //services.AddScoped<SignUpInputModel>();
             //services.AddScoped<SignUpViewModel>();
             services.AddScoped<IAuthService, AuthService>();
+
+            //grpc client
+            services.AddGrpcClient<CompanyProtoService.CompanyProtoServiceClient>(
+                options => options.Address = new Uri(configuration.GetValue<string>("GrpcSettings:GrpcUrl")));
+
+            services.AddScoped<CompanyGrpcClientService>();
+            //services.AddScoped<CompanyProtoService.CompanyProtoServiceClient>();
 
             ////RabbitMQ Config
             //services.AddMassTransit(config =>

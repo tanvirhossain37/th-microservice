@@ -47,4 +47,10 @@
     <Folder Include="GrpcServices\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Protobuf Include="..\..\CompanyMS\TH.CompanyMS.Grpc\Protos\company.proto" GrpcServices="Client">
+      <Link>Protos\company.proto</Link>
+    </Protobuf>
+  </ItemGroup>
+
 </Project>
