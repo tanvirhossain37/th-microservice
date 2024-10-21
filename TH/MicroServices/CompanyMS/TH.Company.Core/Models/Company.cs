@@ -11,6 +11,7 @@ public class Company : BaseEntity
 	public string? Logo { get; set; }
 	public virtual ICollection<BranchUser> BranchUsers { get; set; } = new List<BranchUser>();
 	public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
+	public virtual ICollection<CompanySetting> CompanySettings { get; set; } = new List<CompanySetting>();
 	public virtual ICollection<Permission> Permissions { get; set; } = new List<Permission>();
 	public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 	public virtual ICollection<UserCompany> UserCompanies { get; set; } = new List<UserCompany>();

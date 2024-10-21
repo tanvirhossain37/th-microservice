@@ -1,0 +1,9 @@
+using TH.Common.Model;
+
+namespace $namespace$
+{
+    public partial interface I$WE$Service
+    {
+        //todo
+    }
+}

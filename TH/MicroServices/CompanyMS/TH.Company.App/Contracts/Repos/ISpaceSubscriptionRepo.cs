@@ -4,7 +4,7 @@ using TH.Repo;
 
 namespace TH.CompanyMS.App;
 
-public interface ISpaceSubscriptionRepo : IRepoSQL<SpaceSubscription>
+public partial interface ISpaceSubscriptionRepo : IRepoSQL<SpaceSubscription>
 {   
     
 }

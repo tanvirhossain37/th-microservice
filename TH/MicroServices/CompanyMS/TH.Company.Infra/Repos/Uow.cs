@@ -9,6 +9,7 @@ public class Uow : IUow
 	public IBranchRepo BranchRepo { get; set; }
 	public IBranchUserRepo BranchUserRepo { get; set; }
 	public ICompanyRepo CompanyRepo { get; set; }
+	public ICompanySettingRepo CompanySettingRepo { get; set; }
 	public IModuleRepo ModuleRepo { get; set; }
 	public IPermissionRepo PermissionRepo { get; set; }
 	public IRoleRepo RoleRepo { get; set; }
@@ -17,13 +18,14 @@ public class Uow : IUow
 	public IUserCompanyRepo UserCompanyRepo { get; set; }
 	public IUserRoleRepo UserRoleRepo { get; set; }
 
-    public Uow(CompanyDbContext dbContext, IBranchRepo branchRepo, IBranchUserRepo branchUserRepo, ICompanyRepo companyRepo, IModuleRepo moduleRepo, IPermissionRepo permissionRepo, IRoleRepo roleRepo, ISpaceSubscriptionRepo spaceSubscriptionRepo, IUserRepo userRepo, IUserCompanyRepo userCompanyRepo, IUserRoleRepo userRoleRepo)
+    public Uow(CompanyDbContext dbContext, IBranchRepo branchRepo, IBranchUserRepo branchUserRepo, ICompanyRepo companyRepo, ICompanySettingRepo companySettingRepo, IModuleRepo moduleRepo, IPermissionRepo permissionRepo, IRoleRepo roleRepo, ISpaceSubscriptionRepo spaceSubscriptionRepo, IUserRepo userRepo, IUserCompanyRepo userCompanyRepo, IUserRoleRepo userRoleRepo)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         
 			BranchRepo = branchRepo ?? throw new ArgumentNullException(nameof(branchRepo));
 			BranchUserRepo = branchUserRepo ?? throw new ArgumentNullException(nameof(branchUserRepo));
 			CompanyRepo = companyRepo ?? throw new ArgumentNullException(nameof(companyRepo));
+			CompanySettingRepo = companySettingRepo ?? throw new ArgumentNullException(nameof(companySettingRepo));
 			ModuleRepo = moduleRepo ?? throw new ArgumentNullException(nameof(moduleRepo));
 			PermissionRepo = permissionRepo ?? throw new ArgumentNullException(nameof(permissionRepo));
 			RoleRepo = roleRepo ?? throw new ArgumentNullException(nameof(roleRepo));

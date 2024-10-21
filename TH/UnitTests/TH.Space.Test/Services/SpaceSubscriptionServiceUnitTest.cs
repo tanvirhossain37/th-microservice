@@ -59,7 +59,7 @@ public class SpaceSubscriptionServiceUnitTest : CompanyBaseUnitTest
     }
 
     [TestMethod]
-    public async Task SoftDeleteAsyncUnitTest()
+    public async Task ArchiveAsyncUnitTest()
     {
         try
         {
@@ -68,7 +68,7 @@ public class SpaceSubscriptionServiceUnitTest : CompanyBaseUnitTest
                 Id = "", //todo
             };
 
-            await _service.SoftDeleteAsync(Mapper.Map<SpaceSubscriptionInputModel, SpaceSubscription>(model), DataFilter);
+            await _service.ArchiveAsync(Mapper.Map<SpaceSubscriptionInputModel, SpaceSubscription>(model), DataFilter);
         }
         catch (Exception e)
         {

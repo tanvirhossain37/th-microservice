@@ -1,11 +1,11 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 using TH.CompanyMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using Microsoft.Extensions.Configuration;
 
 namespace TH.CompanyMS.App;
 
@@ -15,13 +15,13 @@ public partial class RoleService : BaseService, IRoleService
     
 	protected readonly IPermissionService PermissionService;
 	protected readonly IUserRoleService UserRoleService;
-
+        
     public RoleService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config, IPermissionService permissionService, IUserRoleService userRoleService) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-
-        PermissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
-        UserRoleService = userRoleService ?? throw new ArgumentNullException(nameof(userRoleService));
+        
+		PermissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
+		UserRoleService = userRoleService ?? throw new ArgumentNullException(nameof(userRoleService));
     }
 
     public async Task<Role> SaveAsync(Role entity, DataFilter dataFilter, bool commit = true)
@@ -105,7 +105,7 @@ public partial class RoleService : BaseService, IRoleService
         return existingEntity;
     }
 
-    public async Task<bool> SoftDeleteAsync(Role entity, DataFilter dataFilter, bool commit = true)
+    public async Task<bool> ArchiveAsync(Role entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -116,7 +116,7 @@ public partial class RoleService : BaseService, IRoleService
         existingEntity.Active = false;
 
         //Add your business logic here
-        await ApplyOnSoftDeletingBlAsync(existingEntity, dataFilter);
+        await ApplyOnArchivingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -136,7 +136,7 @@ public partial class RoleService : BaseService, IRoleService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            await ApplyOnSoftDeletedBlAsync(existingEntity, dataFilter);
+            await ApplyOnArchivedBlAsync(existingEntity, dataFilter);
         }
 
         return true;

@@ -60,14 +60,14 @@ public partial class SpaceSubscriptionService
         //todo
     }
 
-    private async Task ApplyOnSoftDeletingBlAsync(SpaceSubscription existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivingBlAsync(SpaceSubscription existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
     }
 
-    private async Task ApplyOnSoftDeletedBlAsync(SpaceSubscription existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivedBlAsync(SpaceSubscription existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 

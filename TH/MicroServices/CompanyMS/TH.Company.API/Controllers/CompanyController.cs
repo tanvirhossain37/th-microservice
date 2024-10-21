@@ -17,15 +17,13 @@ public class CompanyController : CustomBaseController
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IHubContext<CompanyHub, ICompanyHub> _hubContext;
-    private readonly IUserCompanyService _userCompanyService;
 
-    public CompanyController(ICompanyService companyService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<CompanyHub, ICompanyHub> hubContext, IUserCompanyService userCompanyService) : base(httpContextAccessor)
+    public CompanyController(ICompanyService companyService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<CompanyHub, ICompanyHub> hubContext) : base(httpContextAccessor)
     {
         _companyService = companyService ?? throw new ArgumentNullException(nameof(companyService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
         _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
-        _userCompanyService = userCompanyService ?? throw new ArgumentNullException(nameof(userCompanyService));
 
         _companyService.SetUserResolver(UserResolver);
     }
@@ -40,19 +38,11 @@ public class CompanyController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            // broadcast company
             var filter = new CompanyFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<ICompanyService>();
             var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnSaveCompanyAsync(viewModel);
-
-            // broadcast user company
-            var ucFilter = new UserCompanyFilterModel { CompanyId = entity.Id };
-            var ucService = scope.ServiceProvider.GetRequiredService<IUserCompanyService>();
-            var ucViewModel = _mapper.Map<UserCompany, UserCompanyViewModel>(await ucService.FindByCompanyIdAsync(ucFilter, DataFilter));
-
-            _hubContext.Clients.All.BroadcastOnSaveUserCompanyAsync(ucViewModel);
+            await _hubContext.Clients.All.BroadcastOnSaveCompanyAsync(viewModel);
 
             return CustomResult(Lang.Find("success"));
         }
@@ -68,37 +58,29 @@ public class CompanyController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = new CompanyFilterModel { Id=entity.Id };
+            var filter = new CompanyFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<ICompanyService>();
             var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnUpdateCompanyAsync(viewModel);
-
-            // broadcast user company
-            var ucFilter = new UserCompanyFilterModel { CompanyId = entity.Id };
-            var ucService = scope.ServiceProvider.GetRequiredService<IUserCompanyService>();
-            var ucViewModel = _mapper.Map<UserCompany, UserCompanyViewModel>(await ucService.FindByCompanyIdAsync(ucFilter, DataFilter));
-
-            _hubContext.Clients.All.BroadcastOnUpdateUserCompanyAsync(ucViewModel);
+            await _hubContext.Clients.All.BroadcastOnUpdateCompanyAsync(viewModel);
 
             return CustomResult(Lang.Find("success"));
         }
     }
 
-    [HttpPost("SoftDeleteCompanyAsync")]
+    [HttpPost("ArchiveCompanyAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "CompanySoftDeletePolicy")]
-    public async Task<IActionResult> SoftDeleteCompanyAsync([FromBody] CompanyInputModel model)
+    [Authorize(Policy = "CompanyArchivePolicy")]
+    public async Task<IActionResult> ArchiveCompanyAsync([FromBody] CompanyInputModel model)
     {
-        await _companyService.SoftDeleteAsync(_mapper.Map<CompanyInputModel, Company>(model), DataFilter);
+        //first grab it
+        var filter = new CompanyFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Company, CompanyViewModel>(await _companyService.FindByIdAsync(filter, DataFilter));
 
-        _hubContext.Clients.All.BroadcastOnSoftDeleteCompanyAsync(model);
+        //then archive
+        await _companyService.ArchiveAsync(_mapper.Map<CompanyInputModel, Company>(model), DataFilter);
 
-        // broadcast user company
-        var ucFilter = new UserCompanyFilterModel { CompanyId = model.Id, Active = false };
-        var ucViewModel = _mapper.Map<UserCompany, UserCompanyViewModel>(await _userCompanyService.FindByCompanyIdAsync(ucFilter, DataFilter));
-               
-        //_hubContext.Clients.All.BroadcastOnSoftDeleteUserCompanyAsync(ucViewModel);
+        await _hubContext.Clients.All.BroadcastOnArchiveCompanyAsync(viewModel);
 
         return CustomResult(Lang.Find("success"));
     }
@@ -108,9 +90,15 @@ public class CompanyController : CustomBaseController
     [Authorize(Policy = "CompanyDeletePolicy")]
     public async Task<IActionResult> DeleteCompanyAsync([FromBody] CompanyInputModel model)
     {
+        //first grab it
+        var filter = new CompanyFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Company, CompanyViewModel>(await _companyService.FindByIdAsync(filter, DataFilter));
+
+        //then delete
         await _companyService.DeleteAsync(_mapper.Map<CompanyInputModel, Company>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnDeleteCompanyAsync(model);
+        await _hubContext.Clients.All.BroadcastOnDeleteCompanyAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 
@@ -139,6 +127,5 @@ public class CompanyController : CustomBaseController
     public override void Dispose()
     {
         _companyService?.Dispose();
-        _userCompanyService?.Dispose();
     }
 }

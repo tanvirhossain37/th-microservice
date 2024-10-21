@@ -68,19 +68,19 @@ public class UserController : CustomBaseController
         }
     }
 
-    [HttpPost("SoftDeleteUserAsync")]
+    [HttpPost("ArchiveUserAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "UserSoftDeletePolicy")]
-    public async Task<IActionResult> SoftDeleteUserAsync([FromBody] UserInputModel model)
+    [Authorize(Policy = "UserArchivePolicy")]
+    public async Task<IActionResult> ArchiveUserAsync([FromBody] UserInputModel model)
     {
         //first grab it
         var filter = new UserFilterModel { Id = model.Id };
         var viewModel = _mapper.Map<User, UserViewModel>(await _userService.FindByIdAsync(filter, DataFilter));
 
-        //then soft delete
-        await _userService.SoftDeleteAsync(_mapper.Map<UserInputModel, User>(model), DataFilter);
+        //then archive
+        await _userService.ArchiveAsync(_mapper.Map<UserInputModel, User>(model), DataFilter);
 
-        await _hubContext.Clients.All.BroadcastOnSoftDeleteUserAsync(viewModel);
+        await _hubContext.Clients.All.BroadcastOnArchiveUserAsync(viewModel);
 
         return CustomResult(Lang.Find("success"));
     }

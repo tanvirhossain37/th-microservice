@@ -1,24 +1,24 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 using TH.CompanyMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using Microsoft.Extensions.Configuration;
 
 namespace TH.CompanyMS.App;
 
 public partial class PermissionService : BaseService, IPermissionService
 {
     protected readonly IUow Repo;
-
-    //protected readonly IPermissionService PermissionService;
-
+    
+	//protected readonly IPermissionService PermissionService;
+        
     public PermissionService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-
+        
     }
 
     public async Task<Permission> SaveAsync(Permission entity, DataFilter dataFilter, bool commit = true)
@@ -67,6 +67,8 @@ public partial class PermissionService : BaseService, IPermissionService
 		existingEntity.Delete = entity.Delete;
 		existingEntity.ParentId = entity.ParentId;
 		existingEntity.MenuOrder = entity.MenuOrder;
+		existingEntity.Archive = entity.Archive;
+		existingEntity.Level = entity.Level;
 
         ApplyValidationBl(existingEntity);
         await ApplyDuplicateOnUpdateBl(existingEntity, dataFilter);
@@ -88,7 +90,7 @@ public partial class PermissionService : BaseService, IPermissionService
         return existingEntity;
     }
 
-    public async Task<bool> SoftDeleteAsync(Permission entity, DataFilter dataFilter, bool commit = true)
+    public async Task<bool> ArchiveAsync(Permission entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -99,7 +101,7 @@ public partial class PermissionService : BaseService, IPermissionService
         existingEntity.Active = false;
 
         //Add your business logic here
-        await ApplyOnSoftDeletingBlAsync(existingEntity, dataFilter);
+        await ApplyOnArchivingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -109,7 +111,7 @@ public partial class PermissionService : BaseService, IPermissionService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            await ApplyOnSoftDeletedBlAsync(existingEntity, dataFilter);
+            await ApplyOnArchivedBlAsync(existingEntity, dataFilter);
         }
 
         return true;
@@ -193,6 +195,8 @@ public partial class PermissionService : BaseService, IPermissionService
 			if (filter.Delete.HasValue) predicates.Add(t => t.Delete == filter.Delete);
 			if (!string.IsNullOrWhiteSpace(filter.ParentId)) predicates.Add(t => t.ParentId.Contains(filter.ParentId.Trim()));
 			if (filter.MenuOrder > 0) predicates.Add(t => t.MenuOrder == filter.MenuOrder);
+			if (filter.Archive.HasValue) predicates.Add(t => t.Archive == filter.Archive);
+			if (filter.Level > 0) predicates.Add(t => t.Level == filter.Level);
 
             #endregion
 
@@ -253,6 +257,7 @@ public partial class PermissionService : BaseService, IPermissionService
 			entity.ModuleId = string.IsNullOrWhiteSpace(entity.ModuleId) ? throw new CustomException($"{Lang.Find("validation_error")}: ModuleId") : entity.ModuleId.Trim();
 			entity.ParentId = string.IsNullOrWhiteSpace(entity.ParentId) ? null : entity.ParentId.Trim();
 			if (entity.MenuOrder <= 0) throw new CustomException($"{Lang.Find("validation_error")}: MenuOrder");
+			if (entity.Level <= 0) throw new CustomException($"{Lang.Find("validation_error")}: Level");
             
 			if (entity.InverseParent == null) entity.InverseParent = new List<Permission>();
         }

@@ -55,7 +55,7 @@ public class BranchUserServiceUnitTest : CompanyBaseUnitTest
     }
 
     [TestMethod]
-    public async Task SoftDeleteAsyncUnitTest()
+    public async Task ArchiveAsyncUnitTest()
     {
         try
         {
@@ -64,7 +64,7 @@ public class BranchUserServiceUnitTest : CompanyBaseUnitTest
                 Id = "", //todo
             };
 
-            await _service.SoftDeleteAsync(Mapper.Map<BranchUserInputModel, BranchUser>(model), DataFilter);
+            await _service.ArchiveAsync(Mapper.Map<BranchUserInputModel, BranchUser>(model), DataFilter);
         }
         catch (Exception e)
         {

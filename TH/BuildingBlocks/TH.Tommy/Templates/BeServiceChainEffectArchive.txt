@@ -1,0 +1,5 @@
+        foreach (var child in existingEntity.$WES$)
+        {
+            await $WE$.ArchiveAsync(child, dataFilter, false);
+        }
+                

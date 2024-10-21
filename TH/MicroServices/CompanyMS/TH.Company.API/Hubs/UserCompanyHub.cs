@@ -15,9 +15,9 @@ public class UserCompanyHub : Hub<IUserCompanyHub>
         await Clients.All.BroadcastOnUpdateUserCompanyAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteUserCompanyAsync(UserCompanyViewModel viewModel)
+    public async Task BroadcastOnArchiveUserCompanyAsync(UserCompanyViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteUserCompanyAsync(viewModel);
+        await Clients.All.BroadcastOnArchiveUserCompanyAsync(viewModel);
     }
 
     public async Task BroadcastOnDeleteUserCompanyAsync(UserCompanyViewModel viewModel)

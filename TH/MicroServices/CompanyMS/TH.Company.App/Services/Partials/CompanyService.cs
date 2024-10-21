@@ -94,14 +94,14 @@ public partial class CompanyService
         //todo
     }
 
-    private async Task ApplyOnSoftDeletingBlAsync(Company existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivingBlAsync(Company existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
     }
 
-    private async Task ApplyOnSoftDeletedBlAsync(Company existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivedBlAsync(Company existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 

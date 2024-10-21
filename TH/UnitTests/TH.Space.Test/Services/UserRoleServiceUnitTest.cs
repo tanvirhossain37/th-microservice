@@ -55,7 +55,7 @@ public class UserRoleServiceUnitTest : CompanyBaseUnitTest
     }
 
     [TestMethod]
-    public async Task SoftDeleteAsyncUnitTest()
+    public async Task ArchiveAsyncUnitTest()
     {
         try
         {
@@ -64,7 +64,7 @@ public class UserRoleServiceUnitTest : CompanyBaseUnitTest
                 Id = "", //todo
             };
 
-            await _service.SoftDeleteAsync(Mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
+            await _service.ArchiveAsync(Mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
         }
         catch (Exception e)
         {

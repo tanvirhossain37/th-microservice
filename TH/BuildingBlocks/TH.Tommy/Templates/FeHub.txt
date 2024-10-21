@@ -16,8 +16,8 @@ export class $WE$Hub extends BaseHub {
         return super.connect(url, "BroadcastOnUpdate$WE$Async");
     }
 
-    connectToBroadcastOnSoftDelete$WE$Async(): Observable<any> {
-        return super.connect(url, "BroadcastOnSoftDelete$WE$Async");
+    connectToBroadcastOnArchive$WE$Async(): Observable<any> {
+        return super.connect(url, "BroadcastOnArchive$WE$Async");
     }
 
     connectToBroadcastOnDelete$WE$Async(): Observable<any> {

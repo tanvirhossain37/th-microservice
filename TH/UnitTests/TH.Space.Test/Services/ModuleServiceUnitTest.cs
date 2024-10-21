@@ -55,7 +55,7 @@ public class ModuleServiceUnitTest : CompanyBaseUnitTest
     }
 
     [TestMethod]
-    public async Task SoftDeleteAsyncUnitTest()
+    public async Task ArchiveAsyncUnitTest()
     {
         try
         {
@@ -64,7 +64,7 @@ public class ModuleServiceUnitTest : CompanyBaseUnitTest
                 Id = "", //todo
             };
 
-            await _service.SoftDeleteAsync(Mapper.Map<ModuleInputModel, Module>(model), DataFilter);
+            await _service.ArchiveAsync(Mapper.Map<ModuleInputModel, Module>(model), DataFilter);
         }
         catch (Exception e)
         {
@@ -111,9 +111,14 @@ public class ModuleServiceUnitTest : CompanyBaseUnitTest
     {
         try
         {
-            var filter = new ModuleFilterModel();
+            var filter = new ModuleFilterModel
+            {
+                ByTree = true
+            };
             filter.PageSize = (int)PageEnum.All;
 
+            filter.SortFilters.Add(new SortFilter { PropertyName = "MenuOrder", Operation = OrderByEnum.Ascending });
+            
             var entity = await _service.GetAsync(filter, DataFilter);
             var viewModels = Mapper.Map<List<Module>, List<ModuleViewModel>>(entity.ToList());
         }

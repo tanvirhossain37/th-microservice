@@ -68,19 +68,19 @@ public class UserRoleController : CustomBaseController
         }
     }
 
-    [HttpPost("SoftDeleteUserRoleAsync")]
+    [HttpPost("ArchiveUserRoleAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "UserRoleSoftDeletePolicy")]
-    public async Task<IActionResult> SoftDeleteUserRoleAsync([FromBody] UserRoleInputModel model)
+    [Authorize(Policy = "UserRoleArchivePolicy")]
+    public async Task<IActionResult> ArchiveUserRoleAsync([FromBody] UserRoleInputModel model)
     {
         //first grab it
         var filter = new UserRoleFilterModel { Id = model.Id };
         var viewModel = _mapper.Map<UserRole, UserRoleViewModel>(await _userRoleService.FindByIdAsync(filter, DataFilter));
 
-        //then soft delete
-        await _userRoleService.SoftDeleteAsync(_mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
+        //then archive
+        await _userRoleService.ArchiveAsync(_mapper.Map<UserRoleInputModel, UserRole>(model), DataFilter);
 
-        await _hubContext.Clients.All.BroadcastOnSoftDeleteUserRoleAsync(viewModel);
+        await _hubContext.Clients.All.BroadcastOnArchiveUserRoleAsync(viewModel);
 
         return CustomResult(Lang.Find("success"));
     }

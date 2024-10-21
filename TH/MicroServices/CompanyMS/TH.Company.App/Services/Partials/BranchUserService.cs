@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
 using TH.CompanyMS.Core;
@@ -41,14 +42,14 @@ public partial class BranchUserService
         //todo
     }
 
-    private async Task ApplyOnSoftDeletingBlAsync(BranchUser existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivingBlAsync(BranchUser existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
     }
 
-    private async Task ApplyOnSoftDeletedBlAsync(BranchUser existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivedBlAsync(BranchUser existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 

@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
 using TH.CompanyMS.Core;
@@ -18,22 +19,6 @@ public partial class BranchService
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
         //todo
-        var branches = await Repo.BranchRepo.GetQueryableAsync(x => x.CompanyId == entity.CompanyId, null, branches => branches.OrderBy(m => m.Id),
-            (int)PageEnum.PageIndex, (int)PageEnum.All, dataFilter);
-        if (branches is null)
-        {
-            entity.IsDefault = true; //first branch
-        }
-        else
-        {
-            if (entity.IsDefault)
-            {
-                foreach (var branch in branches)
-                {
-                    branch.IsDefault = false;
-                }
-            }
-        }
     }
 
     private async Task ApplyOnSavedBlAsync(Branch entity, DataFilter dataFilter)
@@ -57,14 +42,14 @@ public partial class BranchService
         //todo
     }
 
-    private async Task ApplyOnSoftDeletingBlAsync(Branch existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivingBlAsync(Branch existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
     }
 
-    private async Task ApplyOnSoftDeletedBlAsync(Branch existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivedBlAsync(Branch existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 

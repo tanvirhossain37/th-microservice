@@ -68,19 +68,19 @@ public class ModuleController : CustomBaseController
         }
     }
 
-    [HttpPost("SoftDeleteModuleAsync")]
+    [HttpPost("ArchiveModuleAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "ModuleSoftDeletePolicy")]
-    public async Task<IActionResult> SoftDeleteModuleAsync([FromBody] ModuleInputModel model)
+    [Authorize(Policy = "ModuleArchivePolicy")]
+    public async Task<IActionResult> ArchiveModuleAsync([FromBody] ModuleInputModel model)
     {
         //first grab it
         var filter = new ModuleFilterModel { Id = model.Id };
         var viewModel = _mapper.Map<Module, ModuleViewModel>(await _moduleService.FindByIdAsync(filter, DataFilter));
 
-        //then soft delete
-        await _moduleService.SoftDeleteAsync(_mapper.Map<ModuleInputModel, Module>(model), DataFilter);
+        //then archive
+        await _moduleService.ArchiveAsync(_mapper.Map<ModuleInputModel, Module>(model), DataFilter);
 
-        await _hubContext.Clients.All.BroadcastOnSoftDeleteModuleAsync(viewModel);
+        await _hubContext.Clients.All.BroadcastOnArchiveModuleAsync(viewModel);
 
         return CustomResult(Lang.Find("success"));
     }

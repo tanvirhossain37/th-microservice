@@ -4,7 +4,7 @@ using TH.Repo;
 
 namespace TH.CompanyMS.App;
 
-public interface IBranchUserRepo : IRepoSQL<BranchUser>
+public partial interface IBranchUserRepo : IRepoSQL<BranchUser>
 {   
     
 }

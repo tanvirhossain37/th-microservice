@@ -46,7 +46,7 @@ namespace TH.Common.Model
             }
             else if (actionName.StartsWith("SoftDelete"))
             {
-                return TS.Permissions.SoftDelete;
+                return TS.Permissions.Archive;
             }
             else if (actionName.StartsWith("Delete"))
             {

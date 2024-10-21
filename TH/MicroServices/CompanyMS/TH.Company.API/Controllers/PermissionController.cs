@@ -68,19 +68,19 @@ public class PermissionController : CustomBaseController
         }
     }
 
-    [HttpPost("SoftDeletePermissionAsync")]
+    [HttpPost("ArchivePermissionAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "PermissionSoftDeletePolicy")]
-    public async Task<IActionResult> SoftDeletePermissionAsync([FromBody] PermissionInputModel model)
+    [Authorize(Policy = "PermissionArchivePolicy")]
+    public async Task<IActionResult> ArchivePermissionAsync([FromBody] PermissionInputModel model)
     {
         //first grab it
         var filter = new PermissionFilterModel { Id = model.Id };
         var viewModel = _mapper.Map<Permission, PermissionViewModel>(await _permissionService.FindByIdAsync(filter, DataFilter));
 
-        //then soft delete
-        await _permissionService.SoftDeleteAsync(_mapper.Map<PermissionInputModel, Permission>(model), DataFilter);
+        //then archive
+        await _permissionService.ArchiveAsync(_mapper.Map<PermissionInputModel, Permission>(model), DataFilter);
 
-        await _hubContext.Clients.All.BroadcastOnSoftDeletePermissionAsync(viewModel);
+        await _hubContext.Clients.All.BroadcastOnArchivePermissionAsync(viewModel);
 
         return CustomResult(Lang.Find("success"));
     }

@@ -4,7 +4,7 @@ using TH.Repo;
 
 namespace TH.CompanyMS.App;
 
-public interface IRoleRepo : IRepoSQL<Role>
+public partial interface IRoleRepo : IRepoSQL<Role>
 {   
 	Task<Role> FindByNameAsync(string spaceId, string companyId, string name, DataFilter dataFilter);
 	Task<Role> FindByNameExceptMeAsync(string id, string spaceId, string companyId, string name, DataFilter dataFilter);

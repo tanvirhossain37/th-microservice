@@ -13,6 +13,7 @@ public static class AppDependencyInjection
         services.AddScoped<Branch>();
         services.AddScoped<BranchUser>();
         services.AddScoped<Company>();
+        services.AddScoped<CompanySetting>();
         services.AddScoped<Module>();
         services.AddScoped<Permission>();
         services.AddScoped<Role>();
@@ -24,6 +25,7 @@ public static class AppDependencyInjection
         services.AddScoped<BranchFilterModel>();
         services.AddScoped<BranchUserFilterModel>();
         services.AddScoped<CompanyFilterModel>();
+        services.AddScoped<CompanySettingFilterModel>();
         services.AddScoped<ModuleFilterModel>();
         services.AddScoped<PermissionFilterModel>();
         services.AddScoped<RoleFilterModel>();
@@ -35,6 +37,7 @@ public static class AppDependencyInjection
         services.AddScoped<BranchInputModel>();
         services.AddScoped<BranchUserInputModel>();
         services.AddScoped<CompanyInputModel>();
+        services.AddScoped<CompanySettingInputModel>();
         services.AddScoped<ModuleInputModel>();
         services.AddScoped<PermissionInputModel>();
         services.AddScoped<RoleInputModel>();
@@ -46,6 +49,7 @@ public static class AppDependencyInjection
         services.AddScoped<BranchViewModel>();
         services.AddScoped<BranchUserViewModel>();
         services.AddScoped<CompanyViewModel>();
+        services.AddScoped<CompanySettingViewModel>();
         services.AddScoped<ModuleViewModel>();
         services.AddScoped<PermissionViewModel>();
         services.AddScoped<RoleViewModel>();
@@ -54,9 +58,11 @@ public static class AppDependencyInjection
         services.AddScoped<UserCompanyViewModel>();
         services.AddScoped<UserRoleViewModel>();
 
+
         services.AddScoped<IBranchService, BranchService>();
         services.AddScoped<IBranchUserService, BranchUserService>();
         services.AddScoped<ICompanyService, CompanyService>();
+        services.AddScoped<ICompanySettingService, CompanySettingService>();
         services.AddScoped<IModuleService, ModuleService>();
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<IRoleService, RoleService>();

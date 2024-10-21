@@ -15,9 +15,9 @@ public class BranchHub : Hub<IBranchHub>
         await Clients.All.BroadcastOnUpdateBranchAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteBranchAsync(BranchViewModel viewModel)
+    public async Task BroadcastOnArchiveBranchAsync(BranchViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteBranchAsync(viewModel);
+        await Clients.All.BroadcastOnArchiveBranchAsync(viewModel);
     }
 
     public async Task BroadcastOnDeleteBranchAsync(BranchViewModel viewModel)

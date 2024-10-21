@@ -1,11 +1,11 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 using TH.CompanyMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using Microsoft.Extensions.Configuration;
 
 namespace TH.CompanyMS.App;
 
@@ -15,12 +15,12 @@ public partial class ModuleService : BaseService, IModuleService
     
 	//protected readonly IModuleService ModuleService;
 	protected readonly IPermissionService PermissionService;
-
+        
     public ModuleService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config, IPermissionService permissionService) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-
-        PermissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
+        
+		PermissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
     }
 
     public async Task<Module> SaveAsync(Module entity, DataFilter dataFilter, bool commit = true)
@@ -72,6 +72,7 @@ public partial class ModuleService : BaseService, IModuleService
 		existingEntity.Icon = entity.Icon;
 		existingEntity.ParentId = entity.ParentId;
 		existingEntity.MenuOrder = entity.MenuOrder;
+		existingEntity.Level = entity.Level;
 
         ApplyValidationBl(existingEntity);
         await ApplyDuplicateOnUpdateBl(existingEntity, dataFilter);
@@ -98,7 +99,7 @@ public partial class ModuleService : BaseService, IModuleService
         return existingEntity;
     }
 
-    public async Task<bool> SoftDeleteAsync(Module entity, DataFilter dataFilter, bool commit = true)
+    public async Task<bool> ArchiveAsync(Module entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -109,7 +110,7 @@ public partial class ModuleService : BaseService, IModuleService
         existingEntity.Active = false;
 
         //Add your business logic here
-        await ApplyOnSoftDeletingBlAsync(existingEntity, dataFilter);
+        await ApplyOnArchivingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -124,7 +125,7 @@ public partial class ModuleService : BaseService, IModuleService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            await ApplyOnSoftDeletedBlAsync(existingEntity, dataFilter);
+            await ApplyOnArchivedBlAsync(existingEntity, dataFilter);
         }
 
         return true;
@@ -209,6 +210,7 @@ public partial class ModuleService : BaseService, IModuleService
 			if (!string.IsNullOrWhiteSpace(filter.Icon)) predicates.Add(t => t.Icon.Contains(filter.Icon.Trim()));
 			if (!string.IsNullOrWhiteSpace(filter.ParentId)) predicates.Add(t => t.ParentId.Contains(filter.ParentId.Trim()));
 			if (filter.MenuOrder > 0) predicates.Add(t => t.MenuOrder == filter.MenuOrder);
+			if (filter.Level > 0) predicates.Add(t => t.Level == filter.Level);
 
             #endregion
 
@@ -266,6 +268,7 @@ public partial class ModuleService : BaseService, IModuleService
 			entity.Icon = string.IsNullOrWhiteSpace(entity.Icon) ? string.Empty : entity.Icon.Trim();
 			entity.ParentId = string.IsNullOrWhiteSpace(entity.ParentId) ? null : entity.ParentId.Trim();
 			if (entity.MenuOrder <= 0) throw new CustomException($"{Lang.Find("validation_error")}: MenuOrder");
+			if (entity.Level <= 0) throw new CustomException($"{Lang.Find("validation_error")}: Level");
             
 			if (entity.InverseParent == null) entity.InverseParent = new List<Module>();
 			if (entity.Permissions == null) entity.Permissions = new List<Permission>();

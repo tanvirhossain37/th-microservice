@@ -14,6 +14,7 @@ public static class InfraDependencyInjection
         services.AddScoped<IBranchRepo, BranchRepo>();
         services.AddScoped<IBranchUserRepo, BranchUserRepo>();
         services.AddScoped<ICompanyRepo, CompanyRepo>();
+        services.AddScoped<ICompanySettingRepo, CompanySettingRepo>();
         services.AddScoped<IModuleRepo, ModuleRepo>();
         services.AddScoped<IPermissionRepo, PermissionRepo>();
         services.AddScoped<IRoleRepo, RoleRepo>();

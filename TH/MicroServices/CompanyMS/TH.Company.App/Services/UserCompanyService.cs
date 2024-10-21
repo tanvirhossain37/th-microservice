@@ -1,23 +1,23 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 using TH.CompanyMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using Microsoft.Extensions.Configuration;
 
 namespace TH.CompanyMS.App;
 
 public partial class UserCompanyService : BaseService, IUserCompanyService
 {
     protected readonly IUow Repo;
-
-
+    
+        
     public UserCompanyService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-
+        
     }
 
     public async Task<UserCompany> SaveAsync(UserCompany entity, DataFilter dataFilter, bool commit = true)
@@ -82,7 +82,7 @@ public partial class UserCompanyService : BaseService, IUserCompanyService
         return existingEntity;
     }
 
-    public async Task<bool> SoftDeleteAsync(UserCompany entity, DataFilter dataFilter, bool commit = true)
+    public async Task<bool> ArchiveAsync(UserCompany entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -93,7 +93,7 @@ public partial class UserCompanyService : BaseService, IUserCompanyService
         existingEntity.Active = false;
 
         //Add your business logic here
-        await ApplyOnSoftDeletingBlAsync(existingEntity, dataFilter);
+        await ApplyOnArchivingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -103,7 +103,7 @@ public partial class UserCompanyService : BaseService, IUserCompanyService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            await ApplyOnSoftDeletedBlAsync(existingEntity, dataFilter);
+            await ApplyOnArchivedBlAsync(existingEntity, dataFilter);
         }
 
         return true;
@@ -153,19 +153,6 @@ public partial class UserCompanyService : BaseService, IUserCompanyService
         {
             throw;
         }
-    }
-
-    public async Task<UserCompany> FindByCompanyIdAsync(UserCompanyFilterModel filter, DataFilter dataFilter)
-    {
-        if (filter is null)
-        {
-            throw new ArgumentNullException(nameof(filter));
-        }
-
-        var entity =await Repo.UserCompanyRepo.SingleOrDefaultQueryableAsync(x=>x.CompanyId.Equals(filter.CompanyId), dataFilter);
-        if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
-
-        return entity;
     }
 
     public async Task<IEnumerable<UserCompany>> GetAsync(UserCompanyFilterModel filter, DataFilter dataFilter)

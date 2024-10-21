@@ -33,6 +33,10 @@ public partial class Permission
 
     public int MenuOrder { get; set; }
 
+    public bool Archive { get; set; }
+
+    public int Level { get; set; }
+
     public virtual Company Company { get; set; } = null!;
 
     public virtual ICollection<Permission> InverseParent { get; set; } = new List<Permission>();

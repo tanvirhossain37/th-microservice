@@ -42,14 +42,14 @@ public partial class $WE$Service
         //todo
     }
 
-    private async Task ApplyOnSoftDeletingBlAsync($WE$ existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivingBlAsync($WE$ existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
     }
 
-    private async Task ApplyOnSoftDeletedBlAsync($WE$ existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivedBlAsync($WE$ existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 

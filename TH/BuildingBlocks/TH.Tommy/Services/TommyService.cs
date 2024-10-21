@@ -305,7 +305,7 @@ public class TommyService : BaseService
                 policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}ReadPolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Read); }});");
                 policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}WritePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Write); }});");
                 policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}UpdatePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Update); }});");
-                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}SoftDeletePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.SoftDelete); }});");
+                policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}ArchivePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Archive); }});");
                 policyContent = string.Concat(policyContent, $"\noptions.AddPolicy(\"{fileNameWithoutExtension}DeletePolicy\", policy => {{ policy.RequireClaim(\"{fileNameWithoutExtension}\", TS.Permissions.Delete); }});");
 
                 //save it
@@ -349,7 +349,7 @@ public class TommyService : BaseService
                 //save it
                 FileManager.Write($"{dest}\\{fileNameWithoutExtension}Hub.cs", template);
                 //save it
-                FileManager.Append($"{dest}\\Hubs.txt", $"app.MapHub<CompanyHub>(\"/{fileNameWithoutExtension}\");");
+                FileManager.Append($"{dest}\\Hubs.txt", $"app.MapHub<{fileNameWithoutExtension}Hub>(\"/{fileNameWithoutExtension}\");");
             }
         }
         catch (Exception)
@@ -513,6 +513,7 @@ public class TommyService : BaseService
 
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
             var interfaceDest = Util.CreateDirectory($"{ResultBeDestRoot}\\ServiceInterfaces");
+            var partialInterfaceDest = Util.CreateDirectory($"{interfaceDest}\\Partials");
             var serviceDest = Util.CreateDirectory($"{ResultBeDestRoot}\\Services");
             var partialDest = Util.CreateDirectory($"{serviceDest}\\Partials");
             
@@ -531,6 +532,7 @@ public class TommyService : BaseService
                 string serviceValidationListOfBe = GetServiceValidationListOfBe(lines, fileNameWithoutExtension);
                 string serviceChainSaveEffect = GetServiceChainSaveEffect(lines, fileNameWithoutExtension);
                 string serviceChainUpdateEffect = GetServiceChainUpdateEffect(lines, fileNameWithoutExtension);
+                string serviceChainArchiveEffect = GetServiceChainArchiveEffect(lines, fileNameWithoutExtension);
                 string serviceChainDeleteEffect = GetServiceChainDeleteEffect(lines, fileNameWithoutExtension);
                 //string updateQuery = GetUpdateOrDeleteQuery(lines, fileNameWithoutExtension);
                 //string deleteQuery = GetUpdateOrDeleteQuery(lines, fileNameWithoutExtension);
@@ -547,6 +549,14 @@ public class TommyService : BaseService
                 interfaceTemplate = interfaceTemplate.Replace("$core-dependency$", $"{projectName}.Core");
                 interfaceTemplate = interfaceTemplate.Replace("$WE$", fileNameWithoutExtension);
                 interfaceTemplate = interfaceTemplate.Replace("$WES$", Util.TryPluralize(fileNameWithoutExtension));
+
+                #endregion
+
+                #region Partial Interface
+                
+                var partialInterfaceTemplate = FileManager.Read($"{_template}\\IBePartialService.txt");
+                partialInterfaceTemplate = partialInterfaceTemplate.Replace("$namespace$", $"{projectName}.App");
+                partialInterfaceTemplate = partialInterfaceTemplate.Replace("$WE$", fileNameWithoutExtension);
 
                 #endregion
 
@@ -592,6 +602,7 @@ public class TommyService : BaseService
 
                 //save it
                 FileManager.Write($"{interfaceDest}\\I{fileNameWithoutExtension}Service.cs", interfaceTemplate);
+                FileManager.Write($"{partialInterfaceDest}\\I{fileNameWithoutExtension}Service.cs", partialInterfaceTemplate);
                 FileManager.Write($"{serviceDest}\\{fileNameWithoutExtension}Service.cs", serviceTemplate);
                 FileManager.Write($"{partialDest}\\{fileNameWithoutExtension}Service.cs", partialTemplate);
 
@@ -615,6 +626,7 @@ public class TommyService : BaseService
 
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
             var interfaceDest = Util.CreateDirectory($"{ResultBeDestRoot}\\RepoInterfaces");
+            var partialInterfaceDest = Util.CreateDirectory($"{interfaceDest}\\Partials");
             var repoDest = Util.CreateDirectory($"{ResultBeDestRoot}\\Repos");
             var partialRepoDest = Util.CreateDirectory($"{repoDest}\\Partials");
 
@@ -635,11 +647,15 @@ public class TommyService : BaseService
                 interfaceTemplate = interfaceTemplate.Replace("//todo repo name methods", interfaceNameMethodContent);
                 interfaceTemplate = interfaceTemplate.Replace("//todo repo code methods", interfaceCodeMethodContent);
 
+                var partialInterfaceTemplate = FileManager.Read($"{_template}\\IBePartialRepo.txt");
+                partialInterfaceTemplate = partialInterfaceTemplate.Replace("$namespace$", $"{projectName}.App");
+                partialInterfaceTemplate = partialInterfaceTemplate.Replace("$WE$", fileNameWithoutExtension);
+
                 var repoTemplate = FileManager.Read($"{_template}\\BeRepo.txt");
                 repoTemplate = repoTemplate.Replace("$namespace$", $"{projectName}.App");
                 repoTemplate = repoTemplate.Replace("$core-dependency$", $"{projectName}.Core");
                 repoTemplate = repoTemplate.Replace("$infra-dependency$", $"{projectName}.Infra");
-                repoTemplate = repoTemplate.Replace("$DbContext$", $"{projectName.Replace("TH.","").Replace("MS","")}DbContext");
+                repoTemplate = repoTemplate.Replace("$DbContext$", $"{projectName.Replace("TH.", "").Replace("MS", "")}DbContext");
                 repoTemplate = repoTemplate.Replace("$WE$", fileNameWithoutExtension);
                 repoTemplate = repoTemplate.Replace("//todo repo name methods", nameMethodContent);
                 repoTemplate = repoTemplate.Replace("//todo repo code methods", codeMethodContent);
@@ -650,6 +666,7 @@ public class TommyService : BaseService
 
                 //save it
                 FileManager.Write($"{interfaceDest}\\I{fileNameWithoutExtension}Repo.cs", interfaceTemplate);
+                FileManager.Write($"{partialInterfaceDest}\\I{fileNameWithoutExtension}Repo.cs", partialInterfaceTemplate);
                 FileManager.Write($"{repoDest}\\{fileNameWithoutExtension}Repo.cs", repoTemplate);
                 FileManager.Write($"{partialRepoDest}\\{fileNameWithoutExtension}Repo.cs", partialRepoTemplate);
 
@@ -994,7 +1011,7 @@ public class TommyService : BaseService
 
                     var template = string.Empty;
 
-                    if ((methodName.StartsWith("Save")) || (methodName.StartsWith("Update")) || (methodName.StartsWith("SoftDelete")) ||
+                    if ((methodName.StartsWith("Save")) || (methodName.StartsWith("Update")) || (methodName.StartsWith("Archive")) ||
                         (methodName.StartsWith("Delete")))
                     {
                         template = FileManager.Read($"{_template}\\FeEntityAbstractServiceHelper.txt");
@@ -1354,24 +1371,39 @@ public class TommyService : BaseService
                     typeName = line.Trim().Split(' ')[1];
                 }
 
-                if ((typeName.Equals("int")) || (typeName.Equals("long")) || (typeName.Equals("double")) || (typeName.Equals("decimal")) ||
-                    (typeName.Equals("int?")) || (typeName.Equals("long?")) || (typeName.Equals("double?")) || (typeName.Equals("decimal?")))
+                if ((typeName.Equals("int")) || (typeName.Equals("long")) || (typeName.Equals("double")) || (typeName.Equals("decimal")))
                 {
                     if(fieldName.Equals("PageIndex"))continue;
                     if (fieldName.Equals("PageSize")) continue;
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: number = 0;");
                 }
-                else if ((typeName.Equals("string")) || (typeName.Equals("string?")))
+                if ((typeName.Equals("int?")) || (typeName.Equals("long?")) || (typeName.Equals("double?")) || (typeName.Equals("decimal?")))
+                {
+                    if (fieldName.Equals("PageIndex")) continue;
+                    if (fieldName.Equals("PageSize")) continue;
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}?: number;");
+                }
+                else if ((typeName.Equals("string")))
                 {
                     if (fieldName.Equals("Id")) continue;
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: string = \"\";");
                 }
-                else if ((typeName.Equals("bool")) || (typeName.Equals("bool?")))
+                else if ((typeName.Equals("string?")))
+                {
+                    if (fieldName.Equals("Id")) continue;
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}?: string;");
+                }
+                else if ((typeName.Equals("bool")))
                 {
                     if (fieldName.Equals("Active")) continue;
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: boolean = false;");
                 }
-                else if ((typeName.Equals("DateTime")) || (typeName.Equals("DateTime?")))
+                else if ((typeName.Equals("bool?")))
+                {
+                    if (fieldName.Equals("Active")) continue;
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}?: boolean;");
+                }
+                else if ((typeName.Equals("DateTime")))
                 {
                     if (fieldName.Equals("CreatedDate")) continue;
                     if (fieldName.Equals("ModifiedDate")) continue;
@@ -1379,9 +1411,21 @@ public class TommyService : BaseService
                     if (fieldName.Equals("EndDate")) continue;
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: any = null;");
                 }
-                else if ((typeName.Equals("TimeSpan")) || (typeName.Equals("TimeSpan?")))
+                else if ((typeName.Equals("DateTime")) || (typeName.Equals("DateTime?")))
+                {
+                    if (fieldName.Equals("CreatedDate")) continue;
+                    if (fieldName.Equals("ModifiedDate")) continue;
+                    if (fieldName.Equals("StartDate")) continue;
+                    if (fieldName.Equals("EndDate")) continue;
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}?: any = null;");
+                }
+                else if ((typeName.Equals("TimeSpan")))
                 {
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: any = null;");
+                }
+                else if ((typeName.Equals("TimeSpan?")))
+                {
+                    content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}?: any = null;");
                 }
                 else
                 {
@@ -1417,7 +1461,7 @@ public class TommyService : BaseService
 
                     var template = string.Empty;
 
-                    if ((methodName.StartsWith("Save")) || (methodName.StartsWith("Update")) || (methodName.StartsWith("SoftDelete")) ||
+                    if ((methodName.StartsWith("Save")) || (methodName.StartsWith("Update")) || (methodName.StartsWith("Archive")) ||
                         (methodName.StartsWith("Delete")))
                     {
                         template = FileManager.Read($"{_template}\\FeEntityServiceHelper.txt");
@@ -1459,7 +1503,7 @@ public class TommyService : BaseService
                 {
                     var methodName = line.Trim().Split(' ', '(')[3];
 
-                    if ((methodName.StartsWith("Save")) || (methodName.StartsWith("Update")) || (methodName.StartsWith("SoftDelete")) ||
+                    if ((methodName.StartsWith("Save")) || (methodName.StartsWith("Update")) || (methodName.StartsWith("Archive")) ||
                         (methodName.StartsWith("Delete")))
                     {
                         content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(methodName)}(entity: BaseEntity): Observable<any>;");
@@ -2458,6 +2502,49 @@ public class TommyService : BaseService
                     if (!childEntity.Equals(fileNameWithoutExtension))
                     {
                         var template = FileManager.Read($"{_template}\\BeServiceChainEffectUpdate.txt");
+                        template = template.Replace("$WE$", $"{childEntity}Service");
+                        template = template.Replace("$WES$", fieldName);
+
+                        content = string.Concat(content, $"\n{template}");
+
+                        temp.Add(fieldName);
+                    }
+                }
+            }
+
+            return content;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    private string GetServiceChainArchiveEffect(IEnumerable<string> lines, string fileNameWithoutExtension)
+    {
+        try
+        {
+            if (lines == null) throw new ArgumentNullException(nameof(lines));
+            fileNameWithoutExtension = string.IsNullOrWhiteSpace(fileNameWithoutExtension) ? throw new ArgumentNullException(nameof(fileNameWithoutExtension)) : fileNameWithoutExtension.Trim();
+
+            string content = string.Empty;
+            var temp = new List<string>();
+
+            foreach (var line in lines)
+            {
+                if ((line.Contains("virtual")) && (line.Contains("ICollection")))
+                {
+
+                    var childEntity = line.Trim().Split('<', '>')[1];
+                    var fieldName = line.Trim().Split(' ')[3];
+
+                    var firstOrDefault = temp.FirstOrDefault(x => x.Equals(fieldName));
+                    if (firstOrDefault != null)
+                        continue;
+
+                    if (!childEntity.Equals(fileNameWithoutExtension))
+                    {
+                        var template = FileManager.Read($"{_template}\\BeServiceChainEffectArchive.txt");
                         template = template.Replace("$WE$", $"{childEntity}Service");
                         template = template.Replace("$WES$", fieldName);
 

@@ -69,16 +69,18 @@ namespace TH.CompanyMS.API
 
             //Hubs
             app.MapControllers();
-            app.MapHub<CompanyHub>("/Branch");
-            app.MapHub<CompanyHub>("/BranchUser");
+
+            app.MapHub<BranchHub>("/Branch");
+            app.MapHub<BranchUserHub>("/BranchUser");
             app.MapHub<CompanyHub>("/Company");
-            app.MapHub<CompanyHub>("/Module");
-            app.MapHub<CompanyHub>("/Permission");
-            app.MapHub<CompanyHub>("/Role");
-            app.MapHub<CompanyHub>("/SpaceSubscription");
-            app.MapHub<CompanyHub>("/User");
-            app.MapHub<CompanyHub>("/UserCompany");
-            app.MapHub<CompanyHub>("/UserRole");
+            app.MapHub<CompanySettingHub>("/CompanySetting");
+            app.MapHub<ModuleHub>("/Module");
+            app.MapHub<PermissionHub>("/Permission");
+            app.MapHub<RoleHub>("/Role");
+            app.MapHub<SpaceSubscriptionHub>("/SpaceSubscription");
+            app.MapHub<UserHub>("/User");
+            app.MapHub<UserCompanyHub>("/UserCompany");
+            app.MapHub<UserRoleHub>("/UserRole");
 
             app.Run();
         }

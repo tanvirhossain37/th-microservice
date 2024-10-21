@@ -15,9 +15,9 @@ public class $WE$Hub : Hub<I$WE$Hub>
         await Clients.All.BroadcastOnUpdate$WE$Async(viewModel);
     }
 
-    public async Task BroadcastOnSoftDelete$WE$Async($WE$ViewModel viewModel)
+    public async Task BroadcastOnArchive$WE$Async($WE$ViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDelete$WE$Async(viewModel);
+        await Clients.All.BroadcastOnArchive$WE$Async(viewModel);
     }
 
     public async Task BroadcastOnDelete$WE$Async($WE$ViewModel viewModel)

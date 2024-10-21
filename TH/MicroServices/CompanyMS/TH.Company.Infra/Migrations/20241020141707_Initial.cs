@@ -32,6 +32,25 @@ namespace TH.CompanyMS.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Country",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    IsoCode = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    CurrencyName = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    CurrencyCode = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Active = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Country", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Modules",
                 columns: table => new
                 {
@@ -42,6 +61,7 @@ namespace TH.CompanyMS.Infra.Migrations
                     Icon = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ParentId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     MenuOrder = table.Column<int>(type: "int", nullable: false),
+                    Level = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     Active = table.Column<bool>(type: "bit", nullable: false)
@@ -104,6 +124,30 @@ namespace TH.CompanyMS.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CompanySettings",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SpaceId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    CompanyId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Value = table.Column<bool>(type: "bit", nullable: false),
+                    ModuleId = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Active = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyConfigs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CompanyConfigs_Companies",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -152,6 +196,31 @@ namespace TH.CompanyMS.Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Address",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Street = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    State = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    PostalCode = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    CountryId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    ClientId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Active = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Address", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Countries",
+                        column: x => x.CountryId,
+                        principalTable: "Country",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Permissions",
                 columns: table => new
                 {
@@ -166,6 +235,8 @@ namespace TH.CompanyMS.Infra.Migrations
                     Delete = table.Column<bool>(type: "bit", nullable: false),
                     ParentId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     MenuOrder = table.Column<int>(type: "int", nullable: false),
+                    Archive = table.Column<bool>(type: "bit", nullable: false),
+                    Level = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     Active = table.Column<bool>(type: "bit", nullable: false)
@@ -292,6 +363,11 @@ namespace TH.CompanyMS.Infra.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Address_CountryId",
+                table: "Address",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Branches_CompanyId",
                 table: "Branches",
                 column: "CompanyId");
@@ -310,6 +386,11 @@ namespace TH.CompanyMS.Infra.Migrations
                 name: "IX_BranchUsers_UserId",
                 table: "BranchUsers",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanySettings_CompanyId",
+                table: "CompanySettings",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Modules_ParentId",
@@ -376,7 +457,13 @@ namespace TH.CompanyMS.Infra.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Address");
+
+            migrationBuilder.DropTable(
                 name: "BranchUsers");
+
+            migrationBuilder.DropTable(
+                name: "CompanySettings");
 
             migrationBuilder.DropTable(
                 name: "Permissions");
@@ -389,6 +476,9 @@ namespace TH.CompanyMS.Infra.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserRoles");
+
+            migrationBuilder.DropTable(
+                name: "Country");
 
             migrationBuilder.DropTable(
                 name: "Branches");

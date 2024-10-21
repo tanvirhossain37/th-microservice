@@ -15,9 +15,9 @@ public class RoleHub : Hub<IRoleHub>
         await Clients.All.BroadcastOnUpdateRoleAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteRoleAsync(RoleViewModel viewModel)
+    public async Task BroadcastOnArchiveRoleAsync(RoleViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteRoleAsync(viewModel);
+        await Clients.All.BroadcastOnArchiveRoleAsync(viewModel);
     }
 
     public async Task BroadcastOnDeleteRoleAsync(RoleViewModel viewModel)

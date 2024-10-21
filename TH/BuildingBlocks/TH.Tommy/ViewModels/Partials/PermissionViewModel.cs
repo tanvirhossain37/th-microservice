@@ -6,10 +6,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TH.CompanyMS.App;
 
 public partial class PermissionViewModel
-{   
-		public string SpaceName { get; set; }
-		public string CompanyName { get; set; }
-		public string RoleName { get; set; }
-		public string ModuleName { get; set; }
-		public string AccessTypeName { get; set; }
+{
+	public string SpaceName { get; set; }
+	public string CompanyName { get; set; }
+	public string RoleName { get; set; }
+	public string ModuleName { get; set; }
+	public string ModuleIcon { get; set; }
+	public string AccessTypeName { get; set; }
 }

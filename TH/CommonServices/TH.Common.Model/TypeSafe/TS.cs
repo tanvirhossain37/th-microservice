@@ -5,6 +5,7 @@ public static class TS
     public static class Controllers
     {
         public const string Company = "Company";
+        public const string CompanySetting = "CompanySetting";
         public const string Branch = "Branch";
         public const string BranchUser = "BranchUser";
         public const string Role = "Role";
@@ -20,7 +21,7 @@ public static class TS
         public const string Read = "Read";
         public const string Write = "Write";
         public const string Update = "Update";
-        public const string SoftDelete = "SoftDelete";
+        public const string Archive = "Archive";
         public const string Delete = "Delete";
     }
 

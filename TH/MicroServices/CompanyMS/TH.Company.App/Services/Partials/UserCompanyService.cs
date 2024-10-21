@@ -42,14 +42,14 @@ public partial class UserCompanyService
         //todo
     }
 
-    private async Task ApplyOnSoftDeletingBlAsync(UserCompany existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivingBlAsync(UserCompany existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
     }
 
-    private async Task ApplyOnSoftDeletedBlAsync(UserCompany existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivedBlAsync(UserCompany existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
@@ -101,11 +101,21 @@ public partial class UserCompanyService
 
         if (!string.IsNullOrWhiteSpace(filter.UserName))
         {
-            var user = await Repo.UserRepo.SingleOrDefaultQueryableAsync(x => x.UserName.Equals(filter.UserName), dataFilter);
-            if (user== null) throw new CustomException(Lang.Find("data_notfound"));
-
-            filter.UserId = user.Id;
+            predicates.Add(t => t.User.UserName.Equals(filter.UserName.Trim()));
         }
+    }
+
+    public async Task<UserCompany> FindByCompanyIdAsync(UserCompanyFilterModel filter, DataFilter dataFilter)
+    {
+        if (filter is null)
+        {
+            throw new ArgumentNullException(nameof(filter));
+        }
+
+        var entity = await Repo.UserCompanyRepo.SingleOrDefaultQueryableAsync(x=>x.CompanyId.Equals(filter.CompanyId), dataFilter);
+        if (entity == null) throw new CustomException(Lang.Find("data_notfound"));
+
+        return entity;
     }
 
     private void DisposeOthers()

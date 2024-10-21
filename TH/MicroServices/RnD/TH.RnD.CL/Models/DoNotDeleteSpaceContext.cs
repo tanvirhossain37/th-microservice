@@ -15,15 +15,13 @@ public partial class DoNotDeleteSpaceContext : DbContext
     {
     }
 
-    public virtual DbSet<Address> Addresses { get; set; }
-
     public virtual DbSet<Branch> Branches { get; set; }
 
     public virtual DbSet<BranchUser> BranchUsers { get; set; }
 
     public virtual DbSet<Company> Companies { get; set; }
 
-    public virtual DbSet<Country> Countries { get; set; }
+    public virtual DbSet<CompanySetting> CompanySettings { get; set; }
 
     public virtual DbSet<Module> Modules { get; set; }
 
@@ -112,6 +110,22 @@ public partial class DoNotDeleteSpaceContext : DbContext
             entity.Property(e => e.Slogan).HasMaxLength(450);
             entity.Property(e => e.SpaceId).HasMaxLength(450);
             entity.Property(e => e.Website).HasMaxLength(256);
+        });
+
+        modelBuilder.Entity<CompanySetting>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_CompanyConfigs");
+
+            entity.Property(e => e.CompanyId).HasMaxLength(450);
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.Key).HasMaxLength(450);
+            entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+            entity.Property(e => e.SpaceId).HasMaxLength(450);
+
+            entity.HasOne(d => d.Company).WithMany(p => p.CompanySettings)
+                .HasForeignKey(d => d.CompanyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CompanyConfigs_Companies");
         });
 
         modelBuilder.Entity<Country>(entity =>

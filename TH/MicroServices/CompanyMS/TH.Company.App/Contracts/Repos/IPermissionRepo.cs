@@ -4,7 +4,7 @@ using TH.Repo;
 
 namespace TH.CompanyMS.App;
 
-public interface IPermissionRepo : IRepoSQL<Permission>
+public partial interface IPermissionRepo : IRepoSQL<Permission>
 {   
     
 }

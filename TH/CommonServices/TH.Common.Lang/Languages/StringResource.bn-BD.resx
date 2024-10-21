@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="accept" xml:space="preserve">
+    <value>Accepter</value>
+  </data>
   <data name="cr_bangladeshi_taka" xml:space="preserve">
     <value>Bangladeshi Taka</value>
   </data>
@@ -128,6 +131,9 @@
   </data>
   <data name="c_united_states" xml:space="preserve">
     <value>États-Unis</value>
+  </data>
+  <data name="deny" xml:space="preserve">
+    <value>Refuser</value>
   </data>
   <data name="email_invitation" xml:space="preserve">
     <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;{1} vous invite à rejoindre "{2}". Veuillez cliquer pour accepter l'invitation.&lt;br /&gt;&lt;br /&gt;{3}&lt;br /&gt;&lt;br /&gt;Merci,&lt;br /&gt;We Space.</value>
@@ -147,8 +153,32 @@
   <data name="error_validation" xml:space="preserve">
     <value>বৈধতা ব্যর্থ।</value>
   </data>
+  <data name="guest" xml:space="preserve">
+    <value>Invité</value>
+  </data>
   <data name="inactive_login" xml:space="preserve">
     <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;Bienvenue à nouveau !&lt;br /&gt;Veuillez utiliser ce code pour vérifier votre compte.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Merci, &lt;br /&gt;Nous espaçons.</value>
+  </data>
+  <data name="m_admin_permission" xml:space="preserve">
+    <value>Autorisation</value>
+  </data>
+  <data name="m_admin_role" xml:space="preserve">
+    <value>Rôle</value>
+  </data>
+  <data name="m_admin_user" xml:space="preserve">
+    <value>Utilisateur</value>
+  </data>
+  <data name="m_company_admin" xml:space="preserve">
+    <value>Administrateur</value>
+  </data>
+  <data name="m_company_dashboard" xml:space="preserve">
+    <value>Tableau de bord</value>
+  </data>
+  <data name="owner" xml:space="preserve">
+    <value>Propriétaire</value>
+  </data>
+  <data name="pending" xml:space="preserve">
+    <value>En attente</value>
   </data>
   <data name="reset_password" xml:space="preserve">
     <value>Bonjour {0},&lt;br /&gt;&lt;br /&gt;Vous avez demandé la réinitialisation du mot de passe. Veuillez utiliser ce code pour réinitialiser votre mot de passe. Si ce n'est pas vous, ignorez-le.&lt;br /&gt;&lt;br /&gt;{1}&lt;br /&gt;&lt;br /&gt;Merci,&lt;br /&gt;We Space.</value>
@@ -158,6 +188,9 @@
   </data>
   <data name="sign_in_alert_with_geo" xml:space="preserve">
     <value>Bonjour {0}, &lt;br /&gt;&lt;br /&gt;Nous avons remarqué une nouvelle connexion à votre compte Space de la part de {1}-{2}, {3}, {4}. L'adresse IP est {5}. Si c'est vous, vous n'avez rien à faire. Sinon, veuillez nous contacter.</value>
+  </data>
+  <data name="space_name" xml:space="preserve">
+    <value>L'espace de {0}</value>
   </data>
   <data name="title" xml:space="preserve">
     <value>ওপেন স্পেস</value>

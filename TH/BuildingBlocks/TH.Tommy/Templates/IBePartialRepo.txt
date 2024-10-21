@@ -1,0 +1,5 @@
+namespace $namespace$;
+
+public partial interface I$WE$Repo
+{
+}

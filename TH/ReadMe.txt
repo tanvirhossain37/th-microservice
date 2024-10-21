@@ -19,7 +19,7 @@ select * from [CompanyDB].[dbo].Permissions
 select * from [CompanyDB].[dbo].UserCompanies
 select * from [CompanyDB].[dbo].SpaceSubscriptions
 
-#delete all
+
 delete [CompanyDB].[dbo].Companies
 delete [CompanyDB].[dbo].Branches
 delete [CompanyDB].[dbo].Roles

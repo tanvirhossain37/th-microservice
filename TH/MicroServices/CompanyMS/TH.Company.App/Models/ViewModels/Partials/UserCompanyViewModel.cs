@@ -16,4 +16,7 @@ public partial class UserCompanyViewModel
     public string TypeName { get; set; }
 	public string StatusName { get; set; }
 	public string UserName { get; set; }
+    public string DefaultBranchId { get; set; }
+    public string DefaultBranchName { get; set; }
+    public string DefaultBranchCode { get; set; }
 }

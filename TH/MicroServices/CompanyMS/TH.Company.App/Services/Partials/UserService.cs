@@ -120,14 +120,14 @@ public partial class UserService
         //todo
     }
 
-    private async Task ApplyOnSoftDeletingBlAsync(User existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivingBlAsync(User existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
     }
 
-    private async Task ApplyOnSoftDeletedBlAsync(User existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivedBlAsync(User existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
@@ -176,6 +176,50 @@ public partial class UserService
 
             predicates.Add(t => (t.CreatedDate >= filter.StartDate) && (t.CreatedDate <= filter.EndDate));
         }
+    }
+
+    public async Task<User> SaveAsync(User entity, bool invitation, DataFilter dataFilter, bool commit = true)
+    {
+        if (entity == null) throw new ArgumentNullException(nameof(entity));
+
+        entity.Id = Util.TryGenerateGuid();
+        entity.CreatedDate = DateTime.Now;
+
+        ApplyValidationBl(entity);
+        await ApplyDuplicateOnSaveBl(entity, dataFilter);
+
+        //Add your business logic here
+        await ApplyOnSavingBlAsync(entity, invitation, dataFilter);
+
+        //Chain effect
+
+        foreach (var child in entity.BranchUsers)
+        {
+            await BranchUserService.SaveAsync(child, dataFilter, false);
+        }
+
+        foreach (var child in entity.UserCompanies)
+        {
+            await UserCompanyService.SaveAsync(child, dataFilter, false);
+        }
+
+        foreach (var child in entity.UserRoles)
+        {
+            await UserRoleService.SaveAsync(child, dataFilter, false);
+        }
+
+
+        await Repo.UserRepo.SaveAsync(entity);
+
+        if (commit)
+        {
+            if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("error_save"));
+
+            //Add your business logic here
+            await ApplyOnSavedBlAsync(entity, dataFilter);
+        }
+
+        return entity;
     }
 
     private void DisposeOthers()

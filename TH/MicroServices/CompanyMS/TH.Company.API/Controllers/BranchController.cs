@@ -68,19 +68,19 @@ public class BranchController : CustomBaseController
         }
     }
 
-    [HttpPost("SoftDeleteBranchAsync")]
+    [HttpPost("ArchiveBranchAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "BranchSoftDeletePolicy")]
-    public async Task<IActionResult> SoftDeleteBranchAsync([FromBody] BranchInputModel model)
+    [Authorize(Policy = "BranchArchivePolicy")]
+    public async Task<IActionResult> ArchiveBranchAsync([FromBody] BranchInputModel model)
     {
         //first grab it
         var filter = new BranchFilterModel { Id = model.Id };
         var viewModel = _mapper.Map<Branch, BranchViewModel>(await _branchService.FindByIdAsync(filter, DataFilter));
 
-        //then soft delete
-        await _branchService.SoftDeleteAsync(_mapper.Map<BranchInputModel, Branch>(model), DataFilter);
+        //then archive
+        await _branchService.ArchiveAsync(_mapper.Map<BranchInputModel, Branch>(model), DataFilter);
 
-        await _hubContext.Clients.All.BroadcastOnSoftDeleteBranchAsync(viewModel);
+        await _hubContext.Clients.All.BroadcastOnArchiveBranchAsync(viewModel);
 
         return CustomResult(Lang.Find("success"));
     }

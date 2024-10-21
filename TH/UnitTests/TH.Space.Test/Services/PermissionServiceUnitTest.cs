@@ -55,7 +55,7 @@ public class PermissionServiceUnitTest : CompanyBaseUnitTest
     }
 
     [TestMethod]
-    public async Task SoftDeleteAsyncUnitTest()
+    public async Task ArchiveAsyncUnitTest()
     {
         try
         {
@@ -64,7 +64,7 @@ public class PermissionServiceUnitTest : CompanyBaseUnitTest
                 Id = "", //todo
             };
 
-            await _service.SoftDeleteAsync(Mapper.Map<PermissionInputModel, Permission>(model), DataFilter);
+            await _service.ArchiveAsync(Mapper.Map<PermissionInputModel, Permission>(model), DataFilter);
         }
         catch (Exception e)
         {
@@ -113,11 +113,11 @@ public class PermissionServiceUnitTest : CompanyBaseUnitTest
         {
             var filter = new PermissionFilterModel();
             filter.PageSize = (int)PageEnum.All;
-            //filter.ByTree = true;
-            filter.SpaceId = "f0f01ad3-d0fc-4baa-9fae-547ecf6cc71d";
-            filter.CompanyId = "30b634a6-7c28-42c3-84e4-30afdc06042a";
-            filter.UserName = "tanvir";
-            filter.IsLastLevel = true;
+            filter.ByTree = true;
+            filter.SpaceId = "2b3e2464-1e04-4894-ba43-09ba227a3587";
+            filter.CompanyId = "62cdc98b-13f4-4243-8ccc-93ef612f0faf";
+            filter.UserName = "Tanvir.Hossain.21a300d22ad8";
+            //filter.IsLastLevel = true;
 
             var entity = await _service.GetAsync(filter, DataFilter);
             var viewModels = Mapper.Map<List<Permission>, List<PermissionViewModel>>(entity.ToList());

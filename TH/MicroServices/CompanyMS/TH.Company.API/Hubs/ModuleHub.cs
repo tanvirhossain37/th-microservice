@@ -15,9 +15,9 @@ public class ModuleHub : Hub<IModuleHub>
         await Clients.All.BroadcastOnUpdateModuleAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteModuleAsync(ModuleViewModel viewModel)
+    public async Task BroadcastOnArchiveModuleAsync(ModuleViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteModuleAsync(viewModel);
+        await Clients.All.BroadcastOnArchiveModuleAsync(viewModel);
     }
 
     public async Task BroadcastOnDeleteModuleAsync(ModuleViewModel viewModel)

@@ -1,23 +1,23 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 using TH.CompanyMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using Microsoft.Extensions.Configuration;
 
 namespace TH.CompanyMS.App;
 
 public partial class BranchUserService : BaseService, IBranchUserService
 {
     protected readonly IUow Repo;
-
-
+    
+        
     public BranchUserService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-
+        
     }
 
     public async Task<BranchUser> SaveAsync(BranchUser entity, DataFilter dataFilter, bool commit = true)
@@ -82,7 +82,7 @@ public partial class BranchUserService : BaseService, IBranchUserService
         return existingEntity;
     }
 
-    public async Task<bool> SoftDeleteAsync(BranchUser entity, DataFilter dataFilter, bool commit = true)
+    public async Task<bool> ArchiveAsync(BranchUser entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -93,7 +93,7 @@ public partial class BranchUserService : BaseService, IBranchUserService
         existingEntity.Active = false;
 
         //Add your business logic here
-        await ApplyOnSoftDeletingBlAsync(existingEntity, dataFilter);
+        await ApplyOnArchivingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -103,7 +103,7 @@ public partial class BranchUserService : BaseService, IBranchUserService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            await ApplyOnSoftDeletedBlAsync(existingEntity, dataFilter);
+            await ApplyOnArchivedBlAsync(existingEntity, dataFilter);
         }
 
         return true;

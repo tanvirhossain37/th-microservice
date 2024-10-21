@@ -5,6 +5,7 @@ public interface IUow : IDisposable
 	IBranchRepo BranchRepo { get; set; }
 	IBranchUserRepo BranchUserRepo { get; set; }
 	ICompanyRepo CompanyRepo { get; set; }
+	ICompanySettingRepo CompanySettingRepo { get; set; }
 	IModuleRepo ModuleRepo { get; set; }
 	IPermissionRepo PermissionRepo { get; set; }
 	IRoleRepo RoleRepo { get; set; }

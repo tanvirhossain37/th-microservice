@@ -15,4 +15,5 @@ public partial class ModuleFilterModel
 	public string? Icon { get; set; }
 	public string? ParentId { get; set; }
 	public int MenuOrder { get; set; }
+	public int Level { get; set; }
 }

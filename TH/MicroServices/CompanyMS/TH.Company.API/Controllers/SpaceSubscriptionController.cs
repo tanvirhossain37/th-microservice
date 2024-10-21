@@ -68,19 +68,19 @@ public class SpaceSubscriptionController : CustomBaseController
         }
     }
 
-    [HttpPost("SoftDeleteSpaceSubscriptionAsync")]
+    [HttpPost("ArchiveSpaceSubscriptionAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "SpaceSubscriptionSoftDeletePolicy")]
-    public async Task<IActionResult> SoftDeleteSpaceSubscriptionAsync([FromBody] SpaceSubscriptionInputModel model)
+    [Authorize(Policy = "SpaceSubscriptionArchivePolicy")]
+    public async Task<IActionResult> ArchiveSpaceSubscriptionAsync([FromBody] SpaceSubscriptionInputModel model)
     {
         //first grab it
         var filter = new SpaceSubscriptionFilterModel { Id = model.Id };
         var viewModel = _mapper.Map<SpaceSubscription, SpaceSubscriptionViewModel>(await _spaceSubscriptionService.FindByIdAsync(filter, DataFilter));
 
-        //then soft delete
-        await _spaceSubscriptionService.SoftDeleteAsync(_mapper.Map<SpaceSubscriptionInputModel, SpaceSubscription>(model), DataFilter);
+        //then archive
+        await _spaceSubscriptionService.ArchiveAsync(_mapper.Map<SpaceSubscriptionInputModel, SpaceSubscription>(model), DataFilter);
 
-        await _hubContext.Clients.All.BroadcastOnSoftDeleteSpaceSubscriptionAsync(viewModel);
+        await _hubContext.Clients.All.BroadcastOnArchiveSpaceSubscriptionAsync(viewModel);
 
         return CustomResult(Lang.Find("success"));
     }

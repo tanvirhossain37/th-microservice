@@ -25,6 +25,8 @@ public partial class Module
 
     public int MenuOrder { get; set; }
 
+    public int Level { get; set; }
+
     public virtual ICollection<Module> InverseParent { get; set; } = new List<Module>();
 
     public virtual Module? Parent { get; set; }

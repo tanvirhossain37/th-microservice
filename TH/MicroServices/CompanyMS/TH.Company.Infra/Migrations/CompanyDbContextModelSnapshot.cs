@@ -25,6 +25,100 @@ namespace TH.CompanyMS.Infra.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("TH.AddressMS.Core.Address", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CountryId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("State")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.ToTable("Address");
+                });
+
+            modelBuilder.Entity("TH.AddressMS.Core.Country", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CurrencyName")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IsoCode")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Country");
+                });
+
             modelBuilder.Entity("TH.CompanyMS.Core.Branch", b =>
                 {
                     b.Property<string>("Id")
@@ -161,6 +255,49 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.ToTable("Companies");
                 });
 
+            modelBuilder.Entity("TH.CompanyMS.Core.CompanySetting", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CompanyId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("ModuleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SpaceId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Value")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id")
+                        .HasName("PK_CompanyConfigs");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CompanySettings");
+                });
+
             modelBuilder.Entity("TH.CompanyMS.Core.Module", b =>
                 {
                     b.Property<string>("Id")
@@ -179,6 +316,9 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Property<string>("Icon")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
 
                     b.Property<int>("MenuOrder")
                         .HasColumnType("int");
@@ -214,6 +354,9 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("Archive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("CompanyId")
                         .IsRequired()
                         .HasMaxLength(450)
@@ -224,6 +367,9 @@ namespace TH.CompanyMS.Infra.Migrations
 
                     b.Property<bool>("Delete")
                         .HasColumnType("bit");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
 
                     b.Property<int>("MenuOrder")
                         .HasColumnType("int");
@@ -501,6 +647,17 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("TH.AddressMS.Core.Address", b =>
+                {
+                    b.HasOne("TH.AddressMS.Core.Country", "Country")
+                        .WithMany("Addresses")
+                        .HasForeignKey("CountryId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Addresses_Countries");
+
+                    b.Navigation("Country");
+                });
+
             modelBuilder.Entity("TH.CompanyMS.Core.Branch", b =>
                 {
                     b.HasOne("TH.CompanyMS.Core.Company", "Company")
@@ -537,6 +694,17 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TH.CompanyMS.Core.CompanySetting", b =>
+                {
+                    b.HasOne("TH.CompanyMS.Core.Company", "Company")
+                        .WithMany("CompanySettings")
+                        .HasForeignKey("CompanyId")
+                        .IsRequired()
+                        .HasConstraintName("FK_CompanyConfigs_Companies");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("TH.CompanyMS.Core.Module", b =>
@@ -651,6 +819,11 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TH.AddressMS.Core.Country", b =>
+                {
+                    b.Navigation("Addresses");
+                });
+
             modelBuilder.Entity("TH.CompanyMS.Core.Branch", b =>
                 {
                     b.Navigation("BranchUsers");
@@ -661,6 +834,8 @@ namespace TH.CompanyMS.Infra.Migrations
                     b.Navigation("BranchUsers");
 
                     b.Navigation("Branches");
+
+                    b.Navigation("CompanySettings");
 
                     b.Navigation("Permissions");
 

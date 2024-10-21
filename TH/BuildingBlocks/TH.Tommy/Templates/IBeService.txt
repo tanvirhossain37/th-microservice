@@ -3,11 +3,11 @@ using TH.Common.Model;
 
 namespace $namespace$;
 
-public interface I$WE$Service : IBaseService
+public partial interface I$WE$Service : IBaseService
 {
     Task<$WE$> SaveAsync($WE$ entity, DataFilter dataFilter, bool commit = true);
     Task<$WE$> UpdateAsync($WE$ entity, DataFilter dataFilter, bool commit = true);
-    Task<bool> SoftDeleteAsync($WE$ entity, DataFilter dataFilter, bool commit = true);
+    Task<bool> ArchiveAsync($WE$ entity, DataFilter dataFilter, bool commit = true);
     Task<bool> DeleteAsync($WE$ entity, DataFilter dataFilter, bool commit = true);
     Task<$WE$> FindByIdAsync($WE$FilterModel filter, DataFilter dataFilter);
     Task<IEnumerable<$WE$>> GetAsync($WE$FilterModel filter, DataFilter dataFilter);

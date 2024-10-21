@@ -239,6 +239,7 @@ namespace TH.AuthMS.App
             signInViewModel.SpaceSubscription = _mapper.Map<SpaceSubscriptionViewReply, SpaceSubscriptionViewModel>(viewReply);
 
             signInViewModel.SpaceId = identityUser.Id;
+            signInViewModel.SpaceName = $"{string.Format(Lang.Find("space_name"), identityUser.Name)}";
             signInViewModel.Name = identityUser.Name;
             signInViewModel.PhotoUrl = identityUser.PhotoUrl;
             signInViewModel.Email = identityUser.Email;

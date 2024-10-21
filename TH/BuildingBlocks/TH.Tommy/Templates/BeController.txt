@@ -68,19 +68,19 @@ public class $WE$Controller : CustomBaseController
         }
     }
 
-    [HttpPost("SoftDelete$WE$Async")]
+    [HttpPost("Archive$WE$Async")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "$WE$SoftDeletePolicy")]
-    public async Task<IActionResult> SoftDelete$WE$Async([FromBody] $WE$InputModel model)
+    [Authorize(Policy = "$WE$ArchivePolicy")]
+    public async Task<IActionResult> Archive$WE$Async([FromBody] $WE$InputModel model)
     {
         //first grab it
         var filter = new $WE$FilterModel { Id = model.Id };
         var viewModel = _mapper.Map<$WE$, $WE$ViewModel>(await _$we$Service.FindByIdAsync(filter, DataFilter));
 
-        //then soft delete
-        await _$we$Service.SoftDeleteAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
+        //then archive
+        await _$we$Service.ArchiveAsync(_mapper.Map<$WE$InputModel, $WE$>(model), DataFilter);
 
-        await _hubContext.Clients.All.BroadcastOnSoftDelete$WE$Async(viewModel);
+        await _hubContext.Clients.All.BroadcastOnArchive$WE$Async(viewModel);
 
         return CustomResult(Lang.Find("success"));
     }

@@ -1,11 +1,11 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 using TH.CompanyMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using Microsoft.Extensions.Configuration;
 
 namespace TH.CompanyMS.App;
 
@@ -14,12 +14,12 @@ public partial class BranchService : BaseService, IBranchService
     protected readonly IUow Repo;
     
 	protected readonly IBranchUserService BranchUserService;
-
+        
     public BranchService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config, IBranchUserService branchUserService) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-
-        BranchUserService = branchUserService ?? throw new ArgumentNullException(nameof(branchUserService));
+        
+		BranchUserService = branchUserService ?? throw new ArgumentNullException(nameof(branchUserService));
     }
 
     public async Task<Branch> SaveAsync(Branch entity, DataFilter dataFilter, bool commit = true)
@@ -94,7 +94,7 @@ public partial class BranchService : BaseService, IBranchService
         return existingEntity;
     }
 
-    public async Task<bool> SoftDeleteAsync(Branch entity, DataFilter dataFilter, bool commit = true)
+    public async Task<bool> ArchiveAsync(Branch entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -105,7 +105,7 @@ public partial class BranchService : BaseService, IBranchService
         existingEntity.Active = false;
 
         //Add your business logic here
-        await ApplyOnSoftDeletingBlAsync(existingEntity, dataFilter);
+        await ApplyOnArchivingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -120,7 +120,7 @@ public partial class BranchService : BaseService, IBranchService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            await ApplyOnSoftDeletedBlAsync(existingEntity, dataFilter);
+            await ApplyOnArchivedBlAsync(existingEntity, dataFilter);
         }
 
         return true;

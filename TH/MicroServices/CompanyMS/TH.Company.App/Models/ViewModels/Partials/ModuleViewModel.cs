@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TH.CompanyMS.App;
 
 public partial class ModuleViewModel
-{   
-	public string ParentName { get; set; }
+{
+    public string ParentName { get; set; }
+    public IList<ModuleViewModel> InverseParent { get; set; } = new List<ModuleViewModel>();
 }

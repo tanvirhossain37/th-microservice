@@ -19,4 +19,6 @@ public partial class PermissionFilterModel
 	public bool? Delete { get; set; }
 	public string? ParentId { get; set; }
 	public int MenuOrder { get; set; }
+	public bool? Archive { get; set; }
+	public int Level { get; set; }
 }

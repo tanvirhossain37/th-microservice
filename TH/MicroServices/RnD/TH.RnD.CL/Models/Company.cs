@@ -29,6 +29,8 @@ public partial class Company
 
     public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
 
+    public virtual ICollection<CompanySetting> CompanySettings { get; set; } = new List<CompanySetting>();
+
     public virtual ICollection<Permission> Permissions { get; set; } = new List<Permission>();
 
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();

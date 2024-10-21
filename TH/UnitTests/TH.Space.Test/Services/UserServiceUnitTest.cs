@@ -63,7 +63,7 @@ public class UserServiceUnitTest : CompanyBaseUnitTest
     }
 
     [TestMethod]
-    public async Task SoftDeleteAsyncUnitTest()
+    public async Task ArchiveAsyncUnitTest()
     {
         try
         {
@@ -72,7 +72,7 @@ public class UserServiceUnitTest : CompanyBaseUnitTest
                 Id = "", //todo
             };
 
-            await _service.SoftDeleteAsync(Mapper.Map<UserInputModel, User>(model), DataFilter);
+            await _service.ArchiveAsync(Mapper.Map<UserInputModel, User>(model), DataFilter);
         }
         catch (Exception e)
         {

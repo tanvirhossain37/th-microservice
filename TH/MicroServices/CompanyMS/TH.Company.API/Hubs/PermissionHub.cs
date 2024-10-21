@@ -15,9 +15,9 @@ public class PermissionHub : Hub<IPermissionHub>
         await Clients.All.BroadcastOnUpdatePermissionAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeletePermissionAsync(PermissionViewModel viewModel)
+    public async Task BroadcastOnArchivePermissionAsync(PermissionViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeletePermissionAsync(viewModel);
+        await Clients.All.BroadcastOnArchivePermissionAsync(viewModel);
     }
 
     public async Task BroadcastOnDeletePermissionAsync(PermissionViewModel viewModel)

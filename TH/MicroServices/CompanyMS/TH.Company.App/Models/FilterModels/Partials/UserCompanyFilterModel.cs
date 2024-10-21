@@ -13,7 +13,7 @@ public partial class UserCompanyFilterModel
     public Print Print { get; set; }
     public IList<SortFilter> SortFilters { get; set; }
     public string UserName { get; set; }
-
+    
     public UserCompanyFilterModel()
     {
         PageIndex = (int) PageEnum.PageIndex;

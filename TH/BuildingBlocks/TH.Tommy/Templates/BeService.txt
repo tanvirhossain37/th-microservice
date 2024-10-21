@@ -79,7 +79,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
         return existingEntity;
     }
 
-    public async Task<bool> SoftDeleteAsync($WE$ entity, DataFilter dataFilter, bool commit = true)
+    public async Task<bool> ArchiveAsync($WE$ entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -90,7 +90,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
         existingEntity.Active = false;
 
         //Add your business logic here
-        await ApplyOnSoftDeletingBlAsync(existingEntity, dataFilter);
+        await ApplyOnArchivingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         //todo chain effect delete methods
@@ -100,7 +100,7 @@ public partial class $WE$Service : BaseService, I$WE$Service
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            await ApplyOnSoftDeletedBlAsync(existingEntity, dataFilter);
+            await ApplyOnArchivedBlAsync(existingEntity, dataFilter);
         }
 
         return true;

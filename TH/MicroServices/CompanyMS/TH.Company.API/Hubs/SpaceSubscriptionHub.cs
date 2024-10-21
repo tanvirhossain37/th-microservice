@@ -15,9 +15,9 @@ public class SpaceSubscriptionHub : Hub<ISpaceSubscriptionHub>
         await Clients.All.BroadcastOnUpdateSpaceSubscriptionAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteSpaceSubscriptionAsync(SpaceSubscriptionViewModel viewModel)
+    public async Task BroadcastOnArchiveSpaceSubscriptionAsync(SpaceSubscriptionViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteSpaceSubscriptionAsync(viewModel);
+        await Clients.All.BroadcastOnArchiveSpaceSubscriptionAsync(viewModel);
     }
 
     public async Task BroadcastOnDeleteSpaceSubscriptionAsync(SpaceSubscriptionViewModel viewModel)

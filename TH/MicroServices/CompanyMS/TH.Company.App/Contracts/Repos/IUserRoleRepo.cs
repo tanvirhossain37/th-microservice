@@ -4,7 +4,7 @@ using TH.Repo;
 
 namespace TH.CompanyMS.App;
 
-public interface IUserRoleRepo : IRepoSQL<UserRole>
+public partial interface IUserRoleRepo : IRepoSQL<UserRole>
 {   
     
 }

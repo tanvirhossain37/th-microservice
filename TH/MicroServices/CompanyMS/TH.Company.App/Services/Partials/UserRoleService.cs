@@ -41,14 +41,14 @@ public partial class UserRoleService
         //todo
     }
 
-    private async Task ApplyOnSoftDeletingBlAsync(UserRole existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivingBlAsync(UserRole existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
     }
 
-    private async Task ApplyOnSoftDeletedBlAsync(UserRole existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivedBlAsync(UserRole existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 

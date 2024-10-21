@@ -4,7 +4,7 @@ using TH.Repo;
 
 namespace $namespace$;
 
-public interface I$WE$Repo : IRepoSQL<$WE$>
+public partial interface I$WE$Repo : IRepoSQL<$WE$>
 {   //todo repo name methods
     //todo repo code methods
 }

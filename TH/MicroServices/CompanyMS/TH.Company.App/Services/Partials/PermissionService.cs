@@ -42,14 +42,14 @@ public partial class PermissionService
         //todo
     }
 
-    private async Task ApplyOnSoftDeletingBlAsync(Permission existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivingBlAsync(Permission existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
     }
 
-    private async Task ApplyOnSoftDeletedBlAsync(Permission existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivedBlAsync(Permission existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 

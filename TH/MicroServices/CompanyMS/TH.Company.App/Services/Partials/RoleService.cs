@@ -50,14 +50,14 @@ public partial class RoleService
         //todo
     }
 
-    private async Task ApplyOnSoftDeletingBlAsync(Role existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivingBlAsync(Role existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
     }
 
-    private async Task ApplyOnSoftDeletedBlAsync(Role existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivedBlAsync(Role existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
@@ -116,18 +116,19 @@ public partial class RoleService
 
             var permission = new Permission
             {
-                Id=Util.TryGenerateGuid(),
+                Id = Util.TryGenerateGuid(),
                 CreatedDate = role.CreatedDate,
                 SpaceId = role.SpaceId,
                 CompanyId = role.CompanyId,
                 RoleId = role.Id,
                 ParentId = parentPermission?.Id,
                 ModuleId = module.Id,
-                Read = role.Name.Equals("Super Admin")? true: false,
+                Read = role.Name.Equals("Super Admin") ? true : false,
                 Write = role.Name.Equals("Super Admin") ? true : false,
                 Update = role.Name.Equals("Super Admin") ? true : false,
                 Delete = role.Name.Equals("Super Admin") ? true : false,
-                MenuOrder = module.MenuOrder
+                MenuOrder = module.MenuOrder,
+                Level = module.Level
             };
 
             parentPermission?.InverseParent.Add(permission);

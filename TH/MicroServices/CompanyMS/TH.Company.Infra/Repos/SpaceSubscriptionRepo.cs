@@ -10,4 +10,6 @@ public partial class SpaceSubscriptionRepo : RepoSQL<SpaceSubscription>, ISpaceS
     public SpaceSubscriptionRepo(CompanyDbContext dbContext, ICustomSort customSort) : base(dbContext, customSort)
     {
     }
+
+
 }

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using TH.Common.Lang;
 using TH.Common.Model;
 using TH.CompanyMS.App;
 using TH.CompanyMS.Core;
@@ -55,7 +56,7 @@ public class UserCompanyServiceUnitTest : CompanyBaseUnitTest
     }
 
     [TestMethod]
-    public async Task SoftDeleteAsyncUnitTest()
+    public async Task ArchiveAsyncUnitTest()
     {
         try
         {
@@ -64,7 +65,7 @@ public class UserCompanyServiceUnitTest : CompanyBaseUnitTest
                 Id = "", //todo
             };
 
-            await _service.SoftDeleteAsync(Mapper.Map<UserCompanyInputModel, UserCompany>(model), DataFilter);
+            await _service.ArchiveAsync(Mapper.Map<UserCompanyInputModel, UserCompany>(model), DataFilter);
         }
         catch (Exception e)
         {
@@ -137,11 +138,11 @@ public class UserCompanyServiceUnitTest : CompanyBaseUnitTest
         {
             var filter = new UserCompanyFilterModel
             {
-                UserName = "Tanvir.Hossain.bcb28694f2c7",
+                UserName = "Tanvir.Hossain.1a75866a9f40",
                 StatusId = (int)InvitationStatusEnum.Accept
             };
             filter.PageSize = (int)PageEnum.All;
-
+            Lang.SetCultureCode("bn-BD");
             var entity = await _service.GetAsync(filter, DataFilter);
             var viewModels = Mapper.Map<List<UserCompany>, List<UserCompanyViewModel>>(entity.ToList());
         }
