@@ -1,3 +1,6 @@
+using AutoMapper;
+using MassTransit;
+using Microsoft.Extensions.Configuration;
 using System.Linq.Expressions;
 using TH.AuthMS.Grpc;
 using TH.Common.Lang;
@@ -11,10 +14,12 @@ namespace TH.CompanyMS.App;
 public partial class UserService
 {
     //Add additional services if any
+    private AuthGrpcClientService _authGrpcClientService;
 
-    //private UserService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IBranchUserService branchUserService, IUserRoleService userRoleService) : this(repo, publishEndpoint, mapper, branchUserService, userRoleService)
-    //{
-    //}
+    public UserService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config, IBranchUserService branchUserService, IUserCompanyService userCompanyService, IUserRoleService userRoleService, AuthGrpcClientService authGrpcClientService) : this(repo, publishEndpoint, mapper, config, branchUserService, userCompanyService, userRoleService)
+    {
+        _authGrpcClientService = authGrpcClientService ?? throw new ArgumentNullException(nameof(authGrpcClientService));
+    }
 
     private async Task ApplyOnSavingBlAsync(User entity, bool invitation, DataFilter dataFilter)
     {

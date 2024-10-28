@@ -18,7 +18,7 @@ select * from [CompanyDB].[dbo].UserRoles
 select * from [CompanyDB].[dbo].Permissions
 select * from [CompanyDB].[dbo].UserCompanies
 select * from [CompanyDB].[dbo].SpaceSubscriptions
-
+select * from [CompanyDB].[dbo].Modules
 
 delete [CompanyDB].[dbo].Companies
 delete [CompanyDB].[dbo].Branches

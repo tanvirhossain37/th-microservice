@@ -52,9 +52,10 @@ public class CompanyMappingProfile : Profile
         CreateMap<BranchUserViewModel, BranchUser>().ReverseMap();
         CreateMap<CompanyViewModel, Company>().ReverseMap();
         CreateMap<CompanySettingViewModel, CompanySetting>().ReverseMap();
-        CreateMap<ModuleViewModel, Module>().ReverseMap();
-        CreateMap<PermissionViewModel, Permission>()
-            .ReverseMap()
+        CreateMap<ModuleViewModel, Module>().ReverseMap()
+                .ForMember(dest => dest.InverseParent, m => m.MapFrom(src => src.InverseParent.OrderBy(o=>o.MenuOrder)));
+        CreateMap<PermissionViewModel, Permission>().ReverseMap()
+            .ForMember(dest => dest.InverseParent, m => m.MapFrom(mapExpression: src => src.InverseParent.OrderBy(o => o.MenuOrder)))
             .ForMember(dest => dest.SpaceName, m => m.MapFrom(mapExpression: src => $"{string.Format(Lang.Find("space_name"), src.Role.UserRoles.SingleOrDefault(x => x.RoleId == src.RoleId).User.Name)}"))
             .ForMember(dest => dest.ControllerName, m => m.MapFrom(src => src.Module.ControllerName));
         //no need

@@ -26,6 +26,12 @@ public class AddressServiceUnitTest : AddressBaseUnitTest
         {
             var model = new AddressInputModel
             {
+                ClientId = "2df17aae-bb75-4603-8ee5-c4d777a493f8",
+                Street = "Uttara",
+                City = "Dhaka",
+                PostalCode = "1229",
+                CountryId = "e3805a4f-6eee-4884-b2d2-0dcb728b58a6",//bd
+                IsDefault = true
             };
 
             var entity = await _service.SaveAsync(Mapper.Map<AddressInputModel, Address>(model), DataFilter);
@@ -44,6 +50,13 @@ public class AddressServiceUnitTest : AddressBaseUnitTest
         {
             var model = new AddressInputModel
             {
+                Id= "b1856946-a386-4c5a-88ba-1fae11635d0c",
+                ClientId = "2df17aae-bb75-4603-8ee5-c4d777a493f8",
+                Street = "Gulshan Chattar - 2",
+                City = "Dhaka",
+                PostalCode = "1206",
+                CountryId = "e3805a4f-6eee-4884-b2d2-0dcb728b58a6",//bd
+                IsDefault = true
             };
 
             var entity = await _service.UpdateAsync(Mapper.Map<AddressInputModel, Address>(model), DataFilter);
@@ -56,7 +69,7 @@ public class AddressServiceUnitTest : AddressBaseUnitTest
     }
 
     [TestMethod]
-    public async Task SoftDeleteAsyncUnitTest()
+    public async Task ArchiveAsyncUnitTest()
     {
         try
         {
@@ -65,7 +78,7 @@ public class AddressServiceUnitTest : AddressBaseUnitTest
                 Id = "", //todo
             };
 
-            await _service.SoftDeleteAsync(Mapper.Map<AddressInputModel, Address>(model), DataFilter);
+            await _service.ArchiveAsync(Mapper.Map<AddressInputModel, Address>(model), DataFilter);
         }
         catch (Exception e)
         {

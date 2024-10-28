@@ -18,6 +18,7 @@ message AddressInputRequest {
 	string postal_code = 5;
 	string country_id = 6;
 	string client_id = 7;
+	bool is_default = 8;
 }
 message CountryInputRequest {	
 	
@@ -40,6 +41,7 @@ message AddressFilterRequest {
 	string postal_code = 8;
 	string country_id = 9;
 	string client_id = 10;
+	bool is_default = 11;
 }
 message CountryFilterRequest {	
 	
@@ -65,6 +67,7 @@ message AddressViewReply {
 	string postal_code = 8;
 	string country_id = 9;
 	string client_id = 10;
+	bool is_default = 11;
 }
 message CountryViewReply {	
 	

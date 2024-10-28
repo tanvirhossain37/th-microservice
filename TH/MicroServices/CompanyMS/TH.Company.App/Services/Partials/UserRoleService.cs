@@ -9,7 +9,7 @@ public partial class UserRoleService
 {
     //Add additional services if any
 
-    //private UserRoleService(IUow repo) : this()
+    //public UserRoleService(IUow repo) : this()
     //{
     //}
 

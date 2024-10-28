@@ -10,7 +10,7 @@ public partial class UserCompanyService
 {
     //Add additional services if any
 
-    //private UserCompanyService(IUow repo) : this()
+    //public UserCompanyService(IUow repo) : this()
     //{
     //}
 

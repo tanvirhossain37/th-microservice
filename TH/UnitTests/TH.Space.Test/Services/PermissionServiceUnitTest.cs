@@ -114,10 +114,12 @@ public class PermissionServiceUnitTest : CompanyBaseUnitTest
             var filter = new PermissionFilterModel();
             filter.PageSize = (int)PageEnum.All;
             filter.ByTree = true;
-            filter.SpaceId = "2b3e2464-1e04-4894-ba43-09ba227a3587";
-            filter.CompanyId = "62cdc98b-13f4-4243-8ccc-93ef612f0faf";
-            filter.UserName = "Tanvir.Hossain.21a300d22ad8";
+            filter.SpaceId = "4d3fe2d5-1047-4fb4-a4a3-f6b2bd1e73d6";
+            filter.CompanyId = "01123375-abc5-4f62-8358-f973b53b10d0";
+            filter.UserName = "Tanvir.Hossain.b2298f03e4b0";
             //filter.IsLastLevel = true;
+
+            filter.SortFilters.Add(new SortFilter { PropertyName = "MenuOrder", Operation = OrderByEnum.Ascending });
 
             var entity = await _service.GetAsync(filter, DataFilter);
             var viewModels = Mapper.Map<List<Permission>, List<PermissionViewModel>>(entity.ToList());

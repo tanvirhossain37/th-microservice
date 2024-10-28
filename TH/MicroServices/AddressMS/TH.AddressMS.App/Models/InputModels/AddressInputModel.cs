@@ -14,4 +14,5 @@ public partial class AddressInputModel
 	public string PostalCode { get; set; } = null!;
 	public string CountryId { get; set; } = null!;
 	public string ClientId { get; set; } = null!;
+	public bool IsDefault { get; set; }
 }

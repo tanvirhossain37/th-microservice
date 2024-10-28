@@ -94,6 +94,19 @@ public static class AddDependencyInjection
             options.AddPolicy("UserRoleUpdatePolicy", policy => { policy.RequireClaim("UserRole", TS.Permissions.Update); });
             options.AddPolicy("UserRoleArchivePolicy", policy => { policy.RequireClaim("UserRole", TS.Permissions.Archive); });
             options.AddPolicy("UserRoleDeletePolicy", policy => { policy.RequireClaim("UserRole", TS.Permissions.Delete); });
+
+            //Address
+            options.AddPolicy("AddressReadPolicy", policy => { policy.RequireClaim("Address", TS.Permissions.Read); });
+            options.AddPolicy("AddressWritePolicy", policy => { policy.RequireClaim("Address", TS.Permissions.Write); });
+            options.AddPolicy("AddressUpdatePolicy", policy => { policy.RequireClaim("Address", TS.Permissions.Update); });
+            options.AddPolicy("AddressArchivePolicy", policy => { policy.RequireClaim("Address", TS.Permissions.Archive); });
+            options.AddPolicy("AddressDeletePolicy", policy => { policy.RequireClaim("Address", TS.Permissions.Delete); });
+
+            options.AddPolicy("CountryReadPolicy", policy => { policy.RequireClaim("Country", TS.Permissions.Read); });
+            options.AddPolicy("CountryWritePolicy", policy => { policy.RequireClaim("Country", TS.Permissions.Write); });
+            options.AddPolicy("CountryUpdatePolicy", policy => { policy.RequireClaim("Country", TS.Permissions.Update); });
+            options.AddPolicy("CountryArchivePolicy", policy => { policy.RequireClaim("Country", TS.Permissions.Archive); });
+            options.AddPolicy("CountryDeletePolicy", policy => { policy.RequireClaim("Country", TS.Permissions.Delete); });
         });
 
         //AutoMapper

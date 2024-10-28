@@ -10,7 +10,7 @@ public partial class BranchService
 {
     //Add additional services if any
 
-    //private BranchService(IUow repo, IBranchUserService branchUserService) : this()
+    //public BranchService(IUow repo, IBranchUserService branchUserService) : this()
     //{
     //}
 
@@ -19,6 +19,18 @@ public partial class BranchService
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
         //todo
+        var defaultEntity = await Repo.BranchRepo.SingleOrDefaultQueryableAsync(x => x.CompanyId.Equals(entity.CompanyId) && x.IsDefault == true, dataFilter);
+        if (defaultEntity == null)//no data
+        {
+            entity.IsDefault = true;
+        }
+        else
+        {
+            if (entity.IsDefault)
+            {
+                defaultEntity.IsDefault = false;
+            }
+        }
     }
 
     private async Task ApplyOnSavedBlAsync(Branch entity, DataFilter dataFilter)
@@ -33,6 +45,18 @@ public partial class BranchService
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
+        var defaultEntity = await Repo.BranchRepo.SingleOrDefaultQueryableAsync(x => !x.CompanyId.Equals(existingEntity.Id) && x.IsDefault == true, dataFilter);
+        if (defaultEntity == null)//no data
+        {
+            existingEntity.IsDefault = true;
+        }
+        else
+        {
+            if (existingEntity.IsDefault)
+            {
+                defaultEntity.IsDefault = false;
+            }
+        }
     }
 
     private async Task ApplyOnUpdatedBlAsync(Branch existingEntity, DataFilter dataFilter)

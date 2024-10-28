@@ -6,6 +6,6 @@ public interface IAddressHub
 {
     public Task BroadcastOnSaveAddressAsync(AddressViewModel viewModel);
     public Task BroadcastOnUpdateAddressAsync(AddressViewModel viewModel);
-    public Task BroadcastOnSoftDeleteAddressAsync(AddressInputModel inputModel);
-    public Task BroadcastOnDeleteAddressAsync(AddressInputModel inputModel);
+    public Task BroadcastOnArchiveAddressAsync(AddressViewModel viewModel);
+    public Task BroadcastOnDeleteAddressAsync(AddressViewModel viewModel);
 }

@@ -10,7 +10,7 @@ public partial class CompanyService
 {
     //Add additional services if any
 
-    //private CompanyService(IUow repo, IBranchUserService branchUserService, IBranchService branchService, IPermissionService permissionService, IRoleService roleService, IUserRoleService userRoleService, IUserService userService) : this()
+    //public CompanyService(IUow repo, IBranchUserService branchUserService, IBranchService branchService, IPermissionService permissionService, IRoleService roleService, IUserRoleService userRoleService, IUserService userService) : this()
     //{
     //}
 

@@ -41,4 +41,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 
+//tanvir
+app.MapHub<AddressHub>("/Address");
+app.MapHub<CountryHub>("/Country");
+
 app.Run();

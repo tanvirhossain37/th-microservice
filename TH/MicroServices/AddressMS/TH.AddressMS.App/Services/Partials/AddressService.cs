@@ -1,23 +1,41 @@
+using AutoMapper;
+using MassTransit;
+using Microsoft.Extensions.Configuration;
 using System.Linq.Expressions;
 using TH.AddressMS.Core;
 using TH.Common.Model;
 using TH.Common.Util;
+using TH.Io;
 
 namespace TH.AddressMS.App;
 
 public partial class AddressService
 {
     //Add additional services if any
+    private IExcelRepo _excelRepo;
 
-    //private AddressService(IUow repo) : this()
-    //{
-    //}
+    public AddressService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config, IExcelRepo excelRepo) : this(repo, publishEndpoint, mapper, config)
+    {
+        _excelRepo = excelRepo ?? throw new ArgumentNullException(nameof(excelRepo));
+    }
 
     private async Task ApplyOnSavingBlAsync(Address entity, DataFilter dataFilter)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
         //todo
+        var defaultEntity = await Repo.AddressRepo.SingleOrDefaultQueryableAsync(x => x.ClientId.Equals(entity.ClientId) && x.IsDefault == true, dataFilter);
+        if (defaultEntity == null)//no data
+        {
+            entity.IsDefault = true;
+        }
+        else
+        {
+            if (entity.IsDefault)
+            {
+                defaultEntity.IsDefault = false;
+            }
+        }
     }
 
     private async Task ApplyOnSavedBlAsync(Address entity, DataFilter dataFilter)
@@ -32,6 +50,18 @@ public partial class AddressService
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
+        var defaultEntity = await Repo.AddressRepo.SingleOrDefaultQueryableAsync(x => !x.ClientId.Equals(existingEntity.Id) && x.IsDefault == true, dataFilter);
+        if (defaultEntity == null)//no data
+        {
+            existingEntity.IsDefault = true;
+        }
+        else
+        {
+            if (existingEntity.IsDefault)
+            {
+                defaultEntity.IsDefault = false;
+            }
+        }
     }
 
     private async Task ApplyOnUpdatedBlAsync(Address existingEntity, DataFilter dataFilter)
@@ -41,14 +71,14 @@ public partial class AddressService
         //todo
     }
 
-    private async Task ApplyOnSoftDeletingBlAsync(Address existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivingBlAsync(Address existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
     }
 
-    private async Task ApplyOnSoftDeletedBlAsync(Address existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivedBlAsync(Address existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 

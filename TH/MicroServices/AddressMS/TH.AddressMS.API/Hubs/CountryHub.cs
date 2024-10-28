@@ -15,13 +15,13 @@ public class CountryHub : Hub<ICountryHub>
         await Clients.All.BroadcastOnUpdateCountryAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteCountryAsync(CountryInputModel inputModel)
+    public async Task BroadcastOnArchiveCountryAsync(CountryViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteCountryAsync(inputModel);
+        await Clients.All.BroadcastOnArchiveCountryAsync(viewModel);
     }
 
-    public async Task BroadcastOnDeleteCountryAsync(CountryInputModel inputModel)
+    public async Task BroadcastOnDeleteCountryAsync(CountryViewModel viewModel)
     {
-        await Clients.All.BroadcastOnDeleteCountryAsync(inputModel);
+        await Clients.All.BroadcastOnDeleteCountryAsync(viewModel);
     }
 }

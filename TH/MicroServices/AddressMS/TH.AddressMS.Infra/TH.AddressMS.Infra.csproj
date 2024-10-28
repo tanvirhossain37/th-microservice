@@ -9,6 +9,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20240925092732_Initial.cs" />
     <Compile Remove="Migrations\20240925092732_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20241028130918_Initial.cs" />
+    <Compile Remove="Migrations\20241028130918_Initial.Designer.cs" />
     <Compile Remove="Migrations\AddressDbContextModelSnapshot.cs" />
   </ItemGroup>
 

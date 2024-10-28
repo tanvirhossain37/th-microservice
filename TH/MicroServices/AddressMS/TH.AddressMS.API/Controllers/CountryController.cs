@@ -38,11 +38,12 @@ public class CountryController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Country, CountryFilterModel>(entity);
+            var filter = new CountryFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<ICountryService>();
             var viewModel = _mapper.Map<Country, CountryViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnSaveCountryAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnSaveCountryAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -57,23 +58,30 @@ public class CountryController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Country, CountryFilterModel>(entity);
+            var filter = new CountryFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<ICountryService>();
             var viewModel = _mapper.Map<Country, CountryViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnUpdateCountryAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnUpdateCountryAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
 
-    [HttpPost("SoftDeleteCountryAsync")]
+    [HttpPost("ArchiveCountryAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "CountrySoftDeletePolicy")]
-    public async Task<IActionResult> SoftDeleteCountryAsync([FromBody] CountryInputModel model)
+    [Authorize(Policy = "CountryArchivePolicy")]
+    public async Task<IActionResult> ArchiveCountryAsync([FromBody] CountryInputModel model)
     {
-        await _countryService.SoftDeleteAsync(_mapper.Map<CountryInputModel, Country>(model), DataFilter);
+        //first grab it
+        var filter = new CountryFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Country, CountryViewModel>(await _countryService.FindByIdAsync(filter, DataFilter));
 
-        _hubContext.Clients.All.BroadcastOnSoftDeleteCountryAsync(model);
+        //then archive
+        await _countryService.ArchiveAsync(_mapper.Map<CountryInputModel, Country>(model), DataFilter);
+
+        await _hubContext.Clients.All.BroadcastOnArchiveCountryAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 
@@ -82,9 +90,15 @@ public class CountryController : CustomBaseController
     [Authorize(Policy = "CountryDeletePolicy")]
     public async Task<IActionResult> DeleteCountryAsync([FromBody] CountryInputModel model)
     {
+        //first grab it
+        var filter = new CountryFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Country, CountryViewModel>(await _countryService.FindByIdAsync(filter, DataFilter));
+
+        //then delete
         await _countryService.DeleteAsync(_mapper.Map<CountryInputModel, Country>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnDeleteCountryAsync(model);
+        await _hubContext.Clients.All.BroadcastOnDeleteCountryAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 

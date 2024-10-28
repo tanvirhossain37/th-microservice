@@ -10,7 +10,7 @@ public partial class PermissionService
 {
     //Add additional services if any
 
-    //private PermissionService(IUow repo) : this()
+    //public PermissionService(IUow repo) : this()
     //{
     //}
 
@@ -103,6 +103,7 @@ public partial class PermissionService
         if (filter.ByTree.HasValue)
         {
             predicates.Add(x => x.ParentId == null);
+            //includePredicates.Add(x => x.InverseParent.OrderBy(m => m.MenuOrder));
         }
 
         if (filter.IsLastLevel.HasValue)

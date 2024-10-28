@@ -6,7 +6,6 @@ using TH.AddressMS.Core;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.Common.Util;
-using TH.Io;
 
 namespace TH.AddressMS.App;
 
@@ -15,16 +14,12 @@ public partial class CountryService : BaseService, ICountryService
     protected readonly IUow Repo;
     
 	protected readonly IAddressService AddressService;
-    
-    //additional
-    private readonly IExcelRepo _excelRepo;
-
-    public CountryService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IAddressService addressService, IExcelRepo excelRepo, IConfiguration config) : base(mapper,publishEndpoint, config)
+        
+    public CountryService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config, IAddressService addressService) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
         
 		AddressService = addressService ?? throw new ArgumentNullException(nameof(addressService));
-        _excelRepo = excelRepo ?? throw new ArgumentNullException(nameof(excelRepo));
     }
 
     public async Task<Country> SaveAsync(Country entity, DataFilter dataFilter, bool commit = true)
@@ -101,7 +96,7 @@ public partial class CountryService : BaseService, ICountryService
         return existingEntity;
     }
 
-    public async Task<bool> SoftDeleteAsync(Country entity, DataFilter dataFilter, bool commit = true)
+    public async Task<bool> ArchiveAsync(Country entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -112,7 +107,7 @@ public partial class CountryService : BaseService, ICountryService
         existingEntity.Active = false;
 
         //Add your business logic here
-        await ApplyOnSoftDeletingBlAsync(existingEntity, dataFilter);
+        await ApplyOnArchivingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -127,7 +122,7 @@ public partial class CountryService : BaseService, ICountryService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            await ApplyOnSoftDeletedBlAsync(existingEntity, dataFilter);
+            await ApplyOnArchivedBlAsync(existingEntity, dataFilter);
         }
 
         return true;
@@ -284,8 +279,8 @@ public partial class CountryService : BaseService, ICountryService
             
 			var existingEntityByName = await Repo.CountryRepo.FindByNameAsync(entity.Name, dataFilter);
 			if (existingEntityByName is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Name");
-			var existingEntityByIsoCode = await Repo.CountryRepo.FindByIsoCodeAsync(entity.IsoCode, dataFilter);
-			if (existingEntityByIsoCode is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: IsoCode");
+			//var existingEntityByCode = await Repo.CountryRepo.FindByCodeAsync(entity.Code, dataFilter);
+			//if (existingEntityByCode is not null) throw new CustomException($"{Lang.Find("error_duplicate")}: Code");
         }
         catch (Exception)
         {

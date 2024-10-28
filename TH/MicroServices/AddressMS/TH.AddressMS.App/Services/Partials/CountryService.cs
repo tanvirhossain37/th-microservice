@@ -1,5 +1,6 @@
 using AutoMapper;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 using System.Linq.Expressions;
 using TH.AddressMS.Core;
 using TH.Common.Lang;
@@ -12,12 +13,12 @@ namespace TH.AddressMS.App;
 public partial class CountryService
 {
     //Add additional services if any
-    
+    private IExcelRepo _excelRepo;
 
-    //public CountryService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IAddressService addressService, IExcelRepo excelRepo) : this(repo, publishEndpoint, mapper, addressService)
-    //{
-    //    _excelRepo = excelRepo;
-    //}
+    public CountryService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config, IAddressService addressService, IExcelRepo excelRepo) : this(repo, publishEndpoint, mapper, config, addressService)
+    {
+        _excelRepo = excelRepo ?? throw new ArgumentNullException(nameof(excelRepo));
+    }
 
     private async Task ApplyOnSavingBlAsync(Country entity, DataFilter dataFilter)
     {
@@ -47,14 +48,14 @@ public partial class CountryService
         //todo
     }
 
-    private async Task ApplyOnSoftDeletingBlAsync(Country existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivingBlAsync(Country existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
         //todo
     }
 
-    private async Task ApplyOnSoftDeletedBlAsync(Country existingEntity, DataFilter dataFilter)
+    private async Task ApplyOnArchivedBlAsync(Country existingEntity, DataFilter dataFilter)
     {
         if (existingEntity == null) throw new ArgumentNullException(nameof(existingEntity));
 
@@ -127,10 +128,10 @@ public partial class CountryService
 
             var newCountry = new Country
             {
-                Name = $"c_{row.Country.ToLower()}",
+                Name = $"country.c_{row.Country.ToLower()}",
                 Code = row.CountryCode,
                 IsoCode = row.IsoCode.Split("/")[0].Trim(),
-                CurrencyName = $"cr_{Util.ToUnderscoreCase(row.CurrencyName)}",
+                CurrencyName = $"currency.cr_{Util.ToUnderscoreCase(row.CurrencyName)}",
                 CurrencyCode = row.CurrencyCode
             };
 

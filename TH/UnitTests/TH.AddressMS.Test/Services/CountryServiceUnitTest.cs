@@ -77,7 +77,7 @@ public class CountryServiceUnitTest : AddressBaseUnitTest
     }
 
     [TestMethod]
-    public async Task SoftDeleteAsyncUnitTest()
+    public async Task ArchiveAsyncUnitTest()
     {
         try
         {
@@ -86,7 +86,7 @@ public class CountryServiceUnitTest : AddressBaseUnitTest
                 Id = "", //todo
             };
 
-            await _service.SoftDeleteAsync(Mapper.Map<CountryInputModel, Country>(model), DataFilter);
+            await _service.ArchiveAsync(Mapper.Map<CountryInputModel, Country>(model), DataFilter);
         }
         catch (Exception e)
         {

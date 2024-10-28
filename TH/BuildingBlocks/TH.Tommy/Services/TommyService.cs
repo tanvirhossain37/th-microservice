@@ -1376,32 +1376,38 @@ public class TommyService : BaseService
                     if(fieldName.Equals("PageIndex"))continue;
                     if (fieldName.Equals("PageSize")) continue;
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: number = 0;");
+                    continue;
                 }
                 if ((typeName.Equals("int?")) || (typeName.Equals("long?")) || (typeName.Equals("double?")) || (typeName.Equals("decimal?")))
                 {
                     if (fieldName.Equals("PageIndex")) continue;
                     if (fieldName.Equals("PageSize")) continue;
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}?: number;");
+                    continue;
                 }
                 else if ((typeName.Equals("string")))
                 {
                     if (fieldName.Equals("Id")) continue;
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: string = \"\";");
+                    continue;
                 }
                 else if ((typeName.Equals("string?")))
                 {
                     if (fieldName.Equals("Id")) continue;
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}?: string;");
+                    continue;
                 }
                 else if ((typeName.Equals("bool")))
                 {
                     if (fieldName.Equals("Active")) continue;
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: boolean = false;");
+                    continue;
                 }
                 else if ((typeName.Equals("bool?")))
                 {
                     if (fieldName.Equals("Active")) continue;
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}?: boolean;");
+                    continue;
                 }
                 else if ((typeName.Equals("DateTime")))
                 {
@@ -1410,6 +1416,7 @@ public class TommyService : BaseService
                     if (fieldName.Equals("StartDate")) continue;
                     if (fieldName.Equals("EndDate")) continue;
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: any = null;");
+                    continue;
                 }
                 else if ((typeName.Equals("DateTime")) || (typeName.Equals("DateTime?")))
                 {
@@ -1418,19 +1425,23 @@ public class TommyService : BaseService
                     if (fieldName.Equals("StartDate")) continue;
                     if (fieldName.Equals("EndDate")) continue;
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}?: any = null;");
+                    continue;
                 }
                 else if ((typeName.Equals("TimeSpan")))
                 {
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}: any = null;");
+                    continue;
                 }
                 else if ((typeName.Equals("TimeSpan?")))
                 {
                     content = string.Concat(content, $"\n\t{FileManager.ToCamelCase(fieldName)}?: any = null;");
+                    continue;
                 }
                 else
                 {
                     if (fieldName.Equals("Print")) continue;
                     content = string.Concat(content, $"\n\t{fieldName}: {childEntity}[] = [];");
+                    continue;
                 }
             }
 

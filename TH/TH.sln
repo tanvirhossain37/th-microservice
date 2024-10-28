@@ -146,7 +146,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.Io", "BuildingBlocks\TH.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DeepAIMS", "DeepAIMS", "{C55A50E8-31B4-492B-BE6F-C6AF0CCE4F92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TH.DeepAIMS.API", "MicroServices\DeepAIMS\TH.DeepAIMS.API\TH.DeepAIMS.API.csproj", "{AB9AC08C-2B09-4184-A699-EA1A4371E401}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TH.DeepAIMS.API", "MicroServices\DeepAIMS\TH.DeepAIMS.API\TH.DeepAIMS.API.csproj", "{AB9AC08C-2B09-4184-A699-EA1A4371E401}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

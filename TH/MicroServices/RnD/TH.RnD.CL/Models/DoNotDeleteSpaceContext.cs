@@ -15,6 +15,8 @@ public partial class DoNotDeleteSpaceContext : DbContext
     {
     }
 
+    public virtual DbSet<Address> Addresses { get; set; }
+
     public virtual DbSet<Branch> Branches { get; set; }
 
     public virtual DbSet<BranchUser> BranchUsers { get; set; }
@@ -22,6 +24,8 @@ public partial class DoNotDeleteSpaceContext : DbContext
     public virtual DbSet<Company> Companies { get; set; }
 
     public virtual DbSet<CompanySetting> CompanySettings { get; set; }
+
+    public virtual DbSet<Country> Countries { get; set; }
 
     public virtual DbSet<Module> Modules { get; set; }
 

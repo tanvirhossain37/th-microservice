@@ -17,17 +17,13 @@ public partial class UserService : BaseService, IUserService
 	protected readonly IUserCompanyService UserCompanyService;
 	protected readonly IUserRoleService UserRoleService;
 
-    //additional
-    private AuthGrpcClientService _authGrpcClientService;
-
-    public UserService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config, IBranchUserService branchUserService, IUserCompanyService userCompanyService, IUserRoleService userRoleService, AuthGrpcClientService authGrpcClientService) : base(mapper, publishEndpoint, config)
+    public UserService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config, IBranchUserService branchUserService, IUserCompanyService userCompanyService, IUserRoleService userRoleService) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
 
         BranchUserService = branchUserService ?? throw new ArgumentNullException(nameof(branchUserService));
         UserCompanyService = userCompanyService ?? throw new ArgumentNullException(nameof(userCompanyService));
         UserRoleService = userRoleService ?? throw new ArgumentNullException(nameof(userRoleService));
-        _authGrpcClientService = authGrpcClientService ?? throw new ArgumentNullException(nameof(authGrpcClientService));
     }
 
     public async Task<User> SaveAsync(User entity, DataFilter dataFilter, bool commit = true)

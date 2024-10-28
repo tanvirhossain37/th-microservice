@@ -10,7 +10,7 @@ public partial class $WE$Service
 {
     //Add additional services if any
 
-    //private $WE$Service(IUow repo//we todo constructor inject) : this()
+    //public $WE$Service(IUow repo//we todo constructor inject) : this()
     //{
     //}
 

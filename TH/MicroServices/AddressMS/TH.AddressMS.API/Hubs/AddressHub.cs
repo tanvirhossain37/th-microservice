@@ -15,13 +15,13 @@ public class AddressHub : Hub<IAddressHub>
         await Clients.All.BroadcastOnUpdateAddressAsync(viewModel);
     }
 
-    public async Task BroadcastOnSoftDeleteAddressAsync(AddressInputModel inputModel)
+    public async Task BroadcastOnArchiveAddressAsync(AddressViewModel viewModel)
     {
-        await Clients.All.BroadcastOnSoftDeleteAddressAsync(inputModel);
+        await Clients.All.BroadcastOnArchiveAddressAsync(viewModel);
     }
 
-    public async Task BroadcastOnDeleteAddressAsync(AddressInputModel inputModel)
+    public async Task BroadcastOnDeleteAddressAsync(AddressViewModel viewModel)
     {
-        await Clients.All.BroadcastOnDeleteAddressAsync(inputModel);
+        await Clients.All.BroadcastOnDeleteAddressAsync(viewModel);
     }
 }

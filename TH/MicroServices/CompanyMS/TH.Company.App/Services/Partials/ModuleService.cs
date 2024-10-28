@@ -9,7 +9,7 @@ public partial class ModuleService
 {
     //Add additional services if any
 
-    //private ModuleService(IUow repo, IPermissionService permissionService) : this()
+    //public ModuleService(IUow repo, IPermissionService permissionService) : this()
     //{
     //}
 
@@ -101,7 +101,7 @@ public partial class ModuleService
         if (filter.ByTree.HasValue)
         {
             predicates.Add(x => x.ParentId == null);
-            includePredicates.Add(x => x.InverseParent.OrderBy(m=>m.MenuOrder));
+            //includePredicates.Add(x => x.InverseParent.OrderBy(m => m.MenuOrder));
         }
     }
 
@@ -112,7 +112,7 @@ public partial class ModuleService
         var admin = await SaveAsync(new Module
         {
             ParentId = null,
-            Name = "m_admin",
+            Name = "module.m_admin",
             ControllerName = "",
             Route = "/company/admin",
             Icon = "admin_panel_settings",
@@ -125,9 +125,9 @@ public partial class ModuleService
         var oleDashboard = await SaveAsync(new Module
         {
             ParentId = admin.Id,
-            Name = "m_admin_dashboard",
+            Name = "module.m_admin_dashboard",
             ControllerName = TS.Controllers.Company,
-            Route = "/company/admin/dashboard",
+            Route = "/company/admin/dashboards",
             Icon = "dashboard",
             MenuOrder = 1,
             Level = 2
@@ -136,7 +136,7 @@ public partial class ModuleService
         var config = await SaveAsync(new Module
         {
             ParentId = admin.Id,
-            Name = "m_admin_setting",
+            Name = "module.m_admin_setting",
             ControllerName = TS.Controllers.CompanySetting,
             Route = "/company/admin/settings",
             Icon = "settings",
@@ -147,7 +147,7 @@ public partial class ModuleService
         var role = await SaveAsync(new Module
         {
             ParentId = admin.Id,
-            Name = "m_admin_role",
+            Name = "module.m_admin_role",
             ControllerName = TS.Controllers.Role,
             Route = "/company/admin/roles",
             Icon = "toggle_on",
@@ -158,7 +158,7 @@ public partial class ModuleService
         var user = await SaveAsync(new Module
         {
             ParentId = admin.Id,
-            Name = "m_admin_user",
+            Name = "module.m_admin_user",
             ControllerName = TS.Controllers.User,
             Route = "/company/admin/users",
             Icon = "group",
@@ -169,7 +169,7 @@ public partial class ModuleService
         var permission = await SaveAsync(new Module
         {
             ParentId = admin.Id,
-            Name = "m_admin_permission",
+            Name = "module.m_admin_permission",
             ControllerName = TS.Controllers.Permission,
             Route = "/company/admin/permissions",
             Icon = "key",
@@ -186,7 +186,7 @@ public partial class ModuleService
         var acounting = await SaveAsync(new Module
         {
             ParentId = null,
-            Name = "m_accounting",
+            Name = "module.m_accounting",
             ControllerName = "",
             Route = "/company/accounting",
             Icon = "currency_exchange",
@@ -199,9 +199,9 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = acounting.Id,
-            Name = "m_accounting_dasboard",
+            Name = "module.m_accounting_dasboard",
             ControllerName = "",
-            Route = "/company/accounting/dashboard",
+            Route = "/company/accounting/dashboards",
             Icon = "dashboard",
             MenuOrder = 1,
             Level = 2
@@ -210,7 +210,7 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = acounting.Id,
-            Name = "m_accounting_setting",
+            Name = "module.m_accounting_setting",
             ControllerName = "",
             Route = "/company/accounting/settings",
             Icon = "settings",
@@ -221,9 +221,9 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = acounting.Id,
-            Name = "m_accounting_coa",
+            Name = "module.m_accounting_coa",
             ControllerName = "",
-            Route = "/company/accounting/coa",
+            Route = "/company/accounting/coas",
             Icon = "account_tree",
             MenuOrder = 3,
             Level = 2
@@ -232,7 +232,7 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = acounting.Id,
-            Name = "m_accounting_posting",
+            Name = "module.m_accounting_posting",
             ControllerName = "",
             Route = "/company/accounting/postings",
             Icon = "post_add",
@@ -243,7 +243,7 @@ public partial class ModuleService
         var report = await SaveAsync(new Module
         {
             ParentId = acounting.Id,
-            Name = "m_accounting_report",
+            Name = "module.m_accounting_report",
             ControllerName = "",
             Route = "/company/accounting/reports",
             Icon = "lab_profile",
@@ -258,7 +258,7 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = report.Id,
-            Name = "m_accounting_report_ledger",
+            Name = "module.m_accounting_report_ledger",
             ControllerName = "",
             Route = "/company/accounting/reports/ledger",
             Icon = "dehaze",
@@ -269,7 +269,7 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = report.Id,
-            Name = "m_accounting_report_trialbalance",
+            Name = "module.m_accounting_report_trialbalance",
             ControllerName = "",
             Route = "/company/accounting/reports/trialbalance",
             Icon = "heat_pump_balance",
@@ -280,7 +280,7 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = report.Id,
-            Name = "m_accounting_report_incomestatement",
+            Name = "module.m_accounting_report_incomestatement",
             ControllerName = "",
             Route = "/company/accounting/reports/incomestatement",
             Icon = "payments",
@@ -291,7 +291,7 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = report.Id,
-            Name = "m_accounting_report_balancesheet",
+            Name = "module.m_accounting_report_balancesheet",
             ControllerName = "",
             Route = "/company/accounting/reports/balancesheet",
             Icon = "balance",
@@ -302,7 +302,7 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = report.Id,
-            Name = "m_accounting_report_cashflow",
+            Name = "module.m_accounting_report_cashflow",
             ControllerName = "",
             Route = "/company/accounting/reports/cashflow",
             Icon = "trending_up",
@@ -313,7 +313,7 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = report.Id,
-            Name = "m_accounting_report_recieptpayment",
+            Name = "module.m_accounting_report_recieptpayment",
             ControllerName = "",
             Route = "/company/accounting/reports/recieptpayment",
             Icon = "receipt_long",
@@ -324,7 +324,7 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = report.Id,
-            Name = "m_accounting_report_costprofitanalysis",
+            Name = "module.m_accounting_report_costprofitanalysis",
             ControllerName = "",
             Route = "/company/accounting/reports/costprofitanalysis",
             Icon = "compare",
@@ -341,7 +341,7 @@ public partial class ModuleService
         var hr = await SaveAsync(new Module
         {
             ParentId = null,
-            Name = "m_hr",
+            Name = "module.m_hr",
             ControllerName = "",
             Route = "/company/hr",
             Icon = "diversity_3",
@@ -354,9 +354,9 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = hr.Id,
-            Name = "m_hr_dashboard",
+            Name = "module.m_hr_dashboard",
             ControllerName = "",
-            Route = "/company/hr/dashboard",
+            Route = "/company/hr/dashboards",
             Icon = "dashboard",
             MenuOrder = 1,
             Level = 2
@@ -365,7 +365,7 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = hr.Id,
-            Name = "m_hr_setting",
+            Name = "module.m_hr_setting",
             ControllerName = TS.Controllers.Company,
             Route = "/company/hr/settings",
             Icon = "settings",
@@ -376,7 +376,7 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = hr.Id,
-            Name = "m_hr_employee",
+            Name = "module.m_hr_employee",
             ControllerName = TS.Controllers.Company,
             Route = "/company/hr/employees",
             Icon = "supervisor_account",
@@ -393,9 +393,9 @@ public partial class ModuleService
         var inventory = await SaveAsync(new Module
         {
             ParentId = null,
-            Name = "m_inventory",
+            Name = "module.m_inventory",
             ControllerName = "",
-            Route = "/company/inventories",
+            Route = "/company/inventory",
             Icon = "inventory",
             MenuOrder = 4,
             Level = 1
@@ -406,9 +406,9 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = inventory.Id,
-            Name = "m_inventory_dashboard",
+            Name = "module.m_inventory_dashboard",
             ControllerName = "",
-            Route = "/company/inventories/dashboard",
+            Route = "/company/inventory/dashboards",
             Icon = "dashboard",
             MenuOrder = 1,
             Level = 2
@@ -417,9 +417,9 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = inventory.Id,
-            Name = "m_inventory_setting",
+            Name = "module.m_inventory_setting",
             ControllerName = "",
-            Route = "/company/inventories/settings",
+            Route = "/company/inventory/settings",
             Icon = "settings",
             MenuOrder = 2,
             Level = 2
@@ -428,9 +428,9 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = inventory.Id,
-            Name = "m_inventory_product",
+            Name = "module.m_inventory_product",
             ControllerName = "",
-            Route = "/company/inventories/products",
+            Route = "/company/inventory/products",
             Icon = "align_items_stretch",
             MenuOrder = 3,
             Level = 2
@@ -445,10 +445,10 @@ public partial class ModuleService
         var supply = await SaveAsync(new Module
         {
             ParentId = null,
-            Name = "m_supply",
+            Name = "module.m_supply",
             ControllerName = "",
-            Route = "/company/supplies",
-            Icon = "inventory_2",
+            Route = "/company/supply",
+            Icon = "shopping_cart",
             MenuOrder = 5,
             Level = 1
         }, dataFilter);
@@ -458,9 +458,9 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = supply.Id,
-            Name = "m_supply_dashboard",
+            Name = "module.m_supply_dashboard",
             ControllerName = "",
-            Route = "/company/supplies/dashboard",
+            Route = "/company/supply/dashboards",
             Icon = "dashboard",
             MenuOrder = 1,
             Level = 2
@@ -469,9 +469,9 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = supply.Id,
-            Name = "m_supply_setting",
+            Name = "module.m_supply_setting",
             ControllerName = "",
-            Route = "/company/supplies/settings",
+            Route = "/company/supply/settings",
             Icon = "settings",
             MenuOrder = 2,
             Level = 2
@@ -480,9 +480,9 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = inventory.Id,
-            Name = "m_supply_employee",
+            Name = "module.m_supply_product",
             ControllerName = "",
-            Route = "/company/supplies/products",
+            Route = "/company/supply/products",
             Icon = "align_items_stretch",
             MenuOrder = 3,
             Level = 2
@@ -497,7 +497,7 @@ public partial class ModuleService
         var fa = await SaveAsync(new Module
         {
             ParentId = null,
-            Name = "m_fa",
+            Name = "module.m_fa",
             ControllerName = "",
             Route = "/company/fa",
             Icon = "web_asset",
@@ -510,9 +510,9 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = fa.Id,
-            Name = "m_fa_dashboard",
+            Name = "module.m_fa_dashboard",
             ControllerName = "",
-            Route = "/company/fa/dashboard",
+            Route = "/company/fa/dashboards",
             Icon = "dashboard",
             MenuOrder = 1,
             Level = 2
@@ -521,7 +521,7 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = fa.Id,
-            Name = "m_fa_setting",
+            Name = "module.m_fa_setting",
             ControllerName = "",
             Route = "/company/fa/settings",
             Icon = "settings",
@@ -532,9 +532,9 @@ public partial class ModuleService
         await SaveAsync(new Module
         {
             ParentId = inventory.Id,
-            Name = "m_fa_product",
+            Name = "module.m_fa_asset",
             ControllerName = "",
-            Route = "/company/fa/products",
+            Route = "/company/fa/assets",
             Icon = "align_items_stretch",
             MenuOrder = 3,
             Level = 2

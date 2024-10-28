@@ -4,7 +4,7 @@ using TH.Repo;
 
 namespace TH.AddressMS.App;
 
-public interface IAddressRepo : IRepoSQL<Address>
+public partial interface IAddressRepo : IRepoSQL<Address>
 {   
     
 }

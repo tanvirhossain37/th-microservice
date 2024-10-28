@@ -10,7 +10,7 @@ public partial class BranchUserService
 {
     //Add additional services if any
 
-    //private BranchUserService(IUow repo) : this()
+    //public BranchUserService(IUow repo) : this()
     //{
     //}
 

@@ -10,7 +10,7 @@ public partial class RoleService
 {
     //Add additional services if any
 
-    //private RoleService(IUow repo, IPermissionService permissionService, IUserRoleService userRoleService) : this()
+    //public RoleService(IUow repo, IPermissionService permissionService, IUserRoleService userRoleService) : this()
     //{
     //}
 

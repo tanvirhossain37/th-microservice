@@ -12,12 +12,11 @@ namespace TH.AddressMS.App;
 public partial class AddressService : BaseService, IAddressService
 {
     protected readonly IUow Repo;
-    
-        
-    public AddressService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config) : base(mapper,publishEndpoint, config)
+
+
+    public AddressService(IUow repo, IPublishEndpoint publishEndpoint, IMapper mapper, IConfiguration config) : base(mapper, publishEndpoint, config)
     {
         Repo = repo ?? throw new ArgumentNullException(nameof(repo));
-        
     }
 
     public async Task<Address> SaveAsync(Address entity, DataFilter dataFilter, bool commit = true)
@@ -64,6 +63,7 @@ public partial class AddressService : BaseService, IAddressService
 		existingEntity.PostalCode = entity.PostalCode;
 		existingEntity.CountryId = entity.CountryId;
 		existingEntity.ClientId = entity.ClientId;
+		existingEntity.IsDefault = entity.IsDefault;
 
         ApplyValidationBl(existingEntity);
         await ApplyDuplicateOnUpdateBl(existingEntity, dataFilter);
@@ -85,7 +85,7 @@ public partial class AddressService : BaseService, IAddressService
         return existingEntity;
     }
 
-    public async Task<bool> SoftDeleteAsync(Address entity, DataFilter dataFilter, bool commit = true)
+    public async Task<bool> ArchiveAsync(Address entity, DataFilter dataFilter, bool commit = true)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -96,7 +96,7 @@ public partial class AddressService : BaseService, IAddressService
         existingEntity.Active = false;
 
         //Add your business logic here
-        await ApplyOnSoftDeletingBlAsync(existingEntity, dataFilter);
+        await ApplyOnArchivingBlAsync(existingEntity, dataFilter);
 
         //Chain effect
         
@@ -106,7 +106,7 @@ public partial class AddressService : BaseService, IAddressService
             if (await Repo.SaveChangesAsync() <= 0) throw new CustomException(Lang.Find("delete_error"));
 
             //Add your business logic here
-            await ApplyOnSoftDeletedBlAsync(existingEntity, dataFilter);
+            await ApplyOnArchivedBlAsync(existingEntity, dataFilter);
         }
 
         return true;
@@ -186,6 +186,7 @@ public partial class AddressService : BaseService, IAddressService
 			if (!string.IsNullOrWhiteSpace(filter.PostalCode)) predicates.Add(t => t.PostalCode.Contains(filter.PostalCode.Trim()));
 			if (!string.IsNullOrWhiteSpace(filter.CountryId)) predicates.Add(t => t.CountryId.Contains(filter.CountryId.Trim()));
 			if (!string.IsNullOrWhiteSpace(filter.ClientId)) predicates.Add(t => t.ClientId.Contains(filter.ClientId.Trim()));
+			if (filter.IsDefault.HasValue) predicates.Add(t => t.IsDefault == filter.IsDefault);
 
             #endregion
 

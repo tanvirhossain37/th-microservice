@@ -38,11 +38,12 @@ public class AddressController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Address, AddressFilterModel>(entity);
+            var filter = new AddressFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<IAddressService>();
             var viewModel = _mapper.Map<Address, AddressViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnSaveAddressAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnSaveAddressAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
@@ -57,23 +58,30 @@ public class AddressController : CustomBaseController
 
         using (var scope = _scopeFactory.CreateScope())
         {
-            var filter = _mapper.Map<Address, AddressFilterModel>(entity);
+            var filter = new AddressFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<IAddressService>();
             var viewModel = _mapper.Map<Address, AddressViewModel>(await service.FindByIdAsync(filter, DataFilter));
 
-            _hubContext.Clients.All.BroadcastOnUpdateAddressAsync(viewModel);
+            await _hubContext.Clients.All.BroadcastOnUpdateAddressAsync(viewModel);
+
             return CustomResult(Lang.Find("success"));
         }
     }
 
-    [HttpPost("SoftDeleteAddressAsync")]
+    [HttpPost("ArchiveAddressAsync")]
     [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
-    [Authorize(Policy = "AddressSoftDeletePolicy")]
-    public async Task<IActionResult> SoftDeleteAddressAsync([FromBody] AddressInputModel model)
+    [Authorize(Policy = "AddressArchivePolicy")]
+    public async Task<IActionResult> ArchiveAddressAsync([FromBody] AddressInputModel model)
     {
-        await _addressService.SoftDeleteAsync(_mapper.Map<AddressInputModel, Address>(model), DataFilter);
+        //first grab it
+        var filter = new AddressFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Address, AddressViewModel>(await _addressService.FindByIdAsync(filter, DataFilter));
 
-        _hubContext.Clients.All.BroadcastOnSoftDeleteAddressAsync(model);
+        //then archive
+        await _addressService.ArchiveAsync(_mapper.Map<AddressInputModel, Address>(model), DataFilter);
+
+        await _hubContext.Clients.All.BroadcastOnArchiveAddressAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 
@@ -82,9 +90,15 @@ public class AddressController : CustomBaseController
     [Authorize(Policy = "AddressDeletePolicy")]
     public async Task<IActionResult> DeleteAddressAsync([FromBody] AddressInputModel model)
     {
+        //first grab it
+        var filter = new AddressFilterModel { Id = model.Id };
+        var viewModel = _mapper.Map<Address, AddressViewModel>(await _addressService.FindByIdAsync(filter, DataFilter));
+
+        //then delete
         await _addressService.DeleteAsync(_mapper.Map<AddressInputModel, Address>(model), DataFilter);
 
-        _hubContext.Clients.All.BroadcastOnDeleteAddressAsync(model);
+        await _hubContext.Clients.All.BroadcastOnDeleteAddressAsync(viewModel);
+
         return CustomResult(Lang.Find("success"));
     }
 

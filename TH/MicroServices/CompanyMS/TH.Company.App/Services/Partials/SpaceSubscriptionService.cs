@@ -10,7 +10,7 @@ public partial class SpaceSubscriptionService
 {
     //Add additional services if any
 
-    //private SpaceSubscriptionService(IUow repo) : this()
+    //public SpaceSubscriptionService(IUow repo) : this()
     //{
     //}
 

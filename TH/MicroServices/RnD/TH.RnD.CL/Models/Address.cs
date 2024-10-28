@@ -25,5 +25,7 @@ public partial class Address
 
     public string ClientId { get; set; } = null!;
 
+    public bool IsDefault { get; set; }
+
     public virtual Country Country { get; set; } = null!;
 }

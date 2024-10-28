@@ -41,6 +41,7 @@ namespace TH.AddressMS.Infra.Migrations
                     PostalCode = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     CountryId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     ClientId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     Active = table.Column<bool>(type: "bit", nullable: false)

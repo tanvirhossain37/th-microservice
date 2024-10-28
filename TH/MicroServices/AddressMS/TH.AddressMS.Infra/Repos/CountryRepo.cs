@@ -27,12 +27,12 @@ public partial class CountryRepo : RepoSQL<Country>, ICountryRepo
             (!e.Id.Equals(id)) &&
             (e.Name.Equals(name)), dataFilter);
     }
-    public async Task<Country> FindByIsoCodeAsync(string isoCode, DataFilter dataFilter)
+    public async Task<Country> FindByCodeAsync(string code, DataFilter dataFilter)
     {
-        isoCode = string.IsNullOrWhiteSpace(isoCode) ? throw new ArgumentNullException(nameof(isoCode)) : isoCode.Trim().ToLower();
+        code = string.IsNullOrWhiteSpace(code) ? throw new ArgumentNullException(nameof(code)) : code.Trim().ToLower();
 
         return await SingleOrDefaultQueryableAsync(e =>
-            (e.IsoCode.Equals(isoCode)), dataFilter);
+            (e.Code.Equals(code)), dataFilter);
     }
 
     public async Task<Country> FindByCodeExceptMeAsync(string id, string code, DataFilter dataFilter)

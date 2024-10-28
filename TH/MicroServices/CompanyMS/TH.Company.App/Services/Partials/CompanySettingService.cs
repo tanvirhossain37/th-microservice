@@ -10,7 +10,7 @@ public partial class CompanySettingService
 {
     //Add additional services if any
 
-    //private CompanySettingService(IUow repo) : this()
+    //public CompanySettingService(IUow repo) : this()
     //{
     //}
 
