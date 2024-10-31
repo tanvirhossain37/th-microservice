@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TH.AddressMS.Grpc;
 using TH.AuthMS.Grpc;
 using TH.CompanyMS.Core;
 
@@ -73,9 +74,13 @@ public static class AppDependencyInjection
 
         //services.AddGrpc();
         services.AddGrpcClient<AuthProtoService.AuthProtoServiceClient>(
-            options => options.Address = new Uri(configuration.GetValue<string>("GrpcSettings:GrpcUrl")));
+            options => options.Address = new Uri(configuration.GetValue<string>("GrpcSettings:AUthGrpcUrl")));
+        services.AddGrpcClient<AddressProtoService.AddressProtoServiceClient>(
+            options=> options.Address =new Uri(configuration.GetValue<string>("GrpcSettings:AddressGrpcUrl")));
+
 
         services.AddScoped<AuthGrpcClientService>();
+        services.AddScoped<AddressGrpcClientService>();
 
         return services;
     }

@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using TH.AddressMS.Grpc;
 using TH.Common.Lang;
 using TH.Common.Model;
 using TH.CompanyMS.App;
@@ -17,13 +18,15 @@ public class CompanyController : CustomBaseController
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IHubContext<CompanyHub, ICompanyHub> _hubContext;
+    private readonly AddressGrpcClientService _addressGrpcClientService;
 
-    public CompanyController(ICompanyService companyService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<CompanyHub, ICompanyHub> hubContext) : base(httpContextAccessor)
+    public CompanyController(ICompanyService companyService, IMapper mapper, IServiceScopeFactory scopeFactory, HttpContextAccessor httpContextAccessor, IHubContext<CompanyHub, ICompanyHub> hubContext, AddressGrpcClientService addressGrpcClientService) : base(httpContextAccessor)
     {
         _companyService = companyService ?? throw new ArgumentNullException(nameof(companyService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
         _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
+        _addressGrpcClientService = addressGrpcClientService ?? throw new ArgumentNullException(nameof(addressGrpcClientService));
 
         _companyService.SetUserResolver(UserResolver);
     }
@@ -41,6 +44,15 @@ public class CompanyController : CustomBaseController
             var filter = new CompanyFilterModel { Id = entity.Id };
             var service = scope.ServiceProvider.GetRequiredService<ICompanyService>();
             var viewModel = _mapper.Map<Company, CompanyViewModel>(await service.FindByIdAsync(filter, DataFilter));
+
+            //grpc - save address
+            foreach (var branch in model.Branches)
+            {
+                var request = _mapper.Map<AddressInputModel, AddressInputRequest>(branch.Address);
+                var viewReply = await _addressGrpcClientService.TrySaveAsync(request);
+            }
+
+
 
             await _hubContext.Clients.All.BroadcastOnSaveCompanyAsync(viewModel);
 

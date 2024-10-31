@@ -32,6 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="..\..\AddressMS\TH.AddressMS.Grpc\Protos\address.proto" GrpcServices="Client">
+      <Link>Protos\address.proto</Link>
+    </Protobuf>
     <Protobuf Include="..\..\AuthMS\TH.AuthMS.Grpc\Protos\auth.proto" GrpcServices="Client">
       <Link>Protos\auth.proto</Link>
     </Protobuf>

@@ -6,7 +6,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TH.CompanyMS.App;
 
 public partial class BranchViewModel
-{   
+{
 	public string SpaceName { get; set; }
 	public string CompanyName { get; set; }
+	public IList<AddressViewModel> Addresses { get; set; } = new List<AddressViewModel>();
 }

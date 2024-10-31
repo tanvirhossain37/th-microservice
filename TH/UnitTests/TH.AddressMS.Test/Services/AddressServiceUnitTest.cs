@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using TH.AddressMS.App;
 using TH.AddressMS.Core;
@@ -10,7 +11,6 @@ namespace TH.AddressMS.Test;
 public class AddressServiceUnitTest : AddressBaseUnitTest
 {
     private IAddressService _service;
-
 
     [TestInitialize]
     public override void Init()
@@ -27,7 +27,7 @@ public class AddressServiceUnitTest : AddressBaseUnitTest
             var model = new AddressInputModel
             {
                 ClientId = "2df17aae-bb75-4603-8ee5-c4d777a493f8",
-                Street = "Uttara",
+                Street = "Uttara 11",
                 City = "Dhaka",
                 PostalCode = "1229",
                 CountryId = "e3805a4f-6eee-4884-b2d2-0dcb728b58a6",//bd
@@ -35,7 +35,17 @@ public class AddressServiceUnitTest : AddressBaseUnitTest
             };
 
             var entity = await _service.SaveAsync(Mapper.Map<AddressInputModel, Address>(model), DataFilter);
-            var viewModel = Mapper.Map<Address, AddressViewModel>(entity);
+            var vm = Mapper.Map<Address, AddressViewModel>(entity);
+
+            var serviceCollection = new ServiceCollection();
+            ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
+
+            using (var service = serviceProvider.GetRequiredService<IAddressService>())
+            {
+                var filter = new AddressFilterModel { Id = entity.Id };
+                Address address = await service.FindByIdAsync(filter, DataFilter);
+                var viewModel = Mapper.Map<Address, AddressViewModel>(address);
+            }
         }
         catch (Exception e)
         {
@@ -109,7 +119,10 @@ public class AddressServiceUnitTest : AddressBaseUnitTest
     {
         try
         {
-            var filter = new AddressFilterModel();
+            var filter = new AddressFilterModel
+            {
+                Id = "b1856946-a386-4c5a-88ba-1fae11635d0c"
+            };
 
             var entity = await _service.FindByIdAsync(filter, DataFilter); //todo
             var viewModel = Mapper.Map<Address, AddressViewModel>(entity);
@@ -127,6 +140,7 @@ public class AddressServiceUnitTest : AddressBaseUnitTest
         {
             var filter = new AddressFilterModel();
             filter.PageSize = (int)PageEnum.All;
+            filter.ClientId = "2df17aae-bb75-4603-8ee5-c4d777a493f8";
 
             var entity = await _service.GetAsync(filter, DataFilter);
             var viewModels = Mapper.Map<List<Address>, List<AddressViewModel>>(entity.ToList());

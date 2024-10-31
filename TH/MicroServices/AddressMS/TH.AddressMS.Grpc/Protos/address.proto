@@ -6,6 +6,8 @@ option csharp_namespace = "TH.AddressMS.Grpc";
 
 service AddressProtoService{
 	// Sends a greeting
+  rpc TrySaveAddress (AddressInputRequest) returns (AddressViewReply);
+  rpc TryGet (AddressFilterRequest) returns (AddresssListViewReply);
   rpc FindByCode (CountryFilterRequest) returns (CountryViewReply);
 }
 
@@ -80,4 +82,8 @@ message CountryViewReply {
 	string iso_code = 7;
 	string currency_name = 8;
 	string currency_code = 9;
+}
+
+message AddresssListViewReply {
+	repeated AddressViewReply Addresses = 1;
 }

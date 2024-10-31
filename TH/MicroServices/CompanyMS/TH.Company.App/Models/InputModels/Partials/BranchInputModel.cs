@@ -7,4 +7,5 @@ namespace TH.CompanyMS.App;
 
 public partial class BranchInputModel
 {
+    public AddressInputModel Address { get; set; } = new AddressInputModel();
 }
